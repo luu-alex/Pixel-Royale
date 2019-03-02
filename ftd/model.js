@@ -4,22 +4,20 @@ function rand(n){ return Math.random()*n; }
 class Stage {
 	constructor(canvas){
 		this.canvas = canvas;
-	
 		this.actors=[]; // all actors on this stage (monsters, player, boxes, ...)
-		this.player=null; // a special actor, the player
-	
-		// the logical width and height of the stage
-		this.width=canvas.width;
-		this.height=canvas.height;
 
+		// the logical width and height of the stage
+		this.width=1000;
+		this.height=1500;
+		this.player= new player(50,50,"red",this.width/2,this.height/2); // a special actor, the player
 		// Add the player to the center of the stage
 		// this.addPlayer(new Player(this, Math.floor(this.width/2), Math.floor(this.height/2)));
-	
-		// Add in some Balls
-		var total=100;
+
+		// Add in somew Balls
+		var total=1;
 		while(total>0){
-			var x=Math.floor((Math.random()*this.width)); 
-			var y=Math.floor((Math.random()*this.height)); 
+			var x=Math.floor((Math.random()*this.width));
+			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
 				var velocity = new Pair(rand(20), rand(20));
 				var red=randint(255), green=randint(255), blue=randint(255);
@@ -55,7 +53,7 @@ class Stage {
 		}
 	}
 
-	// Take one step in the animation of the game.  Do this by asking each of the actors to take a single step. 
+	// Take one step in the animation of the game.  Do this by asking each of the actors to take a single step.
 	// NOTE: Careful if an actor died, this may break!
 	step(){
 		for(var i=0;i<this.actors.length;i++){
@@ -64,11 +62,22 @@ class Stage {
 	}
 
 	draw(){
+		//drawing the stage of the map
 		var context = this.canvas.getContext('2d');
 		context.clearRect(0, 0, this.width, this.height);
+		context.beginPath();
+		context.lineWidth = "6";
+		context.strokeStyle = "black";
+		context.rect(0, 0, this.width, this.height);
+		context.stroke();
+		context.closePath();
+
+		//drawing balls
 		for(var i=0;i<this.actors.length;i++){
 			this.actors[i].draw(context);
 		}
+		//drawing the player
+		this.player.draw(context,this.width,this.height);
 	}
 
 	// return the first actor at coordinates (x,y) return null if there is no such actor
@@ -81,6 +90,63 @@ class Stage {
 		return null;
 	}
 } // End Class Stage
+class player {
+	constructor(width,height,color,x,y,speed){
+		this.width = width;
+		this.height = height;
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		this.speed = 5;
+
+	}
+	draw(context,stageX,stageY){
+		//creating the camera for the player so it follows the player
+		var cameraPosX = this.x-context.canvas.clientWidth/2;
+		if (this.x<context.canvas.clientWidth/2){
+			cameraPosX =+(context.canvas.clientWidth/2-this.x+5)
+		} else if (this.x+context.canvas.clientWidth/2>stageX) {
+			cameraPosX = stageX-context.canvas.clientWidth
+		}
+		var cameraPosY = this.y-context.canvas.clientHeight/2
+		if (this.y<context.canvas.clientHeight/2){
+			cameraPosY =+(context.canvas.clientHeight/2-this.y)
+		} else if (this.y+context.canvas.clientHeight/2>stageY) {
+			cameraPosY = stageY-context.canvas.clientHeight
+		}
+		//horizontal and vertical transformations for the camera
+		context.setTransform(
+			1, 0,
+			0, 1,
+			-1*(cameraPosX),
+			-1*cameraPosY);
+		// }
+		//drawing the player
+		context.beginPath();
+		context.strokeStyle = this.color;
+		context.rect(this.x,this.y,this.width,this.height)
+		context.stroke();
+		context.closePath();
+
+	}
+	move(player,keys){
+		if (keys && keys['a']) {
+			this.x += -this.speed;
+
+		}
+  	if (keys && keys['d']) {
+			this.x+= this.speed;
+		}
+  	if (keys && keys['w']) {
+			this.y += -this.speed;
+		}
+  	if (keys && keys['s']) {
+			this.y += this.speed;
+		}
+
+	}
+
+}
 
 class Pair {
 	constructor(x,y){
@@ -108,7 +174,7 @@ class Ball {
 		this.colour = colour;
 		this.radius = radius;
 	}
-	
+
 	headTo(position){
 		this.velocity.x=(position.x-this.position.x);
 		this.velocity.y=(position.y-this.position.y);
@@ -122,7 +188,7 @@ class Ball {
 	step(){
 		this.position.x=this.position.x+this.velocity.x;
 		this.position.y=this.position.y+this.velocity.y;
-			
+
 		// bounce off the walls
 		if(this.position.x<0){
 			this.position.x=0;
@@ -148,9 +214,11 @@ class Ball {
 	}
 	draw(context){
 		context.fillStyle = this.colour;
+		context.strokeStyle = this.colour;
    		// context.fillRect(this.x, this.y, this.radius,this.radius);
-		context.beginPath(); 
-		context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false); 
-		context.fill();   
+		context.beginPath();
+		context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+		context.fill();
+		context.closePath();
 	}
 }
