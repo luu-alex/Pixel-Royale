@@ -23,7 +23,7 @@ function aim(event){
 	// stage.player.aim();
 }
 function shoot(event){
-	console.log("x: "+event.offsetX + " Y: "+event.offsetY)
+	// console.log("x: "+event.offsetX + " Y: "+event.offsetY)
 	stage.player.shoot(event.offsetX,event.offsetY);
 
 }

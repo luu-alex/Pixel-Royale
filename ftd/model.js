@@ -27,18 +27,19 @@ class Stage {
 		//where the cursor is placed
 		this.cursor = 0;
 		// Add in somew Balls
-		var total=1;
+		var total=12;
 		while(total>0){
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
-				var velocity = new Pair(rand(20), rand(20));
+				var velocity = new Pair(rand(11), rand(11));
 				var red=randint(255), green=randint(255), blue=randint(255);
-				var radius = randint(20);
+				var radius = randint(30);
 				var alpha = Math.random();
 				var colour= 'rgba('+red+','+green+','+blue+','+alpha+')';
 				var position = new Pair(x,y);
 				var b = new Ball(this, position, velocity, colour, radius);
+				this.bots.push(b);
 				this.addActor(b);
 				total--;
 			}
@@ -74,7 +75,7 @@ class Stage {
 	}
 	addActor(actor){
 		this.actors.push(actor);
-		console.log(this.actors.length)
+		// console.log(this.actors.length)
 	}
 	removeActor(actor){
 		var index=this.actors.indexOf(actor);
@@ -128,7 +129,7 @@ class player {
 		if (this.equipped){
 			var target = new Pair(x1,y1);
 			this.equipped.shoot(target)
-			this.stage.createBullet(this,target,5); // new Bullet(this,initial,target,velocity,5);
+			this.stage.createBullet(this,target,15); // new Bullet(this,initial,target,velocity,5);
 		}
 	}
 	draw(context){
@@ -191,7 +192,7 @@ class player {
   	if (keys && keys['s']) {
 			this.position.y += this.speed;
 		}
-		console.log("x: "+this.position.x +" y: "+this.position.y)
+		// console.log("x: "+this.position.x +" y: "+this.position.y)
 	}
 }
 class Pair {
@@ -242,7 +243,7 @@ class Weapon {
 
 			var x1 = (cursor.x-rect.left-this.equipped.position.x );
 			var y1 = cursor.y-(this.stage.canvas.height/2 -rect.top-25)
-			console.log("cursorX:" + (cursor.x-rect.left)+ "position x1: "+ x1+" CursorY: "+(cursor.y-rect.top)+" positionY: "+y1)
+			// console.log("cursorX:" + (cursor.x-rect.left)+ "position x1: "+ x1+" CursorY: "+(cursor.y-rect.top)+" positionY: "+y1)
 			this.rotation = Math.atan2(y1,x1);
 		}
 	}
@@ -259,7 +260,7 @@ class Bullet {
 	constructor(stage,player,position, radius){
 		this.stage= stage;
 		this.position = new Pair(player.position.x,player.position.y);
-		console.log("My click Y: "+ position.y+ " Player Pos Y: "+player.position.y)
+		// console.log("My click Y: "+ position.y+ " Player Pos Y: "+player.position.y)
 		this.dx = position.x-player.position.x
 		this.dy = position.y-player.position.y
 		this.radius = radius;
@@ -270,24 +271,30 @@ class Bullet {
 		context.fillStyle = this.color;
 		context.strokeStyle = this.color;
 		context.beginPath();
-		context.arc(this.position.x, this.position.y, 3, 0, 2 * Math.PI, false);
+		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
 		context.fill();
 		context.closePath();
 		context.restore();
 	}
 	step(){
 		//updating position of bullet
-		this.position.x+=(this.dx)/4
-		this.position.y+=(this.dy)/4
-
+		this.position.x+=(this.dx)/5
+		this.position.y+=(this.dy)/5
 		//collision check with walls
 		if (this.position.x<0 || this.position.x>this.stage.width || this.position.y>this.stage.height || this.position.y < 0){
 			stage.removeActor(this);
 		}
 		//collision check with enemies
-		// var enemies = this.stage.getBots();
-		// for (var i=0; i<enemies.length;i++){
-		// }
+		var enemies = this.stage.getBots();
+		// console.log(enemies)
+		for (var i=0; i<enemies.length;i++){
+			// console.log("enemy: "+enemies[i].position.x+" bullet: "+this.position.x);
+			if ((this.position.x-10 <enemies[i].position.x && enemies[i].position.x < this.position.x+this.radius)
+			&&
+				 (this.position.y <enemies[i].position.y && enemies[i].position.y < this.position.y+this.radius)){
+						console.log("hit");
+					}
+		}
 	}
 }
 
