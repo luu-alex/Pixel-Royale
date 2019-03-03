@@ -19,11 +19,11 @@ function pauseGame(){
 	interval=null;
 }
 function aim(event){
-	stage.updateCursor(event.offsetY,event.offsetX);
+	stage.updateCursor(event.clientY,event.clientX);
 	// stage.player.aim();
 }
 function shoot(event){
-	console.log("shoot");
+	console.log("x: "+event.offsetX + " Y: "+event.offsetY)
 	stage.player.shoot(event.offsetX,event.offsetY);
 
 }

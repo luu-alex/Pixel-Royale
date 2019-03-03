@@ -8,7 +8,6 @@ class Stage {
 		this.weapons = [];
 		this.bullets = [];
 		this.bots = [];
-
 		// the logical width and height of the stage
 		this.width=1000;
 		this.height=1500;
@@ -28,7 +27,7 @@ class Stage {
 		//where the cursor is placed
 		this.cursor = 0;
 		// Add in somew Balls
-		var total=20;
+		var total=1;
 		while(total>0){
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
@@ -45,9 +44,10 @@ class Stage {
 			}
 		}
 	}
-	createBullet(initial,target,velocity){
-		var bullet = new Bullet(this,initial,target,velocity,5);
-		console.log("new bullet");
+	createBullet(player,target,radius){
+		var bullet = new Bullet(this,player,target,radius);
+		this.bullets.push(bullet);
+		this.addActor(bullet);
 	}
 	getBots(){
 		return this.bots;
@@ -68,31 +68,25 @@ class Stage {
 		this.addActor(player);
 		this.player=player;
 	}
-
 	removePlayer(){
 		this.removeActor(this.player);
 		this.player=null;
 	}
-
 	addActor(actor){
 		this.actors.push(actor);
+		console.log(this.actors.length)
 	}
-
 	removeActor(actor){
 		var index=this.actors.indexOf(actor);
 		if(index!=-1){
 			this.actors.splice(index,1);
 		}
 	}
-
-	// Take one step in the animation of the game.  Do this by asking each of the actors to take a single step.
-	// NOTE: Careful if an actor died, this may break!
 	step(){
 		for(var i=0;i<this.actors.length;i++){
 			this.actors[i].step();
 		}
 	}
-
 	draw(){
 		//drawing the stage of the map
 		var context = this.canvas.getContext('2d');
@@ -106,10 +100,7 @@ class Stage {
 		for(var i=0;i<this.actors.length;i++){
 			this.actors[i].draw(context);
 		}
-		//drawing the player
-
 	}
-
 	// return the first actor at coordinates (x,y) return null if there is no such actor
 	getActor(x, y){
 		for(var i=0;i<this.actors.length;i++){
@@ -131,9 +122,13 @@ class player {
 		this.equipped = null;
 	}
 	shoot(x,y){
+		var rect = this.stage.canvas.getBoundingClientRect();
+		let x1 = (x - rect.left + this.stage.width/2-75);
+		let y1 = (y - rect.left + this.stage.height/2-100)
 		if (this.equipped){
-			var target = new Pair(x,y);
-			this.stage.createBullet(this.position,target,5);
+			var target = new Pair(x1,y1);
+			this.equipped.shoot(target)
+			this.stage.createBullet(this,target,5); // new Bullet(this,initial,target,velocity,5);
 		}
 	}
 	draw(context){
@@ -182,14 +177,6 @@ class player {
 					}
 			}
 		}
-
-
-	}
-	interaction(x,y){
-		if (this.equipped) {
-			this.equipped.shoot(this.equipped.getPosition(),x,y);
-		}
-
 	}
 	move(player,keys){
 		if (keys && keys['a']) {
@@ -204,6 +191,7 @@ class player {
   	if (keys && keys['s']) {
 			this.position.y += this.speed;
 		}
+		console.log("x: "+this.position.x +" y: "+this.position.y)
 	}
 }
 class Pair {
@@ -221,7 +209,6 @@ class Pair {
 		this.y=this.y/magnitude;
 	}
 }
-
 class Weapon {
 	constructor(stage, position,width,height) {
 		this.stage = stage;
@@ -230,7 +217,6 @@ class Weapon {
 		this.length = new Pair(width,height);
 		this.rotation = 0;
 	}
-
 	draw(context){
 		context.save();
 		context.translate(this.position.x,this.position.y);
@@ -249,10 +235,15 @@ class Weapon {
 	}
 	step(){
 		if (this.equipped){
+			var rect = this.stage.canvas.getBoundingClientRect();
 			var cursor = this.stage.getCursor();
 			this.position.x = this.equipped.position.x;
 			this.position.y = this.equipped.position.y;
-			this.rotation = Math.atan2((cursor.y - this.position.y), cursor.x  - this.position.x);
+
+			var x1 = (cursor.x-rect.left-this.equipped.position.x );
+			var y1 = cursor.y-(this.stage.canvas.height/2 -rect.top-25)
+			console.log("cursorX:" + (cursor.x-rect.left)+ "position x1: "+ x1+" CursorY: "+(cursor.y-rect.top)+" positionY: "+y1)
+			this.rotation = Math.atan2(y1,x1);
 		}
 	}
 	getPosition(){
@@ -265,26 +256,38 @@ class Weapon {
 	}
 }
 class Bullet {
-	construct(stage,initial,position,velocity, radius){
-		this.initial= initial;
-		this.velocity=velocity;
-		this.stage = stage;
-		this.position = position;
+	constructor(stage,player,position, radius){
+		this.stage= stage;
+		this.position = new Pair(player.position.x,player.position.y);
+		console.log("My click Y: "+ position.y+ " Player Pos Y: "+player.position.y)
+		this.dx = position.x-player.position.x
+		this.dy = position.y-player.position.y
 		this.radius = radius;
+		this.color ="Black";
 	}
-	headTo(position){
-		this.velocity.x=(position.x-this.position.x);
-		this.velocity.y=(position.y-this.position.y);
-		this.velocity.normalize();
+	draw(context){
+		context.save();
+		context.fillStyle = this.color;
+		context.strokeStyle = this.color;
+		context.beginPath();
+		context.arc(this.position.x, this.position.y, 3, 0, 2 * Math.PI, false);
+		context.fill();
+		context.closePath();
+		context.restore();
 	}
 	step(){
-		this.position.x=this.position.x+this.velocity.x;
-		this.position.y=this.position.y+this.velocity.y;
+		//updating position of bullet
+		this.position.x+=(this.dx)/4
+		this.position.y+=(this.dy)/4
 
-		//collision check with enemies
-		var enemies = this.stage.getBots()
-		for (var i=0; i<enemies.length;i++){
+		//collision check with walls
+		if (this.position.x<0 || this.position.x>this.stage.width || this.position.y>this.stage.height || this.position.y < 0){
+			stage.removeActor(this);
 		}
+		//collision check with enemies
+		// var enemies = this.stage.getBots();
+		// for (var i=0; i<enemies.length;i++){
+		// }
 	}
 }
 
