@@ -8,7 +8,7 @@ function setupGame(){
 	// https://javascript.info/keyboard-events
 	document.addEventListener('keydown', moveByKey);
 	document.addEventListener('keyup', stopMove);
-	document.addEventListener('click', interact);
+	document.addEventListener('click', shoot);
 	document.addEventListener('mousemove', aim);
 }
 function startGame(){
@@ -19,12 +19,12 @@ function pauseGame(){
 	interval=null;
 }
 function aim(event){
-	console.log(event)
-	stage.player.aim(event.offsetX,event.offsetY)
+	stage.updateCursor(event.offsetY,event.offsetX);
 	// stage.player.aim();
 }
-function interact(event){
-	stage.player.interaction(event.offsetX,event.offsetY)
+function shoot(event){
+	console.log("shoot");
+	stage.player.shoot(event.offsetX,event.offsetY);
 
 }
 function moveByKey(event){

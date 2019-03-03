@@ -4,7 +4,10 @@ function rand(n){ return Math.random()*n; }
 class Stage {
 	constructor(canvas){
 		this.canvas = canvas;
-		this.actors=[]; // all actors on this stage (monsters, player, boxes, ...)
+		this.actors= []; // all actors on this stage (monsters, player, boxes, ...)
+		this.weapons = [];
+		this.bullets = [];
+		this.bots = [];
 
 		// the logical width and height of the stage
 		this.width=1000;
@@ -17,10 +20,13 @@ class Stage {
 
 
 		//Add weapons and weapons list
-		this.weapons = []
-		var w = new Weapon(this,new Pair(600,700),20,50)
+
+		var w = new Weapon(this,new Pair(600,700),20,50);
 		this.addWeapon(w);
 		this.addActor(w);
+
+		//where the cursor is placed
+		this.cursor = 0;
 		// Add in somew Balls
 		var total=20;
 		while(total>0){
@@ -39,11 +45,24 @@ class Stage {
 			}
 		}
 	}
+	createBullet(initial,target,velocity){
+		var bullet = new Bullet(this,initial,target,velocity,5);
+		console.log("new bullet");
+	}
+	getBots(){
+		return this.bots;
+	}
+	getCursor(){
+			return this.cursor;
+	}
+	updateCursor(positionY,positionX){ //inverted for atan2
+		this.cursor = new Pair(positionX, positionY);
+	}
 	addWeapon(weapon){
-		this.weapons.push(weapon)
+		this.weapons.push(weapon);
 	}
 	getWeapons(){
-		return this.weapons
+		return this.weapons;
 	}
 	addPlayer(player){
 		this.addActor(player);
@@ -106,31 +125,30 @@ class player {
 		this.stage= stage;
 		this.width = width;
 		this.height = height;
-		this.position = position
+		this.position = position;
 		this.color = color;
 		this.speed = 5;
 		this.equipped = null;
-
 	}
-	equip(weapon){
-		if (weapon =="gun"){
-			this.equipped = "gun"
+	shoot(x,y){
+		if (this.equipped){
+			var target = new Pair(x,y);
+			this.stage.createBullet(this.position,target,5);
 		}
-
 	}
 	draw(context){
 		//creating the camera for the player so it follows the player
 		var cameraPosX = this.position.x-context.canvas.clientWidth/2;
 		if (this.position.x<context.canvas.clientWidth/2){
-			cameraPosX =+(context.canvas.clientWidth/2-this.x+5)
+			cameraPosX =+(context.canvas.clientWidth/2-this.x+5);
 		} else if (this.position.x+context.canvas.clientWidth/2>this.stage.width) {
-			cameraPosX = this.stage.width-context.canvas.clientWidth
+			cameraPosX = this.stage.width-context.canvas.clientWidth;
 		}
-		var cameraPosY = this.position.y-context.canvas.clientHeight/2
+		var cameraPosY = this.position.y-context.canvas.clientHeight/2;
 		if (this.position.y<context.canvas.clientHeight/2){
-			cameraPosY =+(context.canvas.clientHeight/2-this.position.y)
+			cameraPosY =+(context.canvas.clientHeight/2-this.position.y);
 		} else if (this.position.y+context.canvas.clientHeight/2>this.stage.height) {
-			cameraPosY = this.stage.height-context.canvas.clientHeight
+			cameraPosY = this.stage.height-context.canvas.clientHeight;
 		}
 		// console.log(this.position.x+context.canvas.clientWidth)
 		// console.log("X: " +this.position.x+" Y: "+this.position.y)
@@ -145,13 +163,11 @@ class player {
 		//drawing the player
 		context.beginPath();
 		context.strokeStyle = this.color;
-		context.rect(this.position.x,this.position.y,this.width,this.height)
+		context.rect(this.position.x,this.position.y,this.width,this.height);
 		context.stroke();
 		context.closePath();
 	}
 	step(){
-
-
 	}
 	pickUp(){
 		if (!this.equipped) {
@@ -161,8 +177,8 @@ class player {
 				var weaponLength = weaps[i].getLength();
 				if (this.position.x-weaponLength.x<weaponPosition.x && weaponPosition.x < this.position.x+this.width
 					&& this.position.y-weaponLength.y<weaponPosition.y && weaponPosition.y <this.position.y+this.height){
-						this.equipped= weaps[i]
-						weaps[i].held(this)
+						this.equipped= weaps[i];
+						weaps[i].held(this);
 					}
 			}
 		}
@@ -171,14 +187,13 @@ class player {
 	}
 	interaction(x,y){
 		if (this.equipped) {
-			this.equipped.shoot(this.equipped.getPosition(),x,y)
+			this.equipped.shoot(this.equipped.getPosition(),x,y);
 		}
 
 	}
 	move(player,keys){
 		if (keys && keys['a']) {
 			this.position.x += -this.speed;
-
 		}
   	if (keys && keys['d']) {
 			this.position.x+= this.speed;
@@ -189,9 +204,7 @@ class player {
   	if (keys && keys['s']) {
 			this.position.y += this.speed;
 		}
-
 	}
-
 }
 class Pair {
 	constructor(x,y){
@@ -208,51 +221,73 @@ class Pair {
 		this.y=this.y/magnitude;
 	}
 }
+
 class Weapon {
 	constructor(stage, position,width,height) {
 		this.stage = stage;
 		this.position = position;
 		this.equipped = false;
 		this.length = new Pair(width,height);
+		this.rotation = 0;
 	}
+
 	draw(context){
+		context.save();
+		context.translate(this.position.x,this.position.y);
+		context.rotate(this.rotation)
 		context.fillStyle = "green";
 		context.strokeStyle = "green";
-   		// context.fillRect(this.x, this.y, this.radius,this.radius);
-		context.beginPath();
-		context.rect(this.position.x,this.position.y,20,40)
+		context.rect(0,0,25,12)
 		context.fill();
 		context.stroke();
-		context.closePath();
+		context.restore();
 	}
 	held(player){
 		if (!this.equipped){
-			this.equipped = player
+			this.equipped = player;
 		}
 	}
 	step(){
 		if (this.equipped){
-			this.position.x = this.equipped.position.x // XXX:
-			this.position.y = this.equipped.position.y
+			var cursor = this.stage.getCursor();
+			this.position.x = this.equipped.position.x;
+			this.position.y = this.equipped.position.y;
+			this.rotation = Math.atan2((cursor.y - this.position.y), cursor.x  - this.position.x);
 		}
 	}
 	getPosition(){
-		return this.position
+		return this.position;
 	}
 	getLength(){
-		return this.length
+		return this.length;
 	}
 	shoot(position,x,y){
-		this.stage.bullet(position,x,y,3)
-
 	}
 }
 class Bullet {
-	construct(position,x,y,velocity){
-		this.position=position;
-		this.velocity=10;
+	construct(stage,initial,position,velocity, radius){
+		this.initial= initial;
+		this.velocity=velocity;
+		this.stage = stage;
+		this.position = position;
+		this.radius = radius;
+	}
+	headTo(position){
+		this.velocity.x=(position.x-this.position.x);
+		this.velocity.y=(position.y-this.position.y);
+		this.velocity.normalize();
+	}
+	step(){
+		this.position.x=this.position.x+this.velocity.x;
+		this.position.y=this.position.y+this.velocity.y;
+
+		//collision check with enemies
+		var enemies = this.stage.getBots()
+		for (var i=0; i<enemies.length;i++){
+		}
 	}
 }
+
 class Ball {
 	constructor(stage, position, velocity, colour, radius){
 		this.stage = stage;
