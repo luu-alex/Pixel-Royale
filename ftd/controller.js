@@ -7,7 +7,9 @@ function setupGame(){
 
 	// https://javascript.info/keyboard-events
 	document.addEventListener('keydown', moveByKey);
-	document.addEventListener('keyup', stopMove)
+	document.addEventListener('keyup', stopMove);
+	document.addEventListener('click', interact);
+	document.addEventListener('mousemove', aim);
 }
 function startGame(){
 	interval=setInterval(function(){ stage.step(); stage.draw(); },20);
@@ -16,9 +18,17 @@ function pauseGame(){
 	clearInterval(interval);
 	interval=null;
 }
+function aim(event){
+	console.log(event)
+	stage.player.aim(event.offsetX,event.offsetY)
+	// stage.player.aim();
+}
+function interact(event){
+	stage.player.interaction(event.offsetX,event.offsetY)
+
+}
 function moveByKey(event){
 	var key = event.key;
-	console.log(key);
 	keys = (keys || []);
 	keys[key] = true
 	var moveMap = {
@@ -29,6 +39,9 @@ function moveByKey(event){
 	};
 	if(key in moveMap){
 		stage.player.move(stage.player, keys);
+	}
+	if (key=='e'){
+		stage.player.pickUp();
 	}
 }
 function stopMove(event){

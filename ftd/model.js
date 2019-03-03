@@ -9,12 +9,20 @@ class Stage {
 		// the logical width and height of the stage
 		this.width=1000;
 		this.height=1500;
-		this.player= new player(50,50,"red",this.width/2,this.height/2); // a special actor, the player
+
 		// Add the player to the center of the stage
 		// this.addPlayer(new Player(this, Math.floor(this.width/2), Math.floor(this.height/2)));
+		this.player= new player(this,50,50,"red", new Pair(this.width/2,this.height/2)); // a special actor, the player
+		this.addPlayer(this.player);
 
+
+		//Add weapons and weapons list
+		this.weapons = []
+		var w = new Weapon(this,new Pair(600,700),20,50)
+		this.addWeapon(w);
+		this.addActor(w);
 		// Add in somew Balls
-		var total=1;
+		var total=20;
 		while(total>0){
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
@@ -31,7 +39,12 @@ class Stage {
 			}
 		}
 	}
-
+	addWeapon(weapon){
+		this.weapons.push(weapon)
+	}
+	getWeapons(){
+		return this.weapons
+	}
 	addPlayer(player){
 		this.addActor(player);
 		this.player=player;
@@ -71,13 +84,11 @@ class Stage {
 		context.rect(0, 0, this.width, this.height);
 		context.stroke();
 		context.closePath();
-
-		//drawing balls
 		for(var i=0;i<this.actors.length;i++){
 			this.actors[i].draw(context);
 		}
 		//drawing the player
-		this.player.draw(context,this.width,this.height);
+
 	}
 
 	// return the first actor at coordinates (x,y) return null if there is no such actor
@@ -91,29 +102,39 @@ class Stage {
 	}
 } // End Class Stage
 class player {
-	constructor(width,height,color,x,y,speed){
+	constructor(stage,width,height,color,position,speed){
+		this.stage= stage;
 		this.width = width;
 		this.height = height;
-		this.x = x;
-		this.y = y;
+		this.position = position
 		this.color = color;
 		this.speed = 5;
+		this.equipped = null;
 
 	}
-	draw(context,stageX,stageY){
+	equip(weapon){
+		if (weapon =="gun"){
+			this.equipped = "gun"
+		}
+
+	}
+	draw(context){
 		//creating the camera for the player so it follows the player
-		var cameraPosX = this.x-context.canvas.clientWidth/2;
-		if (this.x<context.canvas.clientWidth/2){
+		var cameraPosX = this.position.x-context.canvas.clientWidth/2;
+		if (this.position.x<context.canvas.clientWidth/2){
 			cameraPosX =+(context.canvas.clientWidth/2-this.x+5)
-		} else if (this.x+context.canvas.clientWidth/2>stageX) {
-			cameraPosX = stageX-context.canvas.clientWidth
+		} else if (this.position.x+context.canvas.clientWidth/2>this.stage.width) {
+			cameraPosX = this.stage.width-context.canvas.clientWidth
 		}
-		var cameraPosY = this.y-context.canvas.clientHeight/2
-		if (this.y<context.canvas.clientHeight/2){
-			cameraPosY =+(context.canvas.clientHeight/2-this.y)
-		} else if (this.y+context.canvas.clientHeight/2>stageY) {
-			cameraPosY = stageY-context.canvas.clientHeight
+		var cameraPosY = this.position.y-context.canvas.clientHeight/2
+		if (this.position.y<context.canvas.clientHeight/2){
+			cameraPosY =+(context.canvas.clientHeight/2-this.position.y)
+		} else if (this.position.y+context.canvas.clientHeight/2>this.stage.height) {
+			cameraPosY = this.stage.height-context.canvas.clientHeight
 		}
+		// console.log(this.position.x+context.canvas.clientWidth)
+		// console.log("X: " +this.position.x+" Y: "+this.position.y)
+		// console.log("cameraPosY: " +cameraPosY+" CameraPosX: "+cameraPosX)
 		//horizontal and vertical transformations for the camera
 		context.setTransform(
 			1, 0,
@@ -124,30 +145,54 @@ class player {
 		//drawing the player
 		context.beginPath();
 		context.strokeStyle = this.color;
-		context.rect(this.x,this.y,this.width,this.height)
+		context.rect(this.position.x,this.position.y,this.width,this.height)
 		context.stroke();
 		context.closePath();
+	}
+	step(){
+
+
+	}
+	pickUp(){
+		if (!this.equipped) {
+			var weaps = this.stage.getWeapons();
+			for (var i=0; i<weaps.length;i++){
+				var weaponPosition = weaps[i].getPosition();
+				var weaponLength = weaps[i].getLength();
+				if (this.position.x-weaponLength.x<weaponPosition.x && weaponPosition.x < this.position.x+this.width
+					&& this.position.y-weaponLength.y<weaponPosition.y && weaponPosition.y <this.position.y+this.height){
+						this.equipped= weaps[i]
+						weaps[i].held(this)
+					}
+			}
+		}
+
+
+	}
+	interaction(x,y){
+		if (this.equipped) {
+			this.equipped.shoot(this.equipped.getPosition(),x,y)
+		}
 
 	}
 	move(player,keys){
 		if (keys && keys['a']) {
-			this.x += -this.speed;
+			this.position.x += -this.speed;
 
 		}
   	if (keys && keys['d']) {
-			this.x+= this.speed;
+			this.position.x+= this.speed;
 		}
   	if (keys && keys['w']) {
-			this.y += -this.speed;
+			this.position.y += -this.speed;
 		}
   	if (keys && keys['s']) {
-			this.y += this.speed;
+			this.position.y += this.speed;
 		}
 
 	}
 
 }
-
 class Pair {
 	constructor(x,y){
 		this.x=x; this.y=y;
@@ -158,12 +203,56 @@ class Pair {
 	}
 
 	normalize(){
-		var magnitude=Math.sqrt(this.x*this.x+this.y+this.y);
+		var magnitude=Math.sqrt(this.x*this.x+this.y*this.y);
 		this.x=this.x/magnitude;
 		this.y=this.y/magnitude;
 	}
 }
+class Weapon {
+	constructor(stage, position,width,height) {
+		this.stage = stage;
+		this.position = position;
+		this.equipped = false;
+		this.length = new Pair(width,height);
+	}
+	draw(context){
+		context.fillStyle = "green";
+		context.strokeStyle = "green";
+   		// context.fillRect(this.x, this.y, this.radius,this.radius);
+		context.beginPath();
+		context.rect(this.position.x,this.position.y,20,40)
+		context.fill();
+		context.stroke();
+		context.closePath();
+	}
+	held(player){
+		if (!this.equipped){
+			this.equipped = player
+		}
+	}
+	step(){
+		if (this.equipped){
+			this.position.x = this.equipped.position.x // XXX:
+			this.position.y = this.equipped.position.y
+		}
+	}
+	getPosition(){
+		return this.position
+	}
+	getLength(){
+		return this.length
+	}
+	shoot(position,x,y){
+		this.stage.bullet(position,x,y,3)
 
+	}
+}
+class Bullet {
+	construct(position,x,y,velocity){
+		this.position=position;
+		this.velocity=10;
+	}
+}
 class Ball {
 	constructor(stage, position, velocity, colour, radius){
 		this.stage = stage;
