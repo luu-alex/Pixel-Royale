@@ -20,6 +20,16 @@
           // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           xhttp.send(null);
         }
+        $.getJSON('users.json', function(data){
+          $.each(data, function(i, user){
+            $('ul#users'.append('<li>'))
+          })
+        })
+        $.ajax({
+          method:'GET',
+          url
+        })
+      
       </script>
 
   </body>
