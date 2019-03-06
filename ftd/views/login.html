@@ -7,13 +7,6 @@
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="./game">FortNite Game</a></li>
-      <li><a href="./login">Login</a></li>
-      <li><a href="./registration">Register</a></li>
-      <li><a href="/stats">Stats</a></li>
-    </ul>
     <form action="/login">
       <div class="container">
         <label for="uname"><b>Username</b></label>
@@ -27,6 +20,7 @@
           <input type="checkbox" checked="checked" name="remember"> Remember me
         </label>
       </div>
+      <button type="button" onclick="loadDoc("register")">Don't have an account? Register!</button>
     </form>
   </body>
 </html>
