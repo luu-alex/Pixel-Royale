@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta HTTP-EQUIV="EXPIRES" CONTENT="-1">
+		<title>Stats</title>
+		<style>
+		</style>
+    <link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="./game">FortNite Game</a></li>
+      <li><a href="./login">Login</a></li>
+      <li><a href="./registration">Register</a></li>
+      <li><a href="/stats">Stats</a></li>
+    </ul>
+		<center>
+			<h1>Welcome to your stats page!</h1>
+      <button type="button" onclick="loadDoc()">Request data</button>
+
+      <p id="demo"></p>
+
+      <script>
+        function loadDoc() {
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              console.log("it printed");
+              document.getElementById("demo").innerHTML = this.responseText;
+            }
+          };
+          xhttp.open("GET", "database", true);
+          // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xhttp.send(null);
+        }
+      </script>
+		</center>
+
+
+	</body>
+</html>

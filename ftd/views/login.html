@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta HTTP-EQUIV="EXPIRES" CONTENT="-1">
+		<title>Computing Science 309</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="cont">
+	    <form id="postForm" action="/login">
+	      <div class="container">
+	        <label for="uname"><b>Username</b></label>
+	        <input type="text" placeholder="Enter Username" name="uname" required>
+
+	        <label for="psw"><b>Password</b></label>
+	        <input type="password" placeholder="Enter Password" name="psw" required>
+
+	        <button type="submit" formmethod="post">Login</button>
+	        <label>
+	          <input type="checkbox" checked="checked" name="remember"> Remember me
+	        </label>
+	      </div>
+	    </form>
+		</div>
+		<button type="submit" formethod="get" id="register">Don't have an account? Register!</button>
+  </body>
+	<script>
+		$('#postForm').submit(function(e){
+			e.preventDefault();
+
+			var name = $('#uname').val();
+			var pass = $('#psw').val();
+			var url = $(this).attr('action');
+
+			$.post(url, {name:name, pass:pass})
+		})
+		$('#register').submit(function(e){
+			$('#cont').load('registration.html', function(
+				responseTXT, statusTXT, xhr){
+					if(statusTXT == "success")
+						console.log("good stuff");
+				}
+			)
+		})
+
+	</script>
+</html>
