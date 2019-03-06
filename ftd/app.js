@@ -13,7 +13,7 @@ let db = new sqlite3.Database(':memory:', (err) => { //Attempt to connect to our
 });
 
 db.run('DROP TABLE IF EXISTS langs'); //Drop our current database when we run the server and create a new one
-db.run('CREATE TABLE IF NOT EXISTS langs(name text PRIMARY KEY,password text)');
+db.run('CREATE TABLE IF NOT EXISTS langs(name text PRIMARY KEY,password text,email varchar(255))');
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));  // to support URL-encoded bodies
@@ -45,7 +45,7 @@ app.post('/registration', function(req, res){
       }
     })
     if(a==0){
-      db.run(`INSERT INTO langs(name,password) VALUES(?,?)`, [req.body.name,req.body.psw], function(err) {
+      db.run(`INSERT INTO langs(name,password,email) VALUES(?,?,?)`, [req.body.name,req.body.psw,req.body.email], function(err) {
       if (err) {
         return console.log(err.message);
       }
@@ -64,17 +64,20 @@ app.post('/login', function(req, res){
 });
 
 app.get('/database', function(req, res){
-  var word = "";
+  console.log("database has been accessed");
+  var data = [];
   let sql = ("SELECT * FROM langs;");
   db.all(sql, [], (err, rows) => {
-  if (err) {
-    throw err;
-  }
-  rows.forEach((row) => {
-    console.log(row);
+    if (err) {
+      throw err;
+    }
+    rows.forEach((row) => {
+      var obj = {"name": row.name, "email":row.email};
+      console.log(obj)
+      res.send(obj);
+    });
   });
-});
-  res.send("call");
+  // res.sendFile(__dirname +"/views/database.html");
 });
 
 app.get('/stats', function(req, res){
