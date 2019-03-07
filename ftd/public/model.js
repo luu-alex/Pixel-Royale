@@ -139,17 +139,18 @@ class Stage {
 				return this.actors[i];
 			}
 		}
-		return null;
-	}
-} // End Class Stage
+		return null;}} // End Class Stage
 class player {
 	constructor(stage,width,height,color,position,speed){
 		this.stage= stage;
+		this.position = position;
+		this.speed = 5;
+		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
+		this.radius = 50;
+
 		this.width = width;
 		this.height = height;
-		this.position = position;
-		this.color = color;
-		this.speed = 5;
+
 		this.equipped = null;
 		this.cameraPosX = this.position.x-this.stage.canvas.clientWidth/2;
 	}
@@ -166,32 +167,30 @@ class player {
 		}
 	}
 	draw(context){
-		//Camera centers on the player
+
+		context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
+
 		context.save();
-		context.setTransform(
-			1, 0,
-			0, 1,
-			-1*(this.cameraPosX),
-			-1*this.cameraPosY);
+		context.fillStyle = this.colour;
 		context.beginPath();
-		context.strokeStyle = this.color;
-		context.rect(this.position.x,this.position.y,this.width,this.height);
-		context.stroke();
+		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
+		context.fill();
 		context.closePath();
 	}
 	step(){
 		//creating the camera for the player so it follows the player
 		this.cameraPosX = this.position.x-this.stage.canvas.width/2;
-		if (this.position.x<this.stage.canvas.clientWidth/2){
+		if (this.position.x < this.stage.canvas.clientWidth/2){
 			this.cameraPosX =0;
-		} else if (this.position.x+this.stage.canvas.clientWidth/2>this.stage.width) {
-			this.cameraPosX = this.stage.width-this.stage.canvas.clientWidth;
+		} else if (this.position.x + this.stage.canvas.clientWidth/2 > this.stage.width) {
+			this.cameraPosX = this.stage.width - this.stage.canvas.clientWidth;
 		}
-		this.cameraPosY = this.position.y-this.stage.canvas.clientHeight/2;
-		if (this.position.y<this.stage.canvas.clientHeight/2){ //0 case
+
+		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
+		if (this.position.y < this.stage.canvas.clientHeight/2){ //0 case
 			this.cameraPosY = 0;
-		} else if (this.position.y+this.stage.canvas.clientHeight/2>this.stage.height) {
-			this.cameraPosY = this.stage.height-this.stage.canvas.clientHeight;
+		} else if (this.position.y + this.stage.canvas.clientHeight/2 > this.stage.height) {
+			this.cameraPosY = this.stage.height - this.stage.canvas.clientHeight;
 		}
 	}
 	pickUp(){
@@ -200,8 +199,8 @@ class player {
 			for (var i=0; i<weaps.length;i++){
 				var weaponPosition = weaps[i].getPosition();
 				var weaponLength = weaps[i].getLength();
-				if (this.position.x-weaponLength.x<weaponPosition.x && weaponPosition.x < this.position.x+this.width
-					&& this.position.y-weaponLength.y<weaponPosition.y && weaponPosition.y <this.position.y+this.height){
+				if ((this.position.x - weaponLength.x < weaponPosition.x) && (weaponPosition.x < this.position.x + this.width) &&
+				 (this.position.y - weaponLength.y < weaponPosition.y) && (weaponPosition.y < this.position.y + this.height)){
 						this.equipped= weaps[i];
 						weaps[i].held(this);
 						this.stage.updateGUI(weaps[i]);
@@ -223,7 +222,7 @@ class player {
 			}
 		}
 	move(player,keys){
-		if (keys && keys['a'] && this.position.x>5) {
+	if (keys && keys['a'] && this.position.x>5) {
 			this.position.x += -this.speed;
 		}
   	if (keys && keys['d'] && this.position.x<this.stage.width) {
@@ -309,15 +308,65 @@ class Weapon {
 	}
 	step(){
 		if (this.equipped){
+			/* Alex's Work:
 			var rect = this.stage.canvas.getBoundingClientRect();
-			var cursor = this.stage.getCursor();
-			this.position.x = this.equipped.position.x;
-			this.position.y = this.equipped.position.y;
+			var cursor = this.stage.getCursor(); 		// this should be z,w cuz its the pos of mouse
 
-			var x1 = (cursor.x-rect.left-this.equipped.position.x );
-			var y1 = cursor.y-(this.stage.canvas.height/2 -rect.top-25)
+			this.position.x = this.equipped.position.x; // this should be p cuz its the pos of player
+			this.position.y = this.equipped.position.y; // this should be q cuz its the pos of player
+
+			var x1 = (cursor.x - rect.left - this.equipped.position.x );
+			var y1 = cursor.y - (this.stage.canvas.height/2 -rect.top-25);
 			// console.log("cursorX:" + (cursor.x-rect.left)+ "position x1: "+ x1+" CursorY: "+(cursor.y-rect.top)+" positionY: "+y1)
 			this.rotation = Math.atan2(y1,x1);
+			*/
+			var rect = this.stage.canvas.getBoundingClientRect();
+
+			var pos_player = this.equipped.position; 	// this should be p,q cuz its the pos of player
+
+			var mouse = this.stage.getCursor();
+			// gotta fix cursor
+			var cursor = new Pair(mouse.x - rect.x, mouse.y-rect.y); // this should be z,w cuz its the pos of cursor
+
+			
+			// If cursor falls outside of canvas
+			if (cursor.x > 0 && cursor.y > 0){
+				var gun_dist = 51;							// distance of the gun orbiting around the player
+
+				var slope = (cursor.y - pos_player.y)/(cursor.x - pos_player.x)
+				var bias = cursor.y - (slope * cursor.x)
+
+				var angle_Rad = Math.atan(slope)
+				var angle_Deg = (angle_Rad * 180)/Math.PI;
+
+				var guns_x = gun_dist * Math.cos(angle_Rad)
+				var guns_y = slope * guns_x + bias
+
+
+				this.position.x = pos_player.x + guns_x;
+				this.position.y = pos_player.y + guns_y;
+
+			}
+
+
+			/* Dan's Theory:
+			Gun position:
+			Let (j,k) be the position where the gun should be placed
+			Let (p,q) be the position of the Player
+			Let (z,w) be the position of the mouse
+			Let H be the distance between the gun and the center of the player
+
+			Given (p,q),(z,w), H
+			Need to find (j,k)
+
+			m = (w-q)/(z-p)
+			b = w - m*z
+
+			angle = arctan(m)
+
+			j = H*cos(angle)
+			k = m*j+b
+			*/
 		}
 	}
 	getPosition(){
