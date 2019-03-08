@@ -298,11 +298,11 @@ class Weapon {
 	draw(context){
 		context.save();
 		context.translate(this.position.x,this.position.y);
-		context.rotate(this.rotation)
 		context.beginPath();
-		context.fillStyle = "green";
-		context.strokeStyle = "green";
-		context.rect(0,0,25,12)
+		context.fillStyle = "gray";
+		context.strokeStyle = "gray";
+		context.rotate(this.rotation);
+		context.rect(0,-6,25,12);
 		context.fill();
 		context.closePath();
 		context.stroke();
@@ -332,11 +332,16 @@ class Weapon {
 			var cursor = this.stage.getCursor();
 
 			var slope = new Pair(cursor.x - pos_player.x, cursor.y - pos_player.y);
-			slope.normalize()	//It converts slope vector into unit vectors.
+			var angle_Rad = Math.atan2(slope.y,slope.x);
+			this.rotation = angle_Rad;
+
+			slope.normalize();	//It converts slope vector into unit vectors.
 
 			// 55 is the distance of the gun from the center of the player.
 			this.position.x = raw_pos_player.x + slope.x * 55;
 			this.position.y = raw_pos_player.y + slope.y * 55;
+
+			// console.log((angle_Rad*180)/Math.PI);
 
 		}
 	}
