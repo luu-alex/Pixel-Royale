@@ -88,6 +88,8 @@ class Stage {
 	}
 	updateCursor(positionY,positionX){ //inverted for atan2
 		this.cursor = new Pair(positionX, positionY);
+		var rect = this.canvas.getBoundingClientRect();
+
 	}
 	addWeapon(weapon){
 		this.weapons.push(weapon);
@@ -139,7 +141,8 @@ class Stage {
 				return this.actors[i];
 			}
 		}
-		return null;}} // End Class Stage
+		return null;
+	}} // End Class Stage
 class player {
 	constructor(stage,width,height,color,position,speed){
 		this.stage= stage;
@@ -152,7 +155,9 @@ class player {
 		this.height = height;
 
 		this.equipped = null;
-		this.cameraPosX = this.position.x-this.stage.canvas.clientWidth/2;
+		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
+		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
+
 	}
 	//When the user wants fire his weapon
 	shoot(x,y){
@@ -308,45 +313,44 @@ class Weapon {
 	}
 	step(){
 		if (this.equipped){
-			/* Alex's Work:
+			/* Alex's Code:
 			var rect = this.stage.canvas.getBoundingClientRect();
-			var cursor = this.stage.getCursor(); 		// this should be z,w cuz its the pos of mouse
+			var cursor = this.stage.getCursor();
 
-			this.position.x = this.equipped.position.x; // this should be p cuz its the pos of player
-			this.position.y = this.equipped.position.y; // this should be q cuz its the pos of player
+			this.position.x = this.equipped.position.x;
+			this.position.y = this.equipped.position.y;
 
 			var x1 = (cursor.x - rect.left - this.equipped.position.x );
-			var y1 = cursor.y - (this.stage.canvas.height/2 -rect.top-25);
+			var y1 = cursor.y - (this.stage.canvas.height/2 - rect.top - 25);
+
+			console.log(this.equipped.position.x,this.equipped.position.y);
+
 			// console.log("cursorX:" + (cursor.x-rect.left)+ "position x1: "+ x1+" CursorY: "+(cursor.y-rect.top)+" positionY: "+y1)
 			this.rotation = Math.atan2(y1,x1);
 			*/
+
+			/* Dan's Code */
+			//Where the canvas is in relation to the moving paper
 			var rect = this.stage.canvas.getBoundingClientRect();
 
-			var pos_player = this.equipped.position; 	// this should be p,q cuz its the pos of player
+			// position of the player on the moving paper
+			var raw_pos_player = this.equipped.position; 	// this should be p,q cuz its the pos of player
 
-			var mouse = this.stage.getCursor();
-			// gotta fix cursor
-			var cursor = new Pair(mouse.x - rect.x, mouse.y-rect.y); // this should be z,w cuz its the pos of cursor
+			var tx = raw_pos_player.x - this.equipped.cameraPosX;
+			var ty = raw_pos_player.y - this.equipped.cameraPosY;
+			// position of the player on the paper with the hole
+			var pos_player = new Pair(rect.x + tx, rect.y + ty);
+			// cursor position on the paper with the hole (better this way since
+			// even if the mouse is placed outside of the canvas, it will still
+			//work.)
+			var cursor = this.stage.getCursor();
 
-			
-			// If cursor falls outside of canvas
-			if (cursor.x > 0 && cursor.y > 0){
-				var gun_dist = 51;							// distance of the gun orbiting around the player
+			var slope = new Pair(cursor.x - pos_player.x, cursor.y - pos_player.y);
+			slope.normalize()	//It converts slope vector into unit vectors.
 
-				var slope = (cursor.y - pos_player.y)/(cursor.x - pos_player.x)
-				var bias = cursor.y - (slope * cursor.x)
-
-				var angle_Rad = Math.atan(slope)
-				var angle_Deg = (angle_Rad * 180)/Math.PI;
-
-				var guns_x = gun_dist * Math.cos(angle_Rad)
-				var guns_y = slope * guns_x + bias
-
-
-				this.position.x = pos_player.x + guns_x;
-				this.position.y = pos_player.y + guns_y;
-
-			}
+			// 55 is the distance of the gun from the center of the player.
+			this.position.x = raw_pos_player.x + slope.x * 55;
+			this.position.y = raw_pos_player.y + slope.y * 55;
 
 
 			/* Dan's Theory:
