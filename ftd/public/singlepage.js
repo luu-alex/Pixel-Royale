@@ -1,79 +1,96 @@
-function database(){
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("screen").innerHTML = this.responseText;
-    }
-  }
-  xhttp.open("GET", "database", true);
-  // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.send(null);
-}
-function register(){
-  $('#register').submit(function(e){
-  	$('#cont').load('registration.html', function(
-  		responseTXT, statusTXT, xhr){
-  			if(statusTXT == "success")
-  				console.log("good stuff");
-  		}
-  	)
-  })
-}
-function json(){
-  $.getJSON('users.json', function(data){
-    $.each(data, function(i, user){
-      $('ul#users'.append('<li>'))
-    })
-  })
-  $.ajax({
-    method:'GET',
-    url: "nothing"
-  })
-}
+
 function userRegister(){
-    console.log("hi")
+    hideRegInvalid();
 		var name = $('#regUser').val();
 		var pass = $('#regPsw').val();
     var email = $('#regEmail').val();
 		var url = "/registration";
-		$.ajax({url:url,
-            data:{
-            name:name,
-            pass:pass,
-            email:email},
-            method:"POST",
-            success: function(result){
-              if (result=="success")
-                indexPage()
-              //show error registration
-    }});
+    if (name && pass && validateEmail(email)) {
+  		$.ajax({url:url,
+              data:{
+              name:name,
+              pass:pass,
+              email:email},
+              method:"POST",
+              success: function(result){
+                if (result=="success")
+                  loginPage();
+                else $('#incorrectReg').show();
+                //show error registration
+      }});
+    }
+    if (!name) $('#invalidRegUser').show();
+    if (!pass) $('#invalidRegPass').show();
+    if (!validateEmail(email)) $('#invalidEmail').show();
 }
 function signIn(){
 		var name = $('#uname').val();
 		var pass = $('#psw').val();
-		var url = "/login"
-    console.log(name);
+		var url = "/login";
+    hideInvalid();
     if (name && pass){
-      $.ajax({url: "/login",
-              method:"POST",
-              data:{name:name,pass:pass},
-              success: function(result){
-                console.log(result)
-    }});
+      $.ajax({
+        url: "/login",
+        method:"POST",
+        data:{name:name,pass:pass},
+        success: function(result){
+          console.log(result)
+          if(result=="success") {
+            indexPage();
+          } else {
+            $(function(){
+              $('#incorrect').show();
+            })
+            loginPage();
+          }
+        }
+      });
   }
+  if (!name) $('#invalidUser').show();
+  if (!pass) $('#invalidPass').show();
+}
+function validateEmail(email)
+{
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
+function indexPage(){
+  $("#registration").hide();
+  $("#login").hide();
+  $('#index').show();
 }
 function registerPage(){
   $("#registration").show();
   $("#login").hide();
+  $('#index').hide();
 }
-function indexPage(){
+function loginPage(){
   $("#registration").hide();
   $("#login").show();
+  $('#index').hide();
+}
+function hideInvalid(){
+  $('#invalidPass').hide();
+  $('#invalidUser').hide();
+  $('#incorrect').hide();
+}
+function hideRegInvalid(){
+  $('#invalidRegPass').hide();
+  $('#invalidRegUser').hide();
+  $('#incorrectReg').hide();
+  $('#invalidEmail').hide();
+}
+function game(){
+
 }
 $(function(){
 	// Setup all events here and display the appropriate UI
 	// Setup an onclick event for the #guessButton
 	$("#registration").hide();
 	$("#login").show();
+  $('#index').hide();
+  hideRegInvalid();
+  hideInvalid();
   $("#loginBTN").on('click',function(e){
     e.preventDefault();
     signIn();
@@ -85,7 +102,7 @@ $(function(){
     registerPage();
   })
   $("#backBTN").on('click', function(){
-    indexPage();
+    loginPage();
   })
   $("#registerBTN").on('click', function(e){
     e.preventDefault();
@@ -95,15 +112,3 @@ $(function(){
     e.preventDefault();
   })
 });
-
-
-// $(function(){
-//   $(document).ready(function(){
-//     $('#screen').load('login.html', function(
-//       responseTXT, statusTXT, xhr){
-//         if(statusTXT == "success")
-//           console.log("good stuff");
-//       }
-//     )
-//   });
-// })

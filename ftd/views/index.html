@@ -11,17 +11,20 @@
     <script language="javascript" src="singlepage.js" > </script>
 	</head>
 	<body>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="./game">FortNite Game</a></li>
-      <li><a href="./login">Login</a></li>
-      <li><a href="./registration">Register</a></li>
-      <li><a href="/stats">Stats</a></li>
-    </ul>
-		<center>
-			<h1>Welcome to the CSC309 A2 page! Made with Node.JS and Javascript</h1>
-		</center>
+		<div id ="index">
+	    <ul>
+	      <li><a href="/">Home</a></li>
+	      <li><a href="./game">FortNite Game</a></li>
+	      <li><a href="/stats">Stats</a></li>
+	    </ul>
+			<center>
+				<h1>Welcome to the CSC309 A2 page! Made with Node.JS and Javascript</h1>
+				<button type="submit" id="profile"> Profile </button>
+				<button type="submit" id="stats"> Stats </button>
+				<button type="submit" id="game"> Game </button>
+			</center>
 
+		</div>
     <div id="login">
 			<form id="postForm" action="/login">
 				<div class="container">
@@ -35,8 +38,10 @@
 					<label>
 						<input type="checkbox" checked="checked" name="remember"> Remember me
 					</label>
+					<p id="invalidUser" class="invalid"> Username cannot be empty. </p>
+					<p id="invalidPass" class="invalid"> Password cannot be empty. </p>
+					<p class="invalid" id="incorrect"> Incorrect username or password.</p>
 				</div>
-
 				<button type="button" formethod="get" id="registerPage">Don't have an account? Register!</button>
 			</form>
 		</div>
@@ -58,6 +63,10 @@
           <input type="email" placeholder="Email" id="regEmail" required>
           <hr>
           <button type="button" id="registerBTN">Register</button>
+					<p id="invalidRegUser" class="invalid"> Username cannot be empty. </p>
+					<p id="invalidRegPass" class="invalid"> Password cannot be empty. </p>
+					<p id="invalidEmail" class="invalid"> Email must be valid</p>
+					<p class="invalid" id="incorrectReg"> Username has already been taken</p>
         </div>
 
 				<button type="button" id="backBTN">Head Back</button>

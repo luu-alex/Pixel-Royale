@@ -35,3 +35,6 @@ form {
   border-style:solid;
   padding:50px;
 }
+.invalid{
+  color: red;
+}

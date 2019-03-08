@@ -63,24 +63,40 @@ app.get('/login', function(req, res){
 });
 app.post('/login', function(req, res){
   let sql = ("SELECT * FROM langs;");
-  var found = false;
+  var found = "abc";
+
   db.all(sql, [], (err, rows) => {
     if (err) {
       throw err;
     }
     rows.forEach((row) => {
-      var obj = {"name": row.name, "email":row.email};
+      var obj = {"name": row.name, "password":row.password};
       console.log(obj);
+      console.log(req.body.name)
+      console.log(req.body.pass)
       if(row.name==req.body.name && row.password == req.body.pass){
-        found = true;
+        found = "success";
+      }
+    });
+    res.send(found);
+  });
+});
+app.get('/user/:id', function(req, res){
+  var data = [];
+  let sql = ("SELECT * FROM langs;");
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    rows.forEach((row) => {
+      if (row.name == req.params.id){
+        var obj = {"name": req.params.id, "email": row.email};
+        res.send(obj)
       }
     });
   });
-  res.send(found);
-});
-
+})
 app.get('/database', function(req, res){
-  console.log("database has been accessed");
   var data = [];
   let sql = ("SELECT * FROM langs;");
   db.all(sql, [], (err, rows) => {
@@ -93,7 +109,6 @@ app.get('/database', function(req, res){
       res.send(obj);
     });
   });
-  // res.sendFile(__dirname +"/views/database.html");
 });
 
 app.get('/stats', function(req, res){
