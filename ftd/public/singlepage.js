@@ -13,8 +13,9 @@ function userRegister(){
               email:email},
               method:"POST",
               success: function(result){
-                if (result=="success")
+                if (result=="success"){
                   loginPage();
+                }
                 else $('#incorrectReg').show();
                 //show error registration
       }});
@@ -65,6 +66,9 @@ function registerPage(){
   $('#index').hide();
 }
 function loginPage(){
+  $('#regUser').val("");
+  $('#regPsw').val("");
+  $('#regEmail').val("");
   $("#registration").hide();
   $("#login").show();
   $('#index').hide();
@@ -81,16 +85,25 @@ function hideRegInvalid(){
   $('#invalidEmail').hide();
 }
 function game(){
+  $("#stage").show();
+  $.getScript('./controller.js', function(){
+    setupGame();
+    startGame();
+  })
+}
+function clearReg(){
 
 }
 $(function(){
-	// Setup all events here and display the appropriate UI
-	// Setup an onclick event for the #guessButton
 	$("#registration").hide();
 	$("#login").show();
   $('#index').hide();
+  $('#stage').hide();
   hideRegInvalid();
   hideInvalid();
+  $("#game").on('click',function(e){
+    game();
+  })
   $("#loginBTN").on('click',function(e){
     e.preventDefault();
     signIn();
