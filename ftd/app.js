@@ -31,6 +31,7 @@ app.get('/game', function(req, res){
 app.get('/registration', function(req, res){
   res.sendFile(__dirname +'/views/registration.html');
 });
+
 app.post('/registration', function(req, res){
   console.log(req.body.name)
   console.log(req.body.email)
@@ -101,7 +102,7 @@ app.get('/stats', function(req, res){
 
 const http = require('http');
 const hostname = '127.0.0.1';
-const port = 3000;
+const port = 3002;
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
