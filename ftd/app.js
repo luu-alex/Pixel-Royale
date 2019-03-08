@@ -15,7 +15,7 @@ let db = new sqlite3.Database(':memory:', (err) => { //Attempt to connect to our
 db.run('DROP TABLE IF EXISTS langs'); //Drop our current database when we run the server and create a new one
 db.run('CREATE TABLE IF NOT EXISTS langs(name text PRIMARY KEY,password text,email varchar(255))');
 
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));  // to support URL-encoded bodies
 app.use(express.static('public'));
 app.use(express.static('views'));
@@ -32,6 +32,9 @@ app.get('/registration', function(req, res){
   res.sendFile(__dirname +'/views/registration.html');
 });
 app.post('/registration', function(req, res){
+  console.log(req.body.name)
+  console.log(req.body.email)
+  console.log(req.body.pass)
   var sql = "SELECT name FROM langs where name="+"'"+req.body.name+"'"+";";
   var a =0;
   db.all(sql, [], (err, rows) => {
@@ -41,26 +44,38 @@ app.post('/registration', function(req, res){
     rows.forEach((row) => {
       if (row){
         a = 1
-        res.send("Error, account name already taken.");
+        res.send("Error");
       }
     })
-    if(a==0){
-      db.run(`INSERT INTO langs(name,password,email) VALUES(?,?,?)`, [req.body.name,req.body.psw,req.body.email], function(err) {
-      if (err) {
-        return console.log(err.message);
-      }
-      // get the last insert id
-      console.log(`A row has been inserted with rowid ${this.lastID}`);
-      });
-      res.sendFile(__dirname +"/views/login.html")
+    db.run(`INSERT INTO langs(name,password,email) VALUES(?,?,?)`, [req.body.name,req.body.pass,req.body.email], function(err) {
+    if (err) {
+      return console.log(err.message);
     }
+    // get the last insert id
+    console.log(`A row has been inserted with rowid ${this.lastID}`);
+    res.send("success")
+    });
   });
 });
 app.get('/login', function(req, res){
   res.sendFile(__dirname +"/views/login.html");
 });
 app.post('/login', function(req, res){
-    res.send("hell")
+  let sql = ("SELECT * FROM langs;");
+  var found = false;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    rows.forEach((row) => {
+      var obj = {"name": row.name, "email":row.email};
+      console.log(obj);
+      if(row.name==req.body.name && row.password == req.body.pass){
+        found = true;
+      }
+    });
+  });
+  res.send(found);
 });
 
 app.get('/database', function(req, res){
