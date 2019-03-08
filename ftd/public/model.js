@@ -142,7 +142,8 @@ class Stage {
 			}
 		}
 		return null;
-	}} // End Class Stage
+	}
+} // End Class Stage
 class player {
 	constructor(stage,width,height,color,position,speed){
 		this.stage= stage;
@@ -159,17 +160,18 @@ class player {
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
 
 	}
-	//When the user wants fire his weapon
 	shoot(x,y){
-		var rect = this.stage.canvas.getBoundingClientRect();
-		let x1 = (x - rect.left + this.stage.width/2-75);
-		let y1 = (y - rect.left + this.stage.height/2-100)
+		// If the player has a gun.
 		if (this.equipped){
-			var target = new Pair(x1,y1);
+
+			// position of the gun on the moving paper
+			var raw_pos_gun = this.equipped.position;
+
 			if(this.equipped.shoot()){
-				this.stage.createBullet(this,target,15); // new Bullet(this,initial,target,velocity,5);
+				this.stage.createBullet(this,raw_pos_gun,10);
 			}
 		}
+
 	}
 	draw(context){
 
@@ -313,23 +315,7 @@ class Weapon {
 	}
 	step(){
 		if (this.equipped){
-			/* Alex's Code:
-			var rect = this.stage.canvas.getBoundingClientRect();
-			var cursor = this.stage.getCursor();
 
-			this.position.x = this.equipped.position.x;
-			this.position.y = this.equipped.position.y;
-
-			var x1 = (cursor.x - rect.left - this.equipped.position.x );
-			var y1 = cursor.y - (this.stage.canvas.height/2 - rect.top - 25);
-
-			console.log(this.equipped.position.x,this.equipped.position.y);
-
-			// console.log("cursorX:" + (cursor.x-rect.left)+ "position x1: "+ x1+" CursorY: "+(cursor.y-rect.top)+" positionY: "+y1)
-			this.rotation = Math.atan2(y1,x1);
-			*/
-
-			/* Dan's Code */
 			//Where the canvas is in relation to the moving paper
 			var rect = this.stage.canvas.getBoundingClientRect();
 
@@ -352,25 +338,6 @@ class Weapon {
 			this.position.x = raw_pos_player.x + slope.x * 55;
 			this.position.y = raw_pos_player.y + slope.y * 55;
 
-
-			/* Dan's Theory:
-			Gun position:
-			Let (j,k) be the position where the gun should be placed
-			Let (p,q) be the position of the Player
-			Let (z,w) be the position of the mouse
-			Let H be the distance between the gun and the center of the player
-
-			Given (p,q),(z,w), H
-			Need to find (j,k)
-
-			m = (w-q)/(z-p)
-			b = w - m*z
-
-			angle = arctan(m)
-
-			j = H*cos(angle)
-			k = m*j+b
-			*/
 		}
 	}
 	getPosition(){
@@ -389,8 +356,9 @@ class Weapon {
 }
 class Bullet {
 	constructor(stage,player,position, radius){
-		this.stage= stage;
-		this.position = new Pair(player.position.x,player.position.y);
+		this.stage = stage;
+		// Bullets should start firing from the gun position.
+		this.position = new Pair(player.equipped.position.x,player.equipped.position.y);
 		this.range = 300;
 		this.initial = new Pair(this.position.x,this.position.y);
 		this.dx = position.x-player.position.x;
