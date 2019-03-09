@@ -401,7 +401,7 @@ class Bullet {
 		this.stage = stage;
 		// Bullets should start firing from the gun position.
 		this.position = new Pair(player.equipped.position.x,player.equipped.position.y);
-		this.range = -1; // What does this do exactly?
+		this.range = 300; // What does this do exactly?
 		this.initial = new Pair(this.position.x,this.position.y);
 		this.dx = position.x-player.position.x;
 		this.dy = position.y-player.position.y;
@@ -422,12 +422,19 @@ class Bullet {
 		//updating position of bullet
 		this.position.x+=(this.dx)/10;
 		this.position.y+=(this.dy)/10;
+
 		//collision check with walls
-		if (this.position.x<0 || this.position.x>this.stage.width || this.position.y>this.stage.height || this.position.y < 0
-		 || this.initial.x+200<this.position.x || this.initial.x-200>this.position.x || this.initial.y+200<this.position.y
-		 || this.initial.y-200>this.position.y){
+		if (this.position.x < 0 ||
+			this.position.x > this.stage.width ||
+			this.position.y > this.stage.height ||
+			this.position.y < 0 ||
+			this.initial.x + this.range < this.position.x ||
+			this.initial.x - this.range > this.position.x ||
+			this.initial.y + this.range < this.position.y ||
+			this.initial.y - this.range > this.position.y){
 			stage.removeActor(this);
 		}
+
 		//collision check with enemies
 		var enemies = this.stage.getBots();
 		for (var i=0; i<enemies.length;i++){
