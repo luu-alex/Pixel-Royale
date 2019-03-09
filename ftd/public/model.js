@@ -27,7 +27,7 @@ class Stage {
 		//where the cursor is placed
 		this.cursor = 0;
 		// Add in some Balls
-		var total=12;
+		var total=1;
 		while(total>0){
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
@@ -173,9 +173,7 @@ class player {
 
 	}
 	draw(context){
-
 		context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
-
 		context.save();
 		context.fillStyle = this.colour;
 		context.beginPath();
@@ -254,8 +252,6 @@ class player {
 		if(keys=='w' || keys=='s') this.speed.y= 0;
 	}
 	move(player,keys){
-	console.log("x: "+this.speed.x);
-	console.log("y: "+this.speed.y)
 	if (keys && keys['a'] && this.position.x+ this.radius > 5) {
 			this.speed.x = -5;
 		}
@@ -268,6 +264,12 @@ class player {
   	if (keys && keys['s'] && this.position.y<this.stage.height) {
 			this.speed.y = 5;
 		}
+	}
+	drawMap(context){
+		context.beginPath();
+		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
+		context.fill();
+		context.closePath();
 	}
 }
 class GUI{
@@ -288,7 +290,7 @@ class GUI{
 		context.beginPath();
 		context.fillStyle="black"
 		context.font = "30px Arial";
-		context.fillText("Ammo: "+this.ammo,10,50);
+		context.fillText("Ammo: "+this.ammo,150,context.canvas.clientHeight-30);
 		context.fillText("Health: "+this.health,10,context.canvas.clientHeight-30);
 		context.restore();
 	}
