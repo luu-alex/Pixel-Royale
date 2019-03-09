@@ -84,7 +84,18 @@ app.post('/login', function(req, res){
         user = row.name;
       }
     });
-    res.send(found);
+    if(found){
+      res.json({
+        success: true,
+        message: 'Auth sucessful',
+        token: token
+      })
+    } else {
+      res.json({
+        success: false,
+        message: 'Auth unsuccesful',
+      })
+    }
   });
 });
 app.get('/user/:id', function(req, res){
