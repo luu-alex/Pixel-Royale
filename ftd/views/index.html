@@ -12,13 +12,14 @@
 		<script language="javascript" src="model.js" > </script>
 		<script language="javascript" src="controller.js" > </script>
 	</head>
-	<body>
+	<body class="myBody">
 		<div id ="index">
 	    <ul>
 	      <li id="homeBTN"><a> Home </a></li>
 	      <li id="gameBTN"><a> FortNite Game </a></li>
 	      <li id="statsBTN"> <a> Stats </a></li>
 				<li id="editProfileBTN"> <a> Profile </a></li>
+				<li id="logOut"> <a> Logout </a></li>
 	    </ul>
 			<center>
 				<h1>Welcome to the CSC309 A2 page! Made with Node.JS and Javascript</h1>
@@ -34,7 +35,7 @@
 					<label for="psw" class="formText" >Password</label>
 					<input type="password" placeholder="Enter Password" id="psw" required>
 
-					<button type="submit" id="loginBTN" formmethod="post">Login</button>
+					<button type="submit" id="loginBTN" formmethod="post" class="myButton">Login</button>
 					<label>
 						<input type="checkbox" checked="checked" name="remember"> Remember me
 					</label>

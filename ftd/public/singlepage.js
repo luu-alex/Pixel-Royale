@@ -75,6 +75,17 @@ function signIn(){
   if (!name) $('#invalidUser').show();
   if (!pass) $('#invalidPass').show();
 }
+function logOut(){
+  $.ajax({
+    url: "/logout",
+    method:"GET",
+    success: function(result){
+      if(result["success"]) {
+        loginShowPage("login");
+      }
+    }
+  });
+}
 function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
@@ -98,7 +109,6 @@ function indexShowPage(page){
   $("#stats").hide();
   $("#profile").hide();
   $("#"+page).show();
-
 }
 function hideInvalid(){
   $('#invalidPass').hide();
@@ -150,28 +160,31 @@ $(function(){
     e.preventDefault();
     signIn();
   })
-  $("#userRegistration").on('submit', function(e){
+  $("#registerBTN").on('click', function(e){
+    hideInvalid();
+    hideRegInvalid();
     userRegister();
-  })
-  $("#registerPage").on('click', function(){
-    loginShowPage("registration");
   })
   $("#backBTN").on('click', function(){
     hideInvalid();
     hideRegInvalid();
     loginShowPage("login");
   })
-  $("#registerBTN").on('click', function(e){
-    hideInvalid();
-    hideRegInvalid();
-    userRegister();
-  })
-  $("#postForm").on('submit', function(e){
-    e.preventDefault();
-  })
   $("#editProfileBTN").on('click', function(e){
     populateProfile();
     indexShowPage("profile");
+  })
+  $("#logOut").on('click', function(e){
+    logOut();
+  })
+  $("#userRegistration").on('submit', function(e){
+    userRegister();
+  })
+  $("#registerPage").on('click', function(){
+    loginShowPage("registration");
+  })
+  $("#postForm").on('submit', function(e){
+    e.preventDefault();
   })
   $("#submitEdit").on('click', function(e){
     editProfile();

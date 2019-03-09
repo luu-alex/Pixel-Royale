@@ -138,6 +138,12 @@ app.get('/stats', function(req, res){
   res.sendFile(__dirname +"/views/stats.html");
 });
 
+app.get('/logout', function(req, res){
+  console.log("loggedout");
+  res.cookie('auth');
+  res.send({success: "success"})
+})
+
 app.get('/edit', checkToken, function(req, res){
   var name = req.cookies.auth["name"]
   var sql = "SELECT * FROM langs where name="+"'"+name+"'"+";";
