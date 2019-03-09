@@ -137,15 +137,14 @@ class Stage {
 			this.actors[i].draw(context);
 		}
 	}
-	// return the first actor at coordinates (x,y) return null if there is no such actor
 	getActor(x, y){
 		for(var i=0;i<this.actors.length;i++){
 			if(this.actors[i].x==x && this.actors[i].y==y){
 				return this.actors[i];
 			}
 		}
-		return null;
-	}} // End Class Stage
+		return null;}
+}
 class player {
 	constructor(stage,width,height,color,position,speed){
 		this.stage= stage;
@@ -272,7 +271,7 @@ class player {
 		}
 	}
 }
-class GUI{//this is gonna display information like health, ammo of the player
+class GUI{
 	constructor(player){
 		this.player = player;
 		this.ammo = 0;
