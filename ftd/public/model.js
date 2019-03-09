@@ -21,7 +21,30 @@ class Stage {
 		this.GUI = new GUI(this.player)
 		this.addActor(this.GUI);
 		//Add weapons and weapons list
-		var w = new Weapon(this,new Pair(600,700),20,50);
+
+
+		var w = new Weapon(this,new Pair(600,700),"flame thrower");
+		this.addWeapon(w);
+		this.addActor(w);
+
+		var a = new Weapon(this,new Pair(500,700),"bazooka");
+		this.addWeapon(a);
+		this.addActor(a);
+
+		var b = new Weapon(this,new Pair(400,700),"9 mm");
+		this.addWeapon(b);
+		this.addActor(b);
+
+		var c = new Weapon(this,new Pair(300,700),"sniper");
+		this.addWeapon(c);
+		this.addActor(c);
+
+		var d = new Weapon(this,new Pair(250,700),"shotgun");
+		this.addWeapon(d);
+		this.addActor(d);
+
+
+
 		this.addWeapon(w);
 		this.addActor(w);
 		//where the cursor is placed
@@ -78,8 +101,8 @@ class Stage {
 			this.bots.splice(index,1);
 		}
 	}
-	createBullet(player,target,radius){
-		var bullet = new Bullet(this,player,target,radius);
+	createBullet(player,target,radius,speed,range,color){
+		var bullet = new Bullet(this,player,target,radius,speed,range,color);
 		this.bullets.push(bullet);
 		this.addActor(bullet);
 	}
@@ -167,7 +190,29 @@ class player {
 			var raw_pos_gun = this.equipped.position;
 
 			if(this.equipped.shoot()){
-				this.stage.createBullet(this,raw_pos_gun,10);
+				if (this.equipped.type == "flame thrower") {
+					for (var i = 0; i < 10; i++) {
+						var position = new Pair(raw_pos_gun.x+i*3,raw_pos_gun.y+i*3);
+						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+
+					}
+
+				}if (this.equipped.type == "shotgun") {
+					for (var i = 0; i < 3; i++) {
+						var j= i;
+						var k = i;
+						if (this.equipped.rotation < 0 && this.equipped.rotation > -(90*Math.PI/180) ){k = -i;}
+						if (this.equipped.rotation < (180*Math.PI/180) && this.equipped.rotation > (90*Math.PI/180) ){j = -i;}
+
+						var position = new Pair(raw_pos_gun.x+j*5,raw_pos_gun.y+k*5);
+						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+
+					}
+
+				}else {
+					this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+
+				}
 			}
 		}
 
@@ -305,22 +350,78 @@ class Pair {
 	}
 }
 class Weapon {
-	constructor(stage, position,width,height) {
+
+	constructor(stage, position, type){
 		this.stage = stage;
 		this.position = position;
 		this.equipped = false;
-		this.length = new Pair(width,height);
 		this.rotation = 0;
-		this.ammo = 30;
+		this.type = type;
+
+		if(this.type == "flame thrower"){
+			this.length = new Pair(20,30);
+			this.ammo = 100;
+			this.gun_color = "green";
+
+			this.bullet_size = 10;
+			this.bullet_speed = 0.1; //range of 0 to 1
+			this.bullet_range = 150;
+			this.bullet_color = "#fff605";
+		}
+		else if(this.type == "sniper"){
+			this.length = new Pair(5,30);
+			this.ammo = 5;
+			this.gun_color = "black";
+
+			this.bullet_size = 4.5;
+			this.bullet_speed = 0.6;
+			this.bullet_range = 500;
+			this.bullet_color = "red";
+		}
+		else if(this.type == "9 mm"){
+			this.length = new Pair(5,10);
+			this.ammo = 12;
+			this.gun_color = "gray";
+
+			this.bullet_size = 5;
+			this.bullet_speed = 0.3;
+			this.bullet_range = 250;
+			this.bullet_color = "black";
+
+		}
+
+		else if(this.type == "bazooka"){
+			this.length = new Pair(30,40);
+			this.ammo = 3;
+			this.gun_color = "#2b8740";
+
+			this.bullet_size = 20;
+			this.bullet_speed = 0.05;
+			this.bullet_range = 200;
+			this.bullet_color = "#798c6a";
+		}
+
+		else if(this.type == "shotgun"){
+			this.length = new Pair(10,15);
+			this.ammo = 30;
+			this.gun_color = "#c97d0c";
+
+			this.bullet_size = 5;
+			this.bullet_speed = 0.3;
+			this.bullet_range = 200;
+			this.bullet_color = "purple";
+		}
 	}
+
+
 	draw(context){
 		context.save();
 		context.translate(this.position.x,this.position.y);
 		context.beginPath();
-		context.fillStyle = "gray";
-		context.strokeStyle = "gray";
+		context.fillStyle = this.gun_color;
+		context.strokeStyle = this.gun_color;
 		context.rotate(this.rotation);
-		context.rect(0,-6,25,12);
+		context.rect(0,-(this.length.x/2),this.length.y,this.length.x);
 		context.fill();
 		context.closePath();
 		context.stroke();
@@ -364,7 +465,6 @@ class Weapon {
 			this.position.x = raw_pos_player.x + slope.x * 55;
 			this.position.y = raw_pos_player.y + slope.y * 55;
 
-			// console.log((angle_Rad*180)/Math.PI);
 
 		}
 	}
@@ -375,24 +475,35 @@ class Weapon {
 		return this.length;
 	}
 	shoot(){
-		if (this.ammo>0){
-			this.ammo--;
-			return true
+		if (this.ammo >= 5 && this.type == "flame thrower"){
+			this.ammo -= 5;
+			return true;
 		}
-			return false
+		if (this.ammo >= 3 && this.type == "shotgun"){
+			this.ammo -= 3;
+			return true;
+		}
+
+		if (this.ammo > 0 && (this.type == "sniper" ||
+		 					   this.type == "9 mm" ||
+						   	   this.type == "bazooka")){
+			this.ammo -= 1;
+			return true;
+		}
+			return false;
 	}
 }
 class Bullet {
-	constructor(stage,player,position, radius){
+	constructor(stage,player,position, radius, speed,range, color){
 		this.stage = stage;
-		// Bullets should start firing from the gun position.
 		this.position = new Pair(player.equipped.position.x,player.equipped.position.y);
-		this.range = 300; // What does this do exactly?
+		this.range = range;
 		this.initial = new Pair(this.position.x,this.position.y);
 		this.dx = position.x-player.position.x;
 		this.dy = position.y-player.position.y;
 		this.radius = radius;
-		this.color ="Black";
+		this.color = color;
+		this.speed = speed ;
 	}
 	draw(context){
 		context.save();
@@ -407,8 +518,8 @@ class Bullet {
 	step(){
 		/* updating position of bullet */
 		// the larger the fraction, the greater the speed of the bullet
-		this.position.x+=(this.dx)/5;
-		this.position.y+=(this.dy)/5;
+		this.position.x+=(this.dx) * this.speed;
+		this.position.y+=(this.dy) * this.speed;
 
 		/* collision check with walls and range */
 		if (this.position.x < 0 ||
