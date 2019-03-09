@@ -153,8 +153,7 @@ class player {
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
 
-		this.width = width;
-		this.height = height;
+		this.pickup_range = 50;
 
 		this.equipped = null;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
@@ -207,8 +206,11 @@ class player {
 			for (var i=0; i<weaps.length;i++){
 				var weaponPosition = weaps[i].getPosition();
 				var weaponLength = weaps[i].getLength();
-				if ((this.position.x - weaponLength.x < weaponPosition.x) && (weaponPosition.x < this.position.x + this.width) &&
-				 (this.position.y - weaponLength.y < weaponPosition.y) && (weaponPosition.y < this.position.y + this.height)){
+
+				if (this.position.x - this.pickup_range < weaponPosition.x &&
+				weaponPosition.x < this.position.x + this.pickup_range &&
+				this.position.y - this.pickup_range < weaponPosition.y &&
+				weaponPosition.y < this.position.y + this.pickup_range){
 						this.equipped= weaps[i];
 						weaps[i].held(this);
 						this.stage.add_gun_GUI(weaps[i]);
@@ -220,8 +222,11 @@ class player {
 			for (var i=0;i<ammos.length;i++){
 				var aPosition = ammos[i].position;
 				var size = ammos[i].size;
-				if (this.position.x-size.x<aPosition.x && aPosition.x < this.position.x+this.width
-				 && this.position.y-size.y<aPosition.y && aPosition.y < this.position.y+this.height){
+
+				if (this.position.x - this.pickup_range < aPosition.x &&
+				aPosition.x < this.position.x + this.pickup_range &&
+				this.position.y - this.pickup_range < aPosition.y &&
+				aPosition.y < this.position.y + this.pickup_range){
 						this.equipped.ammo=30;
 						this.stage.removeActor(ammos[i])
 						this.stage.removeAmmo(ammos[i])
@@ -234,25 +239,7 @@ class player {
 			this.equipped.drop();
 			this.equipped = null;
 			this.stage.remove_gun_GUI();
-
 		}
-
-		/*
-		var ammos = this.stage.getAmmo();
-		if (this.equipped){
-			for (var i=0;i<ammos.length;i++){
-				var aPosition = ammos[i].position;
-				var size = ammos[i].size;
-				if (this.position.x-size.x<aPosition.x && aPosition.x < this.position.x+this.width
-				 && this.position.y-size.y<aPosition.y && aPosition.y < this.position.y+this.height){
-						this.equipped.ammo=30;
-						this.stage.removeActor(ammos[i])
-						this.stage.removeAmmo(ammos[i])
-					}
-				}
-			}
-		}
-		*/
 
 
 	}
