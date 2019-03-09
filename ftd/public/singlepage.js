@@ -14,7 +14,7 @@ function userRegister(){
               method:"POST",
               success: function(result){
                 if (result=="success"){
-                  loginPage();
+                  loginShowPage("login");
                 }
                 else $('#incorrectReg').show();
                 //show error registration
@@ -37,12 +37,12 @@ function signIn(){
         success: function(result){
           console.log(result)
           if(result=="success") {
-            indexPage();
+            loginShowPage("index");
           } else {
             $(function(){
               $('#incorrect').show();
             })
-            loginPage();
+            loginShowPage("login");
           }
         }
       });
@@ -55,24 +55,18 @@ function validateEmail(email)
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
 }
-function indexPage(){
-  $("#registration").hide();
-  $("#login").hide();
-  $('#index').show();
-}
-function registerPage(){
-  $("#registration").show();
-  $("#login").hide();
-  $('#index').hide();
-}
-function loginPage(){
+function loginShowPage(page){
   $('#regUser').val("");
   $('#regPsw').val("");
   $('#regEmail').val("");
+  $("#uname").val("");
+  $("#psw").val("");
   $("#registration").hide();
-  $("#login").show();
+  $("#login").hide();
   $('#index').hide();
+  $("#"+page).show();
 }
+
 function hideInvalid(){
   $('#invalidPass').hide();
   $('#invalidUser').hide();
@@ -91,6 +85,12 @@ function game(){
     startGame();
   })
 }
+function home(){
+  $('#home').show();
+  $('#stage').hide();
+  $('#index').show();
+  $('#stats').hide();
+}
 function clearReg(){
 
 }
@@ -101,7 +101,13 @@ $(function(){
   $('#stage').hide();
   hideRegInvalid();
   hideInvalid();
-  $("#game").on('click',function(e){
+  $("#homeBTN").on('click', function(e){
+    home();
+  })
+  $("#statsBTN").on('click',function(e){
+    stats();
+  })
+  $("#gameBTN").on('click',function(e){
     game();
   })
   $("#loginBTN").on('click',function(e){
@@ -112,10 +118,10 @@ $(function(){
     userRegister();
   })
   $("#registerPage").on('click', function(){
-    registerPage();
+    loginShowPage("registration");
   })
   $("#backBTN").on('click', function(){
-    loginPage();
+    loginShowPage("login");
   })
   $("#registerBTN").on('click', function(e){
     e.preventDefault();
@@ -123,5 +129,8 @@ $(function(){
   })
   $("#postForm").on('submit', function(e){
     e.preventDefault();
+  })
+  $("#editProfileBTN").on('click', function(e){
+
   })
 });

@@ -1,10 +1,12 @@
 var bodyParser = require('body-parser');
 var path = require('path');
+var cookieParser = require('cookie-parser');
+var jwt = require('jsonwebtoken');
 const sqlite3 = require('sqlite3').verbose();
 
 var express = require('express')
 var app = express(); //create a new express app
-
+var user = ""; //user object to see if logged in
 let db = new sqlite3.Database(':memory:', (err) => { //Attempt to connect to our database
   if (err) {
     return console.error(err.message);
@@ -15,6 +17,7 @@ let db = new sqlite3.Database(':memory:', (err) => { //Attempt to connect to our
 db.run('DROP TABLE IF EXISTS langs'); //Drop our current database when we run the server and create a new one
 db.run('CREATE TABLE IF NOT EXISTS langs(name text PRIMARY KEY,password text,email varchar(255))');
 
+app.use(cookieParser());
 app.use(bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));  // to support URL-encoded bodies
 app.use(express.static('public'));
@@ -63,7 +66,7 @@ app.get('/login', function(req, res){
 });
 app.post('/login', function(req, res){
   let sql = ("SELECT * FROM langs;");
-  var found = "abc";
+  var found = "";
 
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -75,7 +78,10 @@ app.post('/login', function(req, res){
       console.log(req.body.name)
       console.log(req.body.pass)
       if(row.name==req.body.name && row.password == req.body.pass){
+        var token = jwt.sign({name: req.body.name}, 'secret', {expiresIn: "1h"})
+        console.log("Token: "+ token);
         found = "success";
+        user = row.name;
       }
     });
     res.send(found);
