@@ -66,8 +66,11 @@ class Stage {
 	getAmmo(){
 		return this.ammos;
 	}
-	updateGUI(weapon){
+	add_gun_GUI(weapon){
 		this.GUI.addWeapon(weapon);
+	}
+	remove_gun_GUI(weapon){
+		this.GUI.removeWeapon();
 	}
 	removeBot(bot){
 		var index=this.bots.indexOf(bot);
@@ -142,8 +145,7 @@ class Stage {
 			}
 		}
 		return null;
-	}
-} // End Class Stage
+	}} // End Class Stage
 class player {
 	constructor(stage,width,height,color,position,speed){
 		this.stage= stage;
@@ -210,7 +212,7 @@ class player {
 				 (this.position.y - weaponLength.y < weaponPosition.y) && (weaponPosition.y < this.position.y + this.height)){
 						this.equipped= weaps[i];
 						weaps[i].held(this);
-						this.stage.updateGUI(weaps[i]);
+						this.stage.add_gun_GUI(weaps[i]);
 					}
 			}
 		}
@@ -228,6 +230,33 @@ class player {
 				}
 			}
 		}
+	dropDown(){
+		if (this.equipped){
+			this.equipped.drop();
+			this.equipped = null;
+			this.stage.remove_gun_GUI();
+
+		}
+
+		/*
+		var ammos = this.stage.getAmmo();
+		if (this.equipped){
+			for (var i=0;i<ammos.length;i++){
+				var aPosition = ammos[i].position;
+				var size = ammos[i].size;
+				if (this.position.x-size.x<aPosition.x && aPosition.x < this.position.x+this.width
+				 && this.position.y-size.y<aPosition.y && aPosition.y < this.position.y+this.height){
+						this.equipped.ammo=30;
+						this.stage.removeActor(ammos[i])
+						this.stage.removeAmmo(ammos[i])
+					}
+				}
+			}
+		}
+		*/
+
+
+	}
 	move(player,keys){
 	if (keys && keys['a'] && this.position.x>5) {
 			this.position.x += -this.speed;
@@ -270,7 +299,11 @@ class GUI{//this is gonna display information like health, ammo of the player
 			this.ammo = this.weapon.ammo;
 	}
 	addWeapon(weapon){
-		this.weapon = weapon
+		this.weapon = weapon;
+	}
+	removeWeapon(){
+		this.ammo = 0;
+		this.weapon = null;
 	}
 }
 class Pair {
@@ -311,6 +344,11 @@ class Weapon {
 	held(player){
 		if (!this.equipped){
 			this.equipped = player;
+		}
+	}
+	drop(){
+		if (this.equipped){
+			this.equipped = null;
 		}
 	}
 	step(){
@@ -364,7 +402,7 @@ class Bullet {
 		this.stage = stage;
 		// Bullets should start firing from the gun position.
 		this.position = new Pair(player.equipped.position.x,player.equipped.position.y);
-		this.range = 300;
+		this.range = -1; // What does this do exactly?
 		this.initial = new Pair(this.position.x,this.position.y);
 		this.dx = position.x-player.position.x;
 		this.dy = position.y-player.position.y;

@@ -43,7 +43,11 @@ function moveByKey(event){
 	if (key=='e'){
 		stage.player.pickUp();
 	}
+	if (key=='q'){
+		stage.player.dropDown();
+	}
 }
+
 function stopMove(event){
 	keys[event.key] = false;
 }
