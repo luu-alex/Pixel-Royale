@@ -31,7 +31,7 @@ class Stage {
 		while(total>0){
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
-			  if(this.getActor(x,y)===null){
+			if(this.getActor(x,y)===null){
 				var velocity = new Pair(rand(11), rand(11));
 				var red=randint(255), green=randint(255), blue=randint(255);
 				var radius = randint(30);
@@ -66,8 +66,11 @@ class Stage {
 	getAmmo(){
 		return this.ammos;
 	}
-	updateGUI(weapon){
+	add_gun_GUI(weapon){
 		this.GUI.addWeapon(weapon);
+	}
+	remove_gun_GUI(weapon){
+		this.GUI.removeWeapon();
 	}
 	removeBot(bot){
 		var index=this.bots.indexOf(bot);
@@ -88,6 +91,8 @@ class Stage {
 	}
 	updateCursor(positionY,positionX){ //inverted for atan2
 		this.cursor = new Pair(positionX, positionY);
+		var rect = this.canvas.getBoundingClientRect();
+
 	}
 	addWeapon(weapon){
 		this.weapons.push(weapon);
@@ -132,66 +137,66 @@ class Stage {
 			this.actors[i].draw(context);
 		}
 	}
-	// return the first actor at coordinates (x,y) return null if there is no such actor
 	getActor(x, y){
 		for(var i=0;i<this.actors.length;i++){
 			if(this.actors[i].x==x && this.actors[i].y==y){
 				return this.actors[i];
 			}
 		}
-		return null;
-	}
-} // End Class Stage
+		return null;}
+}
 class player {
 	constructor(stage,width,height,color,position,speed){
 		this.stage= stage;
-		this.width = width;
-		this.height = height;
 		this.position = position;
-		this.color = color;
 		this.speed = 5;
+		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
+		this.radius = 50;
+
+		this.pickup_range = 50;
+
 		this.equipped = null;
-		this.cameraPosX = this.position.x-this.stage.canvas.clientWidth/2;
+		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
+		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
 	}
-	//When the user wants fire his weapon
 	shoot(x,y){
-		var rect = this.stage.canvas.getBoundingClientRect();
-		let x1 = (x - rect.left + this.stage.width/2-75);
-		let y1 = (y - rect.left + this.stage.height/2-100)
+		// If the player has a gun.
 		if (this.equipped){
-			var target = new Pair(x1,y1);
+
+			// position of the gun on the moving paper
+			var raw_pos_gun = this.equipped.position;
+
 			if(this.equipped.shoot()){
-				this.stage.createBullet(this,target,15); // new Bullet(this,initial,target,velocity,5);
+				this.stage.createBullet(this,raw_pos_gun,10);
 			}
 		}
+
 	}
 	draw(context){
-		//Camera centers on the player
+
+		context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
+
 		context.save();
-		context.setTransform(
-			1, 0,
-			0, 1,
-			-1*(this.cameraPosX),
-			-1*this.cameraPosY);
+		context.fillStyle = this.colour;
 		context.beginPath();
-		context.strokeStyle = this.color;
-		context.rect(this.position.x,this.position.y,this.width,this.height);
-		context.stroke();
+		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
+		context.fill();
 		context.closePath();
 	}
 	step(){
 		//creating the camera for the player so it follows the player
 		this.cameraPosX = this.position.x-this.stage.canvas.width/2;
-		if (this.position.x<this.stage.canvas.clientWidth/2){
+		if (this.position.x < this.stage.canvas.clientWidth/2){
 			this.cameraPosX =0;
-		} else if (this.position.x+this.stage.canvas.clientWidth/2>this.stage.width) {
-			this.cameraPosX = this.stage.width-this.stage.canvas.clientWidth;
+		} else if (this.position.x + this.stage.canvas.clientWidth/2 > this.stage.width) {
+			this.cameraPosX = this.stage.width - this.stage.canvas.clientWidth;
 		}
-		this.cameraPosY = this.position.y-this.stage.canvas.clientHeight/2;
-		if (this.position.y<this.stage.canvas.clientHeight/2){ //0 case
+
+		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
+		if (this.position.y < this.stage.canvas.clientHeight/2){ //0 case
 			this.cameraPosY = 0;
-		} else if (this.position.y+this.stage.canvas.clientHeight/2>this.stage.height) {
-			this.cameraPosY = this.stage.height-this.stage.canvas.clientHeight;
+		} else if (this.position.y + this.stage.canvas.clientHeight/2 > this.stage.height) {
+			this.cameraPosY = this.stage.height - this.stage.canvas.clientHeight;
 		}
 	}
 	pickUp(){
@@ -200,11 +205,14 @@ class player {
 			for (var i=0; i<weaps.length;i++){
 				var weaponPosition = weaps[i].getPosition();
 				var weaponLength = weaps[i].getLength();
-				if (this.position.x-weaponLength.x<weaponPosition.x && weaponPosition.x < this.position.x+this.width
-					&& this.position.y-weaponLength.y<weaponPosition.y && weaponPosition.y <this.position.y+this.height){
+
+				if (this.position.x - this.pickup_range < weaponPosition.x &&
+				weaponPosition.x < this.position.x + this.pickup_range &&
+				this.position.y - this.pickup_range < weaponPosition.y &&
+				weaponPosition.y < this.position.y + this.pickup_range){
 						this.equipped= weaps[i];
 						weaps[i].held(this);
-						this.stage.updateGUI(weaps[i]);
+						this.stage.add_gun_GUI(weaps[i]);
 					}
 			}
 		}
@@ -213,8 +221,11 @@ class player {
 			for (var i=0;i<ammos.length;i++){
 				var aPosition = ammos[i].position;
 				var size = ammos[i].size;
-				if (this.position.x-size.x<aPosition.x && aPosition.x < this.position.x+this.width
-				 && this.position.y-size.y<aPosition.y && aPosition.y < this.position.y+this.height){
+
+				if (this.position.x - this.pickup_range < aPosition.x &&
+				aPosition.x < this.position.x + this.pickup_range &&
+				this.position.y - this.pickup_range < aPosition.y &&
+				aPosition.y < this.position.y + this.pickup_range){
 						this.equipped.ammo=30;
 						this.stage.removeActor(ammos[i])
 						this.stage.removeAmmo(ammos[i])
@@ -222,8 +233,17 @@ class player {
 				}
 			}
 		}
+	dropDown(){
+		if (this.equipped){
+			this.equipped.drop();
+			this.equipped = null;
+			this.stage.remove_gun_GUI();
+		}
+
+
+	}
 	move(player,keys){
-		if (keys && keys['a'] && this.position.x>5) {
+	if (keys && keys['a'] && this.position.x>5) {
 			this.position.x += -this.speed;
 		}
   	if (keys && keys['d'] && this.position.x<this.stage.width) {
@@ -237,7 +257,7 @@ class player {
 		}
 	}
 }
-class GUI{//this is gonna display information like health, ammo of the player
+class GUI{
 	constructor(player){
 		this.player = player;
 		this.ammo = 0;
@@ -264,7 +284,11 @@ class GUI{//this is gonna display information like health, ammo of the player
 			this.ammo = this.weapon.ammo;
 	}
 	addWeapon(weapon){
-		this.weapon = weapon
+		this.weapon = weapon;
+	}
+	removeWeapon(){
+		this.ammo = 0;
+		this.weapon = null;
 	}
 }
 class Pair {
@@ -292,11 +316,11 @@ class Weapon {
 	draw(context){
 		context.save();
 		context.translate(this.position.x,this.position.y);
-		context.rotate(this.rotation)
 		context.beginPath();
-		context.fillStyle = "green";
-		context.strokeStyle = "green";
-		context.rect(0,0,25,12)
+		context.fillStyle = "gray";
+		context.strokeStyle = "gray";
+		context.rotate(this.rotation);
+		context.rect(0,-6,25,12);
 		context.fill();
 		context.closePath();
 		context.stroke();
@@ -307,17 +331,41 @@ class Weapon {
 			this.equipped = player;
 		}
 	}
+	drop(){
+		if (this.equipped){
+			this.equipped = null;
+		}
+	}
 	step(){
 		if (this.equipped){
-			var rect = this.stage.canvas.getBoundingClientRect();
-			var cursor = this.stage.getCursor();
-			this.position.x = this.equipped.position.x;
-			this.position.y = this.equipped.position.y;
 
-			var x1 = (cursor.x-rect.left-this.equipped.position.x );
-			var y1 = cursor.y-(this.stage.canvas.height/2 -rect.top-25)
-			// console.log("cursorX:" + (cursor.x-rect.left)+ "position x1: "+ x1+" CursorY: "+(cursor.y-rect.top)+" positionY: "+y1)
-			this.rotation = Math.atan2(y1,x1);
+			//Where the canvas is in relation to the moving paper
+			var rect = this.stage.canvas.getBoundingClientRect();
+
+			// position of the player on the moving paper
+			var raw_pos_player = this.equipped.position; 	// this should be p,q cuz its the pos of player
+
+			var tx = raw_pos_player.x - this.equipped.cameraPosX;
+			var ty = raw_pos_player.y - this.equipped.cameraPosY;
+			// position of the player on the paper with the hole
+			var pos_player = new Pair(rect.x + tx, rect.y + ty);
+			// cursor position on the paper with the hole (better this way since
+			// even if the mouse is placed outside of the canvas, it will still
+			//work.)
+			var cursor = this.stage.getCursor();
+
+			var slope = new Pair(cursor.x - pos_player.x, cursor.y - pos_player.y);
+			var angle_Rad = Math.atan2(slope.y,slope.x);
+			this.rotation = angle_Rad;
+
+			slope.normalize();	//It converts slope vector into unit vectors.
+
+			// 55 is the distance of the gun from the center of the player.
+			this.position.x = raw_pos_player.x + slope.x * 55;
+			this.position.y = raw_pos_player.y + slope.y * 55;
+
+			// console.log((angle_Rad*180)/Math.PI);
+
 		}
 	}
 	getPosition(){
@@ -336,9 +384,10 @@ class Weapon {
 }
 class Bullet {
 	constructor(stage,player,position, radius){
-		this.stage= stage;
-		this.position = new Pair(player.position.x,player.position.y);
-		this.range = 700;
+		this.stage = stage;
+		// Bullets should start firing from the gun position.
+		this.position = new Pair(player.equipped.position.x,player.equipped.position.y);
+		this.range = 300; // What does this do exactly?
 		this.initial = new Pair(this.position.x,this.position.y);
 		this.dx = position.x-player.position.x;
 		this.dy = position.y-player.position.y;
@@ -356,16 +405,24 @@ class Bullet {
 		context.restore();
 	}
 	step(){
-		//updating position of bullet
-		this.position.x+=(this.dx)/10;
-		this.position.y+=(this.dy)/10;
-		//collision check with walls
-		if (this.position.x<0 || this.position.x>this.stage.width || this.position.y>this.stage.height || this.position.y < 0
-		 || this.initial.x+200<this.position.x || this.initial.x-200>this.position.x || this.initial.y+200<this.position.y
-		 || this.initial.y-200>this.position.y){
+		/* updating position of bullet */
+		// the larger the fraction, the greater the speed of the bullet
+		this.position.x+=(this.dx)/5;
+		this.position.y+=(this.dy)/5;
+
+		/* collision check with walls and range */
+		if (this.position.x < 0 ||
+			this.position.x > this.stage.width ||
+			this.position.y > this.stage.height ||
+			this.position.y < 0 ||
+			this.initial.x + this.range < this.position.x ||
+			this.initial.x - this.range > this.position.x ||
+			this.initial.y + this.range < this.position.y ||
+			this.initial.y - this.range > this.position.y){
 			stage.removeActor(this);
 		}
-		//collision check with enemies
+
+		/* collision check with enemies */
 		var enemies = this.stage.getBots();
 		for (var i=0; i<enemies.length;i++){
 			if ((this.position.x-this.radius <enemies[i].position.x && enemies[i].position.x < this.position.x+this.radius)
@@ -457,3 +514,11 @@ class Ammo{
 	}
 	step(){}
 }
+/*
+class Blocks {
+	constructor(){
+		this.stage = stage;
+		this.position = // when constructed, position needs to be players at first ;
+	}
+}
+*/
