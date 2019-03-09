@@ -86,6 +86,21 @@ function logOut(){
     }
   });
 }
+function checkJWT(){
+  $.ajax({
+    url: '/checkJWT',
+    method:"GET",
+    success: function(result){
+      if (result["success"]){
+        $("#index").show();
+        $("#login").hide();
+      }
+      else {
+        $("#login").show();
+      }
+    }
+  })
+}
 function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
@@ -140,13 +155,13 @@ function home(){
 }
 $(function(){
 	$("#registration").hide();
-	$("#login").show();
   $('#index').hide();
   $('#stage').hide();
   $("#profile").hide();
   hideRegInvalid();
   hideInvalid();
   hidePInvalid();
+
   $("#homeBTN").on('click', function(e){
     home();
   })
@@ -188,5 +203,8 @@ $(function(){
   })
   $("#submitEdit").on('click', function(e){
     editProfile();
+  })
+  $("#document").ready(function(){
+    checkJWT();
   })
 });

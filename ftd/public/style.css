@@ -3,6 +3,9 @@ h1 {
   font-family: Times;
   font-size:30px;
 }
+canvas {
+  background-color: white;
+}
 ul {
   list-style-type: none;
   margin: 0;

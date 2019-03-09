@@ -49,10 +49,6 @@ app.get('/game', function(req, res){
   res.sendFile(__dirname +'/views/game.html');
 });
 
-app.get('/registration', function(req, res){
-  res.sendFile(__dirname +'/views/registration.html');
-});
-
 app.post('/registration', function(req, res){
   var sql = "SELECT name FROM langs where name="+"'"+req.body.name+"'"+";";
   console.log(req.body.name+req.body.pass+req.body.email)
@@ -74,10 +70,6 @@ app.post('/registration', function(req, res){
     res.send("success")
     });
   });
-});
-
-app.get('/login', function(req, res){
-  res.sendFile(__dirname +"/views/login.html");
 });
 
 app.post('/login', function(req, res){
@@ -142,6 +134,13 @@ app.get('/logout', function(req, res){
   console.log("loggedout");
   res.cookie('auth');
   res.send({success: "success"})
+})
+
+app.get("/checkJWT", function(req, res){
+  var token = {};
+  if (req.cookies.auth["token"])
+    token = {success:true}
+  res.json(token)
 })
 
 app.get('/edit', checkToken, function(req, res){
