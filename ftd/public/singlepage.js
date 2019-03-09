@@ -146,6 +146,7 @@ function hideRegInvalid(){
   $('#invalidEmail').hide();
 }
 function game(){
+  $("#profile").hide();
   $("#stage").show();
   $.getScript('./controller.js', function(){
     setupGame();
