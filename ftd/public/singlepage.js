@@ -37,13 +37,14 @@ function populateProfile(){
 function editProfile(){
   var name = $('#pName').val();
   var email = $('#pEmail').val();
-  if (name && (!validateEmail(email))) {
+  console.log(email);
+  if (name && (validateEmail(email))) {
     $.ajax({
       url: "/edit",
-      method:"get",
+      method:"post",
+      data:{name: name,email: email},
       success: function(result){
-        $("#pName").val(result.name);
-        $("#pEmail").val(result.email);
+        $('#success').show();
       }
     });
   }
@@ -62,6 +63,7 @@ function signIn(){
         data:{name:name,pass:pass},
         success: function(result){
           if(result["success"]) {
+            $("#nav").show();
             loginShowPage("index");
           } else {
             $(function(){
@@ -81,7 +83,8 @@ function logOut(){
     method:"GET",
     success: function(result){
       if(result["success"]) {
-        loginShowPage("login");
+        $("#nav").hide();
+        indexShowPage("login");
       }
     }
   });
@@ -93,6 +96,7 @@ function checkJWT(){
     success: function(result){
       if (result["success"]){
         $("#index").show();
+        $("#nav").show();
         $("#login").hide();
       }
       else {
@@ -123,6 +127,7 @@ function indexShowPage(page){
   $("#stage").hide();
   $("#stats").hide();
   $("#profile").hide();
+  $("#index").hide();
   $("#"+page).show();
 }
 function hideInvalid(){
@@ -152,11 +157,13 @@ function home(){
   $('#stage').hide();
   $('#index').show();
   $('#stats').hide();
+  $("#profile").hide();
 }
 $(function(){
 	$("#registration").hide();
   $('#index').hide();
   $('#stage').hide();
+  $("#nav").hide();
   $("#profile").hide();
   hideRegInvalid();
   hideInvalid();
@@ -186,6 +193,7 @@ $(function(){
     loginShowPage("login");
   })
   $("#editProfileBTN").on('click', function(e){
+    $("#success").hide();
     populateProfile();
     indexShowPage("profile");
   })
@@ -202,6 +210,7 @@ $(function(){
     e.preventDefault();
   })
   $("#submitEdit").on('click', function(e){
+    e.preventDefault();
     editProfile();
   })
   $("#document").ready(function(){

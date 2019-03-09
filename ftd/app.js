@@ -138,15 +138,15 @@ app.get('/logout', function(req, res){
 
 app.get("/checkJWT", function(req, res){
   var token = {};
-  if (req.cookies.auth["token"])
-    token = {success:true}
+  if (req.cookies.auth["token"]) {
+    
+  }
   res.json(token)
 })
 
 app.get('/edit', checkToken, function(req, res){
   var name = req.cookies.auth["name"]
   var sql = "SELECT * FROM langs where name="+"'"+name+"'"+";";
-  var a =0;
   db.all(sql, [], (err, rows) => {
     if (err) {
       throw err;
@@ -160,6 +160,19 @@ app.get('/edit', checkToken, function(req, res){
       }
     });
   });
+})
+
+app.post('/edit', checkToken, function(req, res){
+  var name = req.cookies.auth["name"];
+  data = [req.body.email,name];
+  console.log(data);
+  var sql = "UPDATE langs set email = ? where name= ?;";
+  db.run(sql, data, function(err) {
+    if (err) {
+      res.json({success:false});
+    }
+    res.json({success:true});
+  })
 })
 const http = require('http');
 const hostname = '127.0.0.1';

@@ -13,7 +13,7 @@
 		<script language="javascript" src="controller.js" > </script>
 	</head>
 	<body class="myBody">
-		<div id ="index">
+		<div id ="nav">
 	    <ul>
 	      <li id="homeBTN"><a> Home </a></li>
 	      <li id="gameBTN"><a> FortNite Game </a></li>
@@ -21,10 +21,12 @@
 				<li id="editProfileBTN"> <a> Profile </a></li>
 				<li id="logOut"> <a> Logout </a></li>
 	    </ul>
+		</div>
+		<div id="index">
 			<center>
 				<h1>Welcome to the CSC309 A2 page! Made with Node.JS and Javascript</h1>
 			</center>
-
+		</div>
 		</div>
     <div id="login">
 			<form id="postForm" action="/login">
@@ -78,14 +80,14 @@
 		</center>
 		<div id="profile">
 			<form id="profileForm" action="/edit" method="POST">
-				<div class="container">
+				<div class="container formBox formText">
 					<label for="pname"><b>Username</b></label>
-					<input type="text" placeholder="" id="pName" required>
-					<br>
+					<input type="text" readonly placeholder="" id="pName" required>
 					<label for="email"><b>Email</b></label>
 					<input type="email" placeholder="" id="pEmail" required>
 
-					<button type="submit" id="submitEdit" formmethod="post">Edit</button>
+					<button type="button" id="submitEdit" class="myButton">Edit</button>
+					<p id="success"> Success! Your info has been changed! </p>
 					<p id="pInvalidUser" class="invalid"> Username cannot be empty. </p>
 					<p id="pInvalidEmail" class="invalid"> Email must be valid. </p>
 				</div>
