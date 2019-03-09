@@ -73,7 +73,7 @@ class Stage {
 			var x = Math.floor((Math.random()*this.width));
 			var y = Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
-				var a = new Ammo(this,new Pair(x,y),new Pair(40,5));
+				var a = new Ammo(this,new Pair(x,y),new Pair(15,15));
 				this.ammos.push(a);
 				this.addActor(a);
 				total--;
