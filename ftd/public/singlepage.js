@@ -1,4 +1,3 @@
-
 function userRegister(){
     hideRegInvalid();
 		var name = $('#regUser').val();
@@ -18,11 +17,38 @@ function userRegister(){
                 }
                 else $('#incorrectReg').show();
                 //show error registration
-      }});
+              }
+      });
     }
     if (!name) $('#invalidRegUser').show();
     if (!pass) $('#invalidRegPass').show();
     if (!validateEmail(email)) $('#invalidEmail').show();
+}
+function populateProfile(){
+    $.ajax({
+      url: "/edit",
+      method:"get",
+      success: function(result){
+        $("#pName").val(result.name);
+        $("#pEmail").val(result.email);
+      }
+  });
+}
+function editProfile(){
+  var name = $('#pName').val();
+  var email = $('#pEmail').val();
+  if (name && (!validateEmail(email))) {
+    $.ajax({
+      url: "/edit",
+      method:"get",
+      success: function(result){
+        $("#pName").val(result.name);
+        $("#pEmail").val(result.email);
+      }
+    });
+  }
+  if (!name) $("#pInvalidUser").show();
+  if (!validateEmail(email)) $('#pInvalidEmail').show();
 }
 function signIn(){
 		var name = $('#uname').val();
@@ -35,8 +61,7 @@ function signIn(){
         method:"POST",
         data:{name:name,pass:pass},
         success: function(result){
-          console.log(result)
-          if(result=="success") {
+          if(result["success"]) {
             loginShowPage("index");
           } else {
             $(function(){
@@ -50,8 +75,7 @@ function signIn(){
   if (!name) $('#invalidUser').show();
   if (!pass) $('#invalidPass').show();
 }
-function validateEmail(email)
-{
+function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
 }
@@ -66,11 +90,24 @@ function loginShowPage(page){
   $('#index').hide();
   $("#"+page).show();
 }
+function indexShowPage(page){
+  $.getScript('./controller.js', function(){
+    pauseGame();
+  })
+  $("#stage").hide();
+  $("#stats").hide();
+  $("#profile").hide();
+  $("#"+page).show();
 
+}
 function hideInvalid(){
   $('#invalidPass').hide();
   $('#invalidUser').hide();
   $('#incorrect').hide();
+}
+function hidePInvalid(){
+  $('#pInvalidEmail').hide();
+  $('#pInvalidUser').hide();
 }
 function hideRegInvalid(){
   $('#invalidRegPass').hide();
@@ -91,16 +128,15 @@ function home(){
   $('#index').show();
   $('#stats').hide();
 }
-function clearReg(){
-
-}
 $(function(){
 	$("#registration").hide();
 	$("#login").show();
   $('#index').hide();
   $('#stage').hide();
+  $("#profile").hide();
   hideRegInvalid();
   hideInvalid();
+  hidePInvalid();
   $("#homeBTN").on('click', function(e){
     home();
   })
@@ -134,6 +170,10 @@ $(function(){
     e.preventDefault();
   })
   $("#editProfileBTN").on('click', function(e){
-
+    populateProfile();
+    indexShowPage("profile");
+  })
+  $("#submitEdit").on('click', function(e){
+    editProfile();
   })
 });

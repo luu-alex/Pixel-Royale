@@ -38,3 +38,33 @@ form {
 .invalid{
   color: red;
 }
+.formText{
+  font-size:25px;
+  color:#0E103D;
+}
+.formBox{
+  background-color: #A5668B;
+}
+
+.myButton {
+	background-color:#69306d;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:1px solid #f2d7ee;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #7640a8;
+}
+.myButton:hover {
+	background-color:#0E103D;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
