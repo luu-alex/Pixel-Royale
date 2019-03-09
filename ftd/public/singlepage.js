@@ -121,10 +121,13 @@ $(function(){
     loginShowPage("registration");
   })
   $("#backBTN").on('click', function(){
+    hideInvalid();
+    hideRegInvalid();
     loginShowPage("login");
   })
   $("#registerBTN").on('click', function(e){
-    e.preventDefault();
+    hideInvalid();
+    hideRegInvalid();
     userRegister();
   })
   $("#postForm").on('submit', function(e){
