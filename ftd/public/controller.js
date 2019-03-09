@@ -50,4 +50,5 @@ function moveByKey(event){
 
 function stopMove(event){
 	keys[event.key] = false;
+	stage.player.stopMovement(event.key);
 }

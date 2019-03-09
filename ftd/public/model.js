@@ -149,7 +149,7 @@ class player {
 	constructor(stage,width,height,color,position,speed){
 		this.stage= stage;
 		this.position = position;
-		this.speed = 5;
+		this.speed = new Pair(0,0);
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
 
@@ -184,6 +184,13 @@ class player {
 		context.closePath();
 	}
 	step(){
+		//check if player is within bounds
+		if (this.speed.x < 0 && this.position.x - this.radius> 5) this.position.x += this.speed.x;
+		if (this.speed.x > 0 && this.position.x + this.radius < this.stage.width) this.position.x += this.speed.x
+		if (this.speed.y > 0 && this.position.y < this.stage.height - this.radius) this.position.y += this.speed.y
+		if (this.speed.y < 0 && this.position.y > 5 + this.radius) this.position.y += this.speed.y
+
+
 		//creating the camera for the player so it follows the player
 		this.cameraPosX = this.position.x-this.stage.canvas.width/2;
 		if (this.position.x < this.stage.canvas.clientWidth/2){
@@ -242,18 +249,24 @@ class player {
 
 
 	}
+	stopMovement(keys){
+		if(keys=='a' || keys=='d') this.speed.x= 0;
+		if(keys=='w' || keys=='s') this.speed.y= 0;
+	}
 	move(player,keys){
-	if (keys && keys['a'] && this.position.x>5) {
-			this.position.x += -this.speed;
+	console.log("x: "+this.speed.x);
+	console.log("y: "+this.speed.y)
+	if (keys && keys['a'] && this.position.x+ this.radius > 5) {
+			this.speed.x = -5;
 		}
   	if (keys && keys['d'] && this.position.x<this.stage.width) {
-			this.position.x+= this.speed;
+			this.speed.x = 5;
 		}
-  	if (keys && keys['w'] && this.position.y>5) {
-			this.position.y += -this.speed;
+  	if (keys && keys['w'] && this.position.y + this.radius >5) {
+			this.speed.y = -5;
 		}
   	if (keys && keys['s'] && this.position.y<this.stage.height) {
-			this.position.y += this.speed;
+			this.speed.y = 5;
 		}
 	}
 }
