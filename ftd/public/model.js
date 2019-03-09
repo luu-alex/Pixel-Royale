@@ -158,7 +158,6 @@ class player {
 		this.equipped = null;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
-
 	}
 	shoot(x,y){
 		// If the player has a gun.
@@ -406,11 +405,12 @@ class Bullet {
 		context.restore();
 	}
 	step(){
-		//updating position of bullet
-		this.position.x+=(this.dx)/10;
-		this.position.y+=(this.dy)/10;
+		/* updating position of bullet */
+		// the larger the fraction, the greater the speed of the bullet
+		this.position.x+=(this.dx)/5;
+		this.position.y+=(this.dy)/5;
 
-		//collision check with walls
+		/* collision check with walls and range */
 		if (this.position.x < 0 ||
 			this.position.x > this.stage.width ||
 			this.position.y > this.stage.height ||
@@ -422,7 +422,7 @@ class Bullet {
 			stage.removeActor(this);
 		}
 
-		//collision check with enemies
+		/* collision check with enemies */
 		var enemies = this.stage.getBots();
 		for (var i=0; i<enemies.length;i++){
 			if ((this.position.x-this.radius <enemies[i].position.x && enemies[i].position.x < this.position.x+this.radius)
@@ -514,3 +514,11 @@ class Ammo{
 	}
 	step(){}
 }
+/*
+class Blocks {
+	constructor(){
+		this.stage = stage;
+		this.position = // when constructed, position needs to be players at first ;
+	}
+}
+*/
