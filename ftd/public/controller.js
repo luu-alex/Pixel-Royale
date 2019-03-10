@@ -47,8 +47,10 @@ function moveByKey(event){
 		stage.player.dropDown();
 	}
 }
-
 function stopMove(event){
 	keys[event.key] = false;
 	stage.player.stopMovement(event.key);
+}
+function stopGame() {
+	stage = null;
 }
