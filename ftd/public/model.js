@@ -30,7 +30,7 @@ class Stage {
 		this.addActor(z);
 
 		//Add GUI to users screen
-		this.GUI = new GUI(this.player)
+		this.GUI = new GUI(this, this.player)
 		//Add weapons and weapons list
 		var w = new Weapon(this,new Pair(600,700),"flame thrower");
 		this.addWeapon(w);
@@ -199,6 +199,7 @@ class Stage {
 		context.stroke();
 		context.closePath();
 		for (var i=0; i<this.terrain.length;i++){
+			context.setTransform(1, 0, 0, 1, -1*(this.player.cameraPosX), -1*this.player.cameraPosY);
 			this.terrain[i].draw(context);
 		}
 		//Drawing most of the objects
