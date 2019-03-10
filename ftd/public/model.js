@@ -11,6 +11,7 @@ class Stage {
 		this.ammos = [];
 		this.terrain = [];
 		this.teleporters = [];
+		this.trees = [];
 		// the logical width and height of the stage
 		this.width=2000;
 		this.height=2000;
@@ -36,11 +37,11 @@ class Stage {
 		this.terrain.push(t3)
 		//create teleporter
 		var teleporter = new Teleporter(this, new Pair(0, this.height/2));
-		this.addActor(teleporter)
-		this.teleporters.push(teleporter);
 		var teleporter2 = new Teleporter(this, new Pair(this.width-100,this.height/2))
-		this.teleporters.push(teleporter2);
+		this.addActor(teleporter)
 		this.addActor(teleporter2)
+		this.teleporters.push(teleporter);
+		this.teleporters.push(teleporter2);
 		//where the cursor is placed
 		this.cursor = 0;
 		// Add in some Balls
@@ -73,6 +74,17 @@ class Stage {
 				total--;
 			}
 		}
+		var total=5;
+		while(total>0){
+			var x = Math.floor((Math.random()*this.width));
+			var y = Math.floor((Math.random()*this.height));
+			if(this.getActor(x,y)===null){
+				var a = new Tree(this,new Pair(x,y));
+				this.trees.push(a);
+				this.addActor(a);
+				total--;
+			}
+		}
 	}
 	removeAmmo(ammo){
 		var index=this.ammos.indexOf(ammo);
@@ -93,6 +105,12 @@ class Stage {
 		var index=this.bots.indexOf(bot);
 		if(index!=-1){
 			this.bots.splice(index,1);
+		}
+	}
+	removeTree(tree){
+		var index=this.trees.indexOf(tree);
+		if(index != -1) {
+			this.trees.splice(index,1);
 		}
 	}
 	createBullet(player,target,radius){
@@ -315,7 +333,7 @@ class player {
 		if(keys=='w' || keys=='s') this.speed.y= 0;
 	}
 	move(player,keys){
-	if (keys && keys['a'] && this.position.x+ this.radius > 5) {
+		if (keys && keys['a'] && this.position.x+ this.radius > 5) {
 			this.speed.x = -5;
 		}
   	if (keys && keys['d'] && this.position.x<this.stage.width) {
@@ -513,13 +531,23 @@ class Bullet {
 
 		/* collision check with enemies */
 		var enemies = this.stage.getBots();
-		for (var i=0; i<enemies.length;i++){
-			if ((this.position.x-this.radius <enemies[i].position.x && enemies[i].position.x < this.position.x+this.radius)
-			&&
-				 (this.position.y-this.radius <enemies[i].position.y && enemies[i].position.y < this.position.y+this.radius)){
+		for (var i=0; i<enemies.length; i++) {
+			if (this.collision(enemies[i].position.x - enemies[i].radius,
+				 enemies[i].position.y - enemies[i].radius,
+				  enemies[i].radius, enemies[i].radius)) {
 						enemies[i].hit();
 					}
 		}
+		var trees = this.stage.trees;
+		for (var i=0; i<trees.length; i++) {
+			if (this.collision(trees[i].position.x, trees[i].position.y, trees[i].size.x, trees[i].size.y)) {
+				trees[i].hit();
+			}
+		}
+	}
+	collision(x, y, length, width) {
+		return ((x < this.position.x && this.position.x < x + length ) &&
+			  (y < this.position.y && this.position.y < y + width))
 	}
 }
 class Ball {
@@ -527,7 +555,7 @@ class Ball {
 		this.stage = stage;
 		this.position=position;
 		this.intPosition(); // this.x, this.y are int version of this.position
-		this.hp=3; //hit 3 times the ball dies
+		this.hp=30; //hit 3 times the ball dies
 		this.velocity=velocity;
 		this.colour = colour;
 		this.radius = radius;
@@ -556,6 +584,7 @@ class Ball {
 	}
 	hit(){
 		this.hp--;
+		console.log("monster hit")
 		if (this.hp==0){
 			this.stage.removeActor(this)
 			this.stage.removeBot(this)
@@ -666,6 +695,45 @@ class Teleporter { //these will teleport you across the map
 		// context.drawImage(this.myImage, this.position.x, this.position.y);
 		context.drawImage(this.myImage, this.position.x, this.position.y);
 		context.closePath();
+	}
+	step(){
+
+	}
+}
+
+class Obstacles {
+	constructor(stage, position, size) {
+		this.stage = stage;
+		this.position = position;
+		this.size = size;
+	}
+	collision() {
+
+	}
+}
+
+class Tree extends Obstacles{
+	constructor(stage, position) {
+		super(stage, position);
+		this.size = new Pair(200, 279);
+		this.hp = 5; //Takes 5 bullets to break
+		this.myImage = new Image();
+		this.myImage.src = '/bigTree.png';
+	}
+	draw(context) {
+		context.save();
+		context.beginPath();
+		// context.drawImage(this.myImage, this.position.x, this.position.y);
+		context.drawImage(this.myImage, this.position.x, this.position.y);
+		context.closePath();
+	}
+	hit(){
+		this.hp--;
+		console.log(this.hp)
+		if (this.hp==0){
+			this.stage.removeActor(this)
+			this.stage.removeTree(this)
+		}
 	}
 	step(){
 
