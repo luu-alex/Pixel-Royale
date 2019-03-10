@@ -13,41 +13,30 @@ class player {
 		this.myImage = new Image();
 		this.myImage.src = '/wall.jpeg';
 	}
-	name(){
-		return "player"
-	}
-	shoot(){
+	shoot() {
 		// If the player has a gun.
-		if (this.equipped){
-
+		if (this.equipped) {
 			// position of the gun on the moving paper
 			var raw_pos_gun = this.equipped.position;
-
-			if(this.equipped.shoot()){
+			if(this.equipped.shoot()) {
 				if (this.equipped.type == "flame thrower") {
 					for (var i = 0; i < 10; i++) {
 						var position = new Pair(raw_pos_gun.x+i*3,raw_pos_gun.y+i*3);
 						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
-
 					}
-
 				}
 				if (this.equipped.type == "shotgun") {
 					for (var i = 0; i < 3; i++) {
 						var j= i;
 						var k = i;
-						if (this.equipped.rotation < 0 && this.equipped.rotation > -(90*Math.PI/180) ){k = -i;}
-						if (this.equipped.rotation < (180*Math.PI/180) && this.equipped.rotation > (90*Math.PI/180) ){j = -i;}
-
+						if (this.equipped.rotation < 0 && this.equipped.rotation > -(90*Math.PI/180) ) k = -i
+						if (this.equipped.rotation < (180*Math.PI/180) && this.equipped.rotation > (90*Math.PI/180) ) j = -i;
 						var position = new Pair(raw_pos_gun.x+j*5,raw_pos_gun.y+k*5);
 						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
-
 					}
-
 				}
 				else {
 					this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
-
 				}
 			}
 		}
@@ -63,31 +52,31 @@ class player {
 		context.closePath();
 	}
 	step(){
-		//check if player is within bounds
+		//check if player is walking on terrain which may cause player to slow
+    //walking through terrain causes different velocity
 		var terrainSpeed=1;
-		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
-			var terrainSpeed =  this.stage.terrain[0].speed
-		}
-		if (this.position.x > this.stage.width/2 && this.position.y < this.stage.height/2){
-			var terrainSpeed =  this.stage.terrain[1].speed
-		}
-		if (this.position.x <= this.stage.width/2 && this.position.y >= this.stage.height/2){
-			var terrainSpeed =  this.stage.terrain[2].speed
-		}
-		if (this.position.x > this.stage.width/2 && this.position.y > this.stage.height/2){
-			var terrainSpeed =  this.stage.terrain[3].speed
-		}
-		this.speed.x = this.speed.x* terrainSpeed
-		this.speed.y = this.speed.y*terrainSpeed
+		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2) var terrainSpeed =  this.stage.terrain[0].speed;
+		if (this.position.x > this.stage.width/2 && this.position.y < this.stage.height/2) var terrainSpeed =  this.stage.terrain[1].speed;
+		if (this.position.x <= this.stage.width/2 && this.position.y >= this.stage.height/2) var terrainSpeed =  this.stage.terrain[2].speed;
+		if (this.position.x > this.stage.width/2 && this.position.y > this.stage.height/2) var terrainSpeed =  this.stage.terrain[3].speed;
+		this.speed.x = this.speed.x* terrainSpeed;
+		this.speed.y = this.speed.y*terrainSpeed;
+    //check if player is within bounds
+
+      // if (this.speed.x > 0 && this.position.x + this.radius < obj.position.x) return false;
+      // if (this.speed.y > 0 && this.position.y + this.radius < obj.position.y) return false;
+      // if (this.speed.y < 0 && this.position.y > obj.position.x + length) return false;
+      // if (!this.collision(this.stage.terrain[i],this.stage.terrain[i].size.x,this.stage.terrain[i].size.y)) {
+      //   this.speed.x = 0;
+      //   this.speed.y = 0;
+      // }
+    // }
 		if (this.speed.x < 0 && this.position.x - this.radius> 5) this.position.x += this.speed.x;
 		if (this.speed.x > 0 && this.position.x + this.radius < this.stage.width) this.position.x += this.speed.x;
 		if (this.speed.y > 0 && this.position.y < this.stage.height - this.radius) this.position.y += this.speed.y;
 		if (this.speed.y < 0 && this.position.y > 5 + this.radius) this.position.y += this.speed.y;
-		this.speed.x = this.speed.x/terrainSpeed
-		this.speed.y = this.speed.y/terrainSpeed
-
-		//walking through terrain causes different velocity
-
+		this.speed.x = this.speed.x/terrainSpeed;
+		this.speed.y = this.speed.y/terrainSpeed;
 
 		//creating the camera for the player so it follows the player
 		this.cameraPosX = this.position.x-this.stage.canvas.width/2;
@@ -104,11 +93,18 @@ class player {
 			this.cameraPosY = this.stage.height - this.stage.canvas.clientHeight;
 		}
 	}
-	pickUp(){
-		if (!this.equipped){
+  collision(obj,length,width) {
+    if (this.speed.x < 0 && this.position.x - this.radius > obj.position.x + length) return false;
+		if (this.speed.x > 0 && this.position.x + this.radius < obj.position.x) return false;
+		if (this.speed.y > 0 && this.position.y + this.radius < obj.position.y) return false;
+		if (this.speed.y < 0 && this.position.y > obj.position.x + length) return false;
+    return true;
+  }
+	pickUp() {
+		if (!this.equipped) {
 			var weaps = this.stage.weapons;
 			for (var i=0; i<this.stage.weapons.length;i++){
-				if (this.pickUpHelper(weaps[i])){
+				if (this.pickUpHelper(weaps[i])) {
 						this.equipped= weaps[i];
 						weaps[i].held(this);
 						this.stage.add_gun_GUI(weaps[i]);
@@ -122,36 +118,33 @@ class player {
 			}
 		}
 		var ammos = this.stage.getAmmo();
-		if (this.equipped){
-			for (var i=0;i<ammos.length;i++){
+		if (this.equipped) {
+			for (var i=0;i<ammos.length;i++) {
 				var aPosition = ammos[i].position;
 				var size = ammos[i].size;
 				if (this.position.x - this.pickup_range < aPosition.x &&
 				aPosition.x < this.position.x + this.pickup_range &&
 				this.position.y - this.pickup_range < aPosition.y &&
-				aPosition.y < this.position.y + this.pickup_range){
-
-						this.equipped.ammo = ammos[i].grab_ammo(this.equipped.type);
-
-						this.stage.removeActor(ammos[i]);
-						this.stage.removeAmmo(ammos[i]);
-					}
+				aPosition.y < this.position.y + this.pickup_range) {
+					this.equipped.ammo = ammos[i].grab_ammo(this.equipped.type);
+					this.stage.removeActor(ammos[i]);
+					this.stage.removeAmmo(ammos[i]);
 				}
 			}
+		}
 	}
-	teleport(posX){
-		console.log("posX: "+ posX)
+	teleport(posX) {
 		if (posX <400) this.position.x = this.stage.width-50;
 		else this.position.x = 50;
 	}
-	pickUpHelper(pickUp){
+	pickUpHelper(pickUp) {
 		var objPos = pickUp.position;
 		console.log(this.position.x - this.pickup_range)
 		if (this.position.x - this.pickup_range < objPos.x &&
 		objPos.x < this.position.x + this.pickup_range &&
 		this.position.y - this.pickup_range < objPos.y &&
 		objPos.y < this.position.y + this.pickup_range){
-				return true;
+			return true;
 		}
 	}
 	dropDown(){
@@ -160,17 +153,24 @@ class player {
 			this.equipped = null;
 			this.stage.remove_gun_GUI();
 		}
-
-
 	}
 	stopMovement(keys){
 		if(keys=='a' || keys=='d') this.speed.x= 0;
 		if(keys=='w' || keys=='s') this.speed.y= 0;
 	}
 	move(player,keys){
-		if (keys && keys['a'] && this.position.x+ this.radius > 5) {
-			this.speed.x = -5;
-		}
+    for (var i=0; i < this.stage.trees.length; i++) {
+      console.log("player position y:" + (this.position.y - this.radius))
+
+      var terrain = this.stage.trees[i];
+      console.log( terrain.position.y)
+    //   if (this.speed.x < 0 && this.position.x - this.radius > terrain.position.x + terrain.size.x &&
+    //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
+  		if (keys && keys['a'] && this.position.x+ this.radius > 5 && !( this.position.x - this.radius > terrain.position.x + terrain.size.x &&
+          terrain.position.y < this.position.y && this.position.y < this.position.y + terrain.size.y)) {
+  			this.speed.x = -5;
+  		} else this.speed.x=0;
+    }
   	if (keys && keys['d'] && this.position.x<this.stage.width) {
 			this.speed.x = 5;
 		}
