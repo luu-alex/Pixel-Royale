@@ -9,47 +9,55 @@
     <link rel="stylesheet" href="style.css">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
     <script language="javascript" src="singlepage.js" > </script>
+		<script language="javascript" src="model.js" > </script>
+		<script language="javascript" src="controller.js" > </script>
 	</head>
-	<body>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="./game">FortNite Game</a></li>
-      <li><a href="./login">Login</a></li>
-      <li><a href="./registration">Register</a></li>
-      <li><a href="/stats">Stats</a></li>
-    </ul>
-		<center>
-			<h1>Welcome to the CSC309 A2 page! Made with Node.JS and Javascript</h1>
-		</center>
-
+	<body class="myBody">
+		<div id ="nav">
+	    <ul>
+	      <li id="homeBTN"><a> Home </a></li>
+	      <li id="gameBTN"><a> FortNite Game </a></li>
+	      <li id="statsBTN"> <a> Stats </a></li>
+				<li id="editProfileBTN"> <a> Profile </a></li>
+				<li id="logOut"> <a> Logout </a></li>
+	    </ul>
+		</div>
+		<div id="index">
+			<center>
+				<h1>Welcome to the CSC309 A2 page! Made with Node.JS and Javascript</h1>
+			</center>
+		</div>
+		</div>
     <div id="login">
 			<form id="postForm" action="/login">
-				<div class="container">
-					<label for="uname"><b>Username</b></label>
+				<div class="container formBox">
+					<label for="uname" class="formText">Username</label>
 					<input type="text" placeholder="Enter Username" id="uname" required>
 
-					<label for="psw"><b>Password</b></label>
+					<label for="psw" class="formText" >Password</label>
 					<input type="password" placeholder="Enter Password" id="psw" required>
 
-					<button type="submit" id="loginBTN" formmethod="post">Login</button>
+					<button type="submit" id="loginBTN" formmethod="post" class="myButton">Login</button>
 					<label>
 						<input type="checkbox" checked="checked" name="remember"> Remember me
 					</label>
+					<p id="invalidUser" class="invalid"> Username cannot be empty. </p>
+					<p id="invalidPass" class="invalid"> Password cannot be empty. </p>
+					<p class="invalid" id="incorrect"> Incorrect username or password.</p>
 				</div>
-
-				<button type="button" formethod="get" id="registerPage">Don't have an account? Register!</button>
+				<button type="button" formethod="get" id="registerPage" class="myButton">Don't have an account? Register!</button>
 			</form>
 		</div>
 
 		<div id="registration">
 			<form action="/registration" method="post" id="userRegistration">
-        <div class="container">
+        <div class="container formBox formText">
           <h1>Register</h1>
           <p>Please fill in this form to create an account.</p>
           <hr>
 
           <label for="name"><b>Name</b></label>
-          <input type="text" placeholder="Enter username" id="regUser" required>
+          <input type="text" placeholder="Enter username" id="regUser" class="myForm" required>
 
           <label for="psw"><b>Password</b></label>
           <input type="password" placeholder="Enter Password" id="regPsw" required>
@@ -57,11 +65,33 @@
           <label for="email"><b>Email</b></label>
           <input type="email" placeholder="Email" id="regEmail" required>
           <hr>
-          <button type="button" id="registerBTN">Register</button>
+					<p id="invalidRegUser" class="invalid"> Username cannot be empty. </p>
+					<p id="invalidRegPass" class="invalid"> Password cannot be empty. </p>
+					<p id="invalidEmail" class="invalid"> Email must be valid</p>
+          <button type="button" class="myButton" id="registerBTN">Register</button>
+					<p class="invalid" id="incorrectReg"> Username has already been taken</p>
         </div>
 
-				<button type="button" id="backBTN">Head Back</button>
+				<button type="button" class="myButton" id="backBTN">Head Back</button>
       </form>
+		</div>
+		<center>
+    	<canvas id="stage" width="800" height="600" style="border:1px solid brown;"> </canvas>
+		</center>
+		<div id="profile">
+			<form id="profileForm" action="/edit" method="POST">
+				<div class="container formBox formText">
+					<label for="pname"><b>Username</b></label>
+					<input type="text" readonly placeholder="" id="pName" required>
+					<label for="email"><b>Email</b></label>
+					<input type="email" placeholder="" id="pEmail" required>
+
+					<button type="button" id="submitEdit" class="myButton">Edit</button>
+					<p id="success"> Success! Your info has been changed! </p>
+					<p id="pInvalidUser" class="invalid"> Username cannot be empty. </p>
+					<p id="pInvalidEmail" class="invalid"> Email must be valid. </p>
+				</div>
+			</form>
 		</div>
 	</body>
 </html>

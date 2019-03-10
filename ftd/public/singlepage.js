@@ -1,109 +1,220 @@
-function database(){
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("screen").innerHTML = this.responseText;
-    }
-  }
-  xhttp.open("GET", "database", true);
-  // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.send(null);
-}
-function register(){
-  $('#register').submit(function(e){
-  	$('#cont').load('registration.html', function(
-  		responseTXT, statusTXT, xhr){
-  			if(statusTXT == "success")
-  				console.log("good stuff");
-  		}
-  	)
-  })
-}
-function json(){
-  $.getJSON('users.json', function(data){
-    $.each(data, function(i, user){
-      $('ul#users'.append('<li>'))
-    })
-  })
-  $.ajax({
-    method:'GET',
-    url: "nothing"
-  })
-}
 function userRegister(){
-    console.log("hi")
+    hideRegInvalid();
 		var name = $('#regUser').val();
 		var pass = $('#regPsw').val();
     var email = $('#regEmail').val();
 		var url = "/registration";
-		$.ajax({url:url,
-            data:{
-            name:name,
-            pass:pass,
-            email:email},
-            method:"POST",
-            success: function(result){
-              if (result=="success")
-                indexPage()
-              //show error registration
-    }});
+    if (name && pass && validateEmail(email)) {
+  		$.ajax({url:url,
+              data:{
+              name:name,
+              pass:pass,
+              email:email},
+              method:"POST",
+              success: function(result){
+                if (result=="success"){
+                  loginShowPage("login");
+                }
+                else $('#incorrectReg').show();
+                //show error registration
+              }
+      });
+    }
+    if (!name) $('#invalidRegUser').show();
+    if (!pass) $('#invalidRegPass').show();
+    if (!validateEmail(email)) $('#invalidEmail').show();
+}
+function populateProfile(){
+    $.ajax({
+      url: "/edit",
+      method:"get",
+      success: function(result){
+        $("#pName").val(result.name);
+        $("#pEmail").val(result.email);
+      }
+  });
+}
+function editProfile(){
+  var name = $('#pName').val();
+  var email = $('#pEmail').val();
+  console.log(email);
+  if (name && (validateEmail(email))) {
+    $.ajax({
+      url: "/edit",
+      method:"post",
+      data:{name: name,email: email},
+      success: function(result){
+        $('#success').show();
+      }
+    });
+  }
+  if (!name) $("#pInvalidUser").show();
+  if (!validateEmail(email)) $('#pInvalidEmail').show();
 }
 function signIn(){
 		var name = $('#uname').val();
 		var pass = $('#psw').val();
-		var url = "/login"
-    console.log(name);
+		var url = "/login";
+    hideInvalid();
     if (name && pass){
-      $.ajax({url: "/login",
-              method:"POST",
-              data:{name:name,pass:pass},
-              success: function(result){
-                console.log(result)
-    }});
+      $.ajax({
+        url: "/login",
+        method:"POST",
+        data:{name:name,pass:pass},
+        success: function(result){
+          if(result["success"]) {
+            $("#nav").show();
+            loginShowPage("index");
+          } else {
+            $(function(){
+              $('#incorrect').show();
+            })
+            loginShowPage("login");
+          }
+        }
+      });
   }
+  if (!name) $('#invalidUser').show();
+  if (!pass) $('#invalidPass').show();
 }
-function registerPage(){
-  $("#registration").show();
-  $("#login").hide();
+function logOut(){
+  $.ajax({
+    url: "/logout",
+    method:"GET",
+    success: function(result){
+      if(result["success"]) {
+        $("#nav").hide();
+        indexShowPage("login");
+      }
+    }
+  });
 }
-function indexPage(){
+function checkJWT(){
+  $.ajax({
+    url: '/checkJWT',
+    method:"GET",
+    success: function(result){
+      if (result["success"]){
+        $("#index").show();
+        $("#nav").show();
+        $("#login").hide();
+      }
+      else {
+        $("#login").show();
+      }
+    }
+  })
+}
+function validateEmail(email) {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
+function loginShowPage(page){
+  $('#regUser').val("");
+  $('#regPsw').val("");
+  $('#regEmail').val("");
+  $("#uname").val("");
+  $("#psw").val("");
   $("#registration").hide();
-  $("#login").show();
+  $("#login").hide();
+  $('#index').hide();
+  $("#"+page).show();
+}
+function indexShowPage(page){
+  $.getScript('./controller.js', function(){
+    pauseGame();
+  })
+  $("#stage").hide();
+  $("#stats").hide();
+  $("#profile").hide();
+  $("#index").hide();
+  $("#"+page).show();
+}
+function hideInvalid(){
+  $('#invalidPass').hide();
+  $('#invalidUser').hide();
+  $('#incorrect').hide();
+}
+function hidePInvalid(){
+  $('#pInvalidEmail').hide();
+  $('#pInvalidUser').hide();
+}
+function hideRegInvalid(){
+  $('#invalidRegPass').hide();
+  $('#invalidRegUser').hide();
+  $('#incorrectReg').hide();
+  $('#invalidEmail').hide();
+}
+function game(){
+  $("#profile").hide();
+  $("#stage").show();
+  $.getScript('./controller.js', function(){
+    setupGame();
+    startGame();
+  })
+}
+function home(){
+  $('#home').show();
+  $('#stage').hide();
+  $('#index').show();
+  $('#stats').hide();
+  $("#profile").hide();
 }
 $(function(){
-	// Setup all events here and display the appropriate UI
-	// Setup an onclick event for the #guessButton
 	$("#registration").hide();
-	$("#login").show();
+  $('#index').hide();
+  $('#stage').hide();
+  $("#nav").hide();
+  $("#profile").hide();
+  hideRegInvalid();
+  hideInvalid();
+  hidePInvalid();
+
+  $("#homeBTN").on('click', function(e){
+    home();
+  })
+  $("#statsBTN").on('click',function(e){
+    stats();
+  })
+  $("#gameBTN").on('click',function(e){
+    game();
+  })
   $("#loginBTN").on('click',function(e){
     e.preventDefault();
     signIn();
+  })
+  $("#registerBTN").on('click', function(e){
+    hideInvalid();
+    hideRegInvalid();
+    userRegister();
+  })
+  $("#backBTN").on('click', function(){
+    hideInvalid();
+    hideRegInvalid();
+    loginShowPage("login");
+  })
+  $("#editProfileBTN").on('click', function(e){
+    $("#success").hide();
+    populateProfile();
+    indexShowPage("profile");
+  })
+  $("#logOut").on('click', function(e){
+    logOut();
   })
   $("#userRegistration").on('submit', function(e){
     userRegister();
   })
   $("#registerPage").on('click', function(){
-    registerPage();
-  })
-  $("#backBTN").on('click', function(){
-    indexPage();
-  })
-  $("#registerBTN").on('click', function(e){
-    e.preventDefault();
-    userRegister();
+    loginShowPage("registration");
   })
   $("#postForm").on('submit', function(e){
     e.preventDefault();
   })
+  $("#submitEdit").on('click', function(e){
+    e.preventDefault();
+    editProfile();
+  })
+  $("#document").ready(function(){
+    checkJWT();
+  })
 });
-
-
-// $(function(){
-//   $(document).ready(function(){
-//     $('#screen').load('login.html', function(
-//       responseTXT, statusTXT, xhr){
-//         if(statusTXT == "success")
-//           console.log("good stuff");
-//       }
-//     )
-//   });
-// })
