@@ -1,24 +1,38 @@
 class GUI{
-	constructor(player){
+	constructor(stage, player){
 		this.player = player;
 		this.ammo = 0;
 		this.health = 3;
-		this.x=this.player.cameraPosX;
 		this.weapon = null;
+		this.stage = stage;
 	}
 	draw(context){
 		context.save();
-		if (!this.player.cameraPosX)
-			var x=0;
-		else
-			var x=this.player.cameraPosX;
-		context.translate(x,this.player.cameraPosY);
+		context.translate(this.player.cameraPosX,this.player.cameraPosY);
 		context.beginPath();
 		context.fillStyle="black"
 		context.font = "30px Arial";
 		context.fillText("Ammo: "+this.ammo,150,context.canvas.clientHeight-30);
 		context.fillText("Health: "+this.health,10,context.canvas.clientHeight-30);
+		context.closePath();
 		context.restore();
+
+		context.save();
+		context.translate(this.player.cameraPosX, this.player.cameraPosY);
+		context.transform(0.05, 0, 0, 0.05, -1, -1);
+		context.beginPath();
+		context.fillStyle = "white";
+		context.fillRect(0, 0, this.stage.width, this.stage.height);
+		context.closePath();
+		for (var i=0; i<this.stage.bots.length; i++) {
+			this.stage.bots[i].draw(context);
+			// this.player.draw(context);
+		}
+		this.stage.player.draw(context);
+		context.closePath();
+		context.restore();
+		context.resetTransform();
+		// context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
 	}
 	step(){
 		if(this.weapon)

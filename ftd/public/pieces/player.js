@@ -53,7 +53,6 @@ class player {
 		}
 	}
 	draw(context){
-		context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
 		context.save();
 		context.fillStyle = this.colour;
 		context.beginPath();
