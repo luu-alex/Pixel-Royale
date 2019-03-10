@@ -1,5 +1,10 @@
 function randint(n){ return Math.round(Math.random()*n); }
 function rand(n){ return Math.random()*n; }
+function distance(pos1,pos2){
+	var x = Math.abs(pos1.x - pos2.x);
+	var y = Math.abs(pos1.y - pos2.y);
+	return Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+}
 
 class Stage {
 	constructor(canvas){
@@ -14,15 +19,18 @@ class Stage {
 		this.height=1500;
 
 		// Add the player to the center of the stage
-		// this.addPlayer(new Player(this, Math.floor(this.width/2), Math.floor(this.height/2)));
-		this.player= new player(this,50,50,"Red", new Pair(this.width/2,this.height/2)); // a special actor, the player
+		this.player= new player(this, new Pair(this.width/2,this.height/2),5);
 		this.addPlayer(this.player);
+
+		var z = new Bot(this, new Pair(0,0));
+		this.addBot(z);
+		this.addActor(z);
+
 		//Add GUI to users screen
 		this.GUI = new GUI(this.player)
 		this.addActor(this.GUI);
+
 		//Add weapons and weapons list
-
-
 		var w = new Weapon(this,new Pair(600,700),"flame thrower");
 		this.addWeapon(w);
 		this.addActor(w);
@@ -94,6 +102,9 @@ class Stage {
 	}
 	remove_gun_GUI(weapon){
 		this.GUI.removeWeapon();
+	}
+	addBot(bot){
+		this.bots.push(bot);
 	}
 	removeBot(bot){
 		var index=this.bots.indexOf(bot);
@@ -169,10 +180,11 @@ class Stage {
 		return null;}
 }
 class player {
-	constructor(stage,width,height,color,position,speed){
-		this.stage= stage;
+	constructor(stage,position,speed){
+		this.name = "player";
+		this.stage = stage;
 		this.position = position;
-		this.speed = 5;
+		this.speed = speed;
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
 
@@ -182,7 +194,7 @@ class player {
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
 	}
-	shoot(x,y){
+	shoot(){
 		// If the player has a gun.
 		if (this.equipped){
 
@@ -197,7 +209,8 @@ class player {
 
 					}
 
-				}if (this.equipped.type == "shotgun") {
+				}
+				if (this.equipped.type == "shotgun") {
 					for (var i = 0; i < 3; i++) {
 						var j= i;
 						var k = i;
@@ -209,18 +222,16 @@ class player {
 
 					}
 
-				}else {
+				}
+				else {
 					this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
 
 				}
 			}
 		}
-
 	}
 	draw(context){
-
 		context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
-
 		context.save();
 		context.fillStyle = this.colour;
 		context.beginPath();
@@ -255,7 +266,7 @@ class player {
 				weaponPosition.x < this.position.x + this.pickup_range &&
 				this.position.y - this.pickup_range < weaponPosition.y &&
 				weaponPosition.y < this.position.y + this.pickup_range){
-						this.equipped= weaps[i];
+						this.equipped = weaps[i];
 						weaps[i].held(this);
 						this.stage.add_gun_GUI(weaps[i]);
 					}
@@ -271,13 +282,15 @@ class player {
 				aPosition.x < this.position.x + this.pickup_range &&
 				this.position.y - this.pickup_range < aPosition.y &&
 				aPosition.y < this.position.y + this.pickup_range){
-						this.equipped.ammo=30;
-						this.stage.removeActor(ammos[i])
-						this.stage.removeAmmo(ammos[i])
+
+						this.equipped.ammo = ammos[i].grab_ammo(this.equipped.type);
+
+						this.stage.removeActor(ammos[i]);
+						this.stage.removeAmmo(ammos[i]);
 					}
 				}
 			}
-		}
+	}
 	dropDown(){
 		if (this.equipped){
 			this.equipped.drop();
@@ -350,8 +363,8 @@ class Pair {
 	}
 }
 class Weapon {
-
 	constructor(stage, position, type){
+		this.name = "weapon";
 		this.stage = stage;
 		this.position = position;
 		this.equipped = false;
@@ -389,7 +402,6 @@ class Weapon {
 			this.bullet_color = "black";
 
 		}
-
 		else if(this.type == "bazooka"){
 			this.length = new Pair(30,40);
 			this.ammo = 3;
@@ -400,7 +412,6 @@ class Weapon {
 			this.bullet_range = 200;
 			this.bullet_color = "#798c6a";
 		}
-
 		else if(this.type == "shotgun"){
 			this.length = new Pair(10,15);
 			this.ammo = 30;
@@ -412,8 +423,6 @@ class Weapon {
 			this.bullet_color = "purple";
 		}
 	}
-
-
 	draw(context){
 		context.save();
 		context.translate(this.position.x,this.position.y);
@@ -440,22 +449,30 @@ class Weapon {
 	step(){
 		if (this.equipped){
 
-			//Where the canvas is in relation to the moving paper
-			var rect = this.stage.canvas.getBoundingClientRect();
+			var raw_pos_player = this.equipped.position;
 
-			// position of the player on the moving paper
-			var raw_pos_player = this.equipped.position; 	// this should be p,q cuz its the pos of player
+			if (this.equipped.name == "player") {
+				//Where the canvas is in relation to the moving paper
+				var rect = this.stage.canvas.getBoundingClientRect();
 
-			var tx = raw_pos_player.x - this.equipped.cameraPosX;
-			var ty = raw_pos_player.y - this.equipped.cameraPosY;
-			// position of the player on the paper with the hole
-			var pos_player = new Pair(rect.x + tx, rect.y + ty);
-			// cursor position on the paper with the hole (better this way since
-			// even if the mouse is placed outside of the canvas, it will still
-			//work.)
-			var cursor = this.stage.getCursor();
+				// position of the player on the moving paper
 
-			var slope = new Pair(cursor.x - pos_player.x, cursor.y - pos_player.y);
+				var tx = raw_pos_player.x - this.equipped.cameraPosX;
+				var ty = raw_pos_player.y - this.equipped.cameraPosY;
+				// position of the player on the paper with the hole
+				var pos_player = new Pair(rect.x + tx, rect.y + ty);
+				// cursor position on the paper with the hole (better this way since
+				// even if the mouse is placed outside of the canvas, it will still
+				//work.)
+				var cursor = this.stage.getCursor();
+
+				var slope = new Pair(cursor.x - pos_player.x, cursor.y - pos_player.y);
+
+			}
+			else if (this.equipped.name == "bot") {
+				slope = new Pair(this.equipped.target.position.x - this.equipped.position.x, this.equipped.target.position.y - this.equipped.position.y);
+			}
+
 			var angle_Rad = Math.atan2(slope.y,slope.x);
 			this.rotation = angle_Rad;
 
@@ -464,7 +481,6 @@ class Weapon {
 			// 55 is the distance of the gun from the center of the player.
 			this.position.x = raw_pos_player.x + slope.x * 55;
 			this.position.y = raw_pos_player.y + slope.y * 55;
-
 
 		}
 	}
@@ -483,18 +499,18 @@ class Weapon {
 			this.ammo -= 3;
 			return true;
 		}
-
 		if (this.ammo > 0 && (this.type == "sniper" ||
 		 					   this.type == "9 mm" ||
 						   	   this.type == "bazooka")){
 			this.ammo -= 1;
 			return true;
 		}
-			return false;
+		return false;
 	}
 }
 class Bullet {
 	constructor(stage,player,position, radius, speed,range, color){
+		this.name = "bullet";
 		this.stage = stage;
 		this.position = new Pair(player.equipped.position.x,player.equipped.position.y);
 		this.range = range;
@@ -546,6 +562,7 @@ class Bullet {
 }
 class Ball {
 	constructor(stage, position, velocity, colour, radius){
+		this.name = "ball";
 		this.stage = stage;
 		this.position=position;
 		this.intPosition(); // this.x, this.y are int version of this.position
@@ -610,9 +627,17 @@ class Ball {
 }
 class Ammo{
 	constructor(stage,position,size){
+		this.name = "ammo";
 		this.stage = stage;
 		this.position = position;
 		this.size = size;
+	}
+	grab_ammo(type){
+		if (type == "flame thrower"){return 100;}
+		else if (type == "sniper"){return 5;}
+		else if (type == "9 mm"){return 12;}
+		else if (type == "bazooka"){return 3;}
+		else if (type == "shotgun"){return 30;}
 	}
 	draw(context){
 		context.beginPath();
@@ -633,3 +658,179 @@ class Blocks {
 	}
 }
 */
+
+class Bot{
+	constructor(stage,position){
+		this.name = "bot";
+		this.stage = stage;
+		this.position = position;
+		this.speed = 3;
+		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
+		this.radius = 50;
+
+		this.pickup_range = 50;
+		this.equipped = null;
+
+		this.closest_weapon = null;
+		this.closest_ammo = null;
+		this.target = this.stage.player;
+	}
+	shoot(){
+		// position of the gun on the moving paper
+		var raw_pos_gun = this.equipped.position;
+
+		if(this.equipped.shoot()){
+			if (this.equipped.type == "flame thrower") {
+				for (var i = 0; i < 10; i++) {
+					var position = new Pair(raw_pos_gun.x+i*3,raw_pos_gun.y+i*3);
+					this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+
+				}
+
+			}
+			if (this.equipped.type == "shotgun") {
+				for (var i = 0; i < 3; i++) {
+					var j= i;
+					var k = i;
+					if (this.equipped.rotation < 0 && this.equipped.rotation > -(90*Math.PI/180) ){k = -i;}
+					if (this.equipped.rotation < (180*Math.PI/180) && this.equipped.rotation > (90*Math.PI/180) ){j = -i;}
+
+					var position = new Pair(raw_pos_gun.x+j*5,raw_pos_gun.y+k*5);
+					this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+
+				}
+
+			}
+			else {
+				this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+
+			}
+
+		}
+	}
+	draw(context){
+		context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
+		context.save();
+		context.fillStyle = this.colour;
+		context.beginPath();
+		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
+		context.fill();
+		context.closePath();
+	}
+	step(){
+		// update closest weapon
+		for (var i = 0; i < this.stage.weapons.length; i++) {
+
+			if (this.stage.weapons[i] == this.equipped ||
+				this.stage.weapons[i] == this.target.equipped ||
+				this.stage.weapons[i].ammo == 0) {continue;}
+
+			else if((this.closest_weapon == null) ||
+				   (distance(this.stage.weapons[i].position,this.position) < distance(this.closest_weapon.position,this.position))){
+				this.closest_weapon = this.stage.weapons[i];
+			}
+		}
+
+		// update closest ammo
+		for (var i = 0; i < this.stage.ammos.length; i++) {
+
+			if((this.closest_ammo == null) ||
+			  (distance(this.stage.ammos[i].position,this.position) < distance(this.closest_ammo.position,this.position))){
+				this.closest_ammo = this.stage.ammos[i];
+			}
+		}
+
+		var in_vacinity = (this.target.position.x - 200 < this.position.x &&
+						  this.position.x < this.target.position.x + 200 &&
+						  this.target.position.y - 200 < this.position.y &&
+						  this.position.y < this.target.position.y + 200);
+
+		// If you don't have a gun go to the closest gun and grab it.
+		// console.log(this.equipped == null);
+		if (this.equipped == null) {
+			var d = new Pair(this.closest_weapon.position.x - this.position.x,this.closest_weapon.position.y - this.position.y);
+			d.normalize();
+			this.position.x += d.x * this.speed;
+			this.position.y += d.y * this.speed;
+
+			this.pickUp(this.closest_weapon);
+		}
+		// If you have ran out of ammo, either get a new gun or get ammo, whichever one is the closest
+		else if (this.equipped && this.equipped.ammo == 0) {
+
+			if (distance(this.position,this.closest_weapon.position) < distance(this.position, this.closest_ammo.position)) {
+				var d = new Pair(this.closest_weapon.position.x - this.position.x,this.closest_weapon.position.y - this.position.y);
+				d.normalize();
+				this.position.x += d.x * this.speed;
+				this.position.y += d.y * this.speed;
+
+				this.pickUp(this.closest_weapon);
+				this.closest_weapon = null;
+
+			}
+			else if (distance(this.position,this.closest_weapon.position) >= distance(this.position, this.closest_ammo.position)) {
+
+				var d = new Pair(this.closest_ammo.position.x - this.position.x,this.closest_ammo.position.y - this.position.y);
+				d.normalize();
+				this.position.x += d.x * this.speed;
+				this.position.y += d.y * this.speed;
+
+				this.pickUp(this.closest_ammo);
+				this.closest_ammo = null;
+			}
+		}
+		// If you are not near the player
+		else if (!in_vacinity) {
+			var d = new Pair(this.target.position.x - this.position.x,this.target.position.y - this.position.y);
+			d.normalize();
+			this.position.x += d.x * this.speed;
+			this.position.y += d.y * this.speed;
+
+		}
+		// If you are near the player
+		else if (in_vacinity) {
+			this.shoot();
+		}
+
+	}
+	pickUp(object){
+		if (object.name == "weapon") {
+			var weaponPosition = object.position;
+
+			if (this.position.x - this.pickup_range < weaponPosition.x &&
+			weaponPosition.x < this.position.x + this.pickup_range &&
+			this.position.y - this.pickup_range < weaponPosition.y &&
+			weaponPosition.y < this.position.y + this.pickup_range){
+				if (this.equipped){
+					this.closest_weapon = null;
+					var x=Math.floor((Math.random()*this.stage.width));
+					var y=Math.floor((Math.random()*this.stage.height));
+					this.equipped.drop();
+					this.equipped.ammo = 30;
+					this.equipped.position = new Pair(x,y);
+					this.equipped = null;
+				}
+				this.equipped = object;
+				object.held(this);
+			}
+		}
+		else if (object.name == "ammo" && this.equipped!= null) {
+			var ammoPosition = object.position;
+
+			if (this.position.x - this.pickup_range < ammoPosition.x &&
+			ammoPosition.x < this.position.x + this.pickup_range &&
+			this.position.y - this.pickup_range < ammoPosition.y &&
+			ammoPosition.y < this.position.y + this.pickup_range){
+
+					this.equipped.ammo = object.grab_ammo(this.equipped.type);
+					var x=Math.floor((Math.random()*this.stage.width));
+					var y=Math.floor((Math.random()*this.stage.height));
+					object.position = new Pair(x,y);
+					this.closest_ammo = null;
+					// this.stage.removeAmmo(object);
+					// this.stage.removeActor(object);
+				}
+			}
+	}
+
+}
