@@ -217,4 +217,5 @@ $(function(){
   $("#document").ready(function(){
     checkJWT();
   })
+
 });

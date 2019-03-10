@@ -9,9 +9,11 @@ class Stage {
 		this.bullets = [];
 		this.bots = [];
 		this.ammos = [];
+		this.terrain = [];
+		this.teleporters = [];
 		// the logical width and height of the stage
-		this.width=1000;
-		this.height=1500;
+		this.width=2000;
+		this.height=2000;
 
 		// Add the player to the center of the stage
 		// this.addPlayer(new Player(this, Math.floor(this.width/2), Math.floor(this.height/2)));
@@ -19,15 +21,30 @@ class Stage {
 		this.addPlayer(this.player);
 		//Add GUI to users screen
 		this.GUI = new GUI(this.player)
-		this.addActor(this.GUI);
 		//Add weapons and weapons list
 		var w = new Weapon(this,new Pair(600,700),20,50);
 		this.addWeapon(w);
 		this.addActor(w);
+		//Create terrain
+		var t = new Terrain("grassy", new Pair(0,0), new Pair(this.width/2,this.height/2))
+		var t1 = new Terrain("desert", new Pair(this.width/2,0), new Pair(this.width/2,this.height/2))
+		var t2 = new Terrain("grassy", new Pair(0,this.height/2), new Pair(this.width/2,this.height/2))
+		var t3 = new Terrain("desert", new Pair(this.width/2,this.height/2), new Pair(this.width/2,this.height/2))
+		this.terrain.push(t)
+		this.terrain.push(t1)
+		this.terrain.push(t2)
+		this.terrain.push(t3)
+		//create teleporter
+		var teleporter = new Teleporter(this, new Pair(0, this.height/2));
+		this.addActor(teleporter)
+		this.teleporters.push(teleporter);
+		var teleporter2 = new Teleporter(this, new Pair(this.width-100,this.height/2))
+		this.teleporters.push(teleporter2);
+		this.addActor(teleporter2)
 		//where the cursor is placed
 		this.cursor = 0;
 		// Add in some Balls
-		var total=1;
+		var total=5;
 		while(total>0){
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
@@ -38,19 +55,19 @@ class Stage {
 				var alpha = Math.random();
 				var colour= 'rgba('+red+','+green+','+blue+','+alpha+')';
 				var position = new Pair(x,y);
-				var b = new Ball(this, position, velocity, colour, radius);
+				var b = new Ball(this, position, velocity, colour, 50);
 				this.bots.push(b);
 				this.addActor(b);
 				total--;
 			}
 		}
 		// Create Ammo
-		var total=5;
+		var total=15;
 		while(total>0){
 			var x = Math.floor((Math.random()*this.width));
 			var y = Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
-				var a = new Ammo(this,new Pair(x,y),new Pair(40,5));
+				var a = new Ammo(this,new Pair(x,y),new Pair(40,40));
 				this.ammos.push(a);
 				this.addActor(a);
 				total--;
@@ -97,9 +114,6 @@ class Stage {
 	addWeapon(weapon){
 		this.weapons.push(weapon);
 	}
-	getWeapons(){
-		return this.weapons;
-	}
 	addPlayer(player){
 		this.addActor(player);
 		this.player=player;
@@ -121,6 +135,7 @@ class Stage {
 		for(var i=0;i<this.actors.length;i++){
 			this.actors[i].step();
 		}
+		this.GUI.step();
 	}
 	draw(){
 		//drawing the stage of the map
@@ -132,10 +147,21 @@ class Stage {
 		context.rect(0, 0, this.width, this.height);
 		context.stroke();
 		context.closePath();
+		for (var i=0; i<this.terrain.length;i++){
+			this.terrain[i].draw(context);
+		}
 		//Drawing most of the objects
 		for(var i=0;i<this.actors.length;i++){
 			this.actors[i].draw(context);
 		}
+		this.GUI.draw(context);
+
+	}
+	renderVicinity(actor){
+		if ( (this.player.cameraPosX == 0 && actor.position.x < this.canvas.clientWidth/2+100) ||
+				 (this.player.cameraPosX != 0 && this.player.cameraPosX - this.canvas.clientWidth/2 - 100 < actor.position.x &&
+				  actor.position.x < this.player.cameraPosX + this.canvas.clientWidth/2 + 100))
+					console.log("its around my x");
 	}
 	getActor(x, y){
 		for(var i=0;i<this.actors.length;i++){
@@ -152,12 +178,15 @@ class player {
 		this.speed = new Pair(0,0);
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
-
-		this.pickup_range = 50;
-
+		this.pickup_range = 75;
 		this.equipped = null;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
+		this.myImage = new Image();
+		this.myImage.src = '/wall.jpeg';
+	}
+	name(){
+		return "player"
 	}
 	shoot(x,y){
 		// If the player has a gun.
@@ -177,16 +206,36 @@ class player {
 		context.save();
 		context.fillStyle = this.colour;
 		context.beginPath();
+		// context.drawImage(this.myImage, this.position.x, this.position.y);
 		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
 		context.fill();
 		context.closePath();
 	}
 	step(){
 		//check if player is within bounds
+		var terrainSpeed=1;
+		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
+			var terrainSpeed =  this.stage.terrain[0].speed
+		}
+		if (this.position.x > this.stage.width/2 && this.position.y < this.stage.height/2){
+			var terrainSpeed =  this.stage.terrain[1].speed
+		}
+		if (this.position.x <= this.stage.width/2 && this.position.y >= this.stage.height/2){
+			var terrainSpeed =  this.stage.terrain[2].speed
+		}
+		if (this.position.x > this.stage.width/2 && this.position.y > this.stage.height/2){
+			var terrainSpeed =  this.stage.terrain[3].speed
+		}
+		this.speed.x = this.speed.x* terrainSpeed
+		this.speed.y = this.speed.y*terrainSpeed
 		if (this.speed.x < 0 && this.position.x - this.radius> 5) this.position.x += this.speed.x;
-		if (this.speed.x > 0 && this.position.x + this.radius < this.stage.width) this.position.x += this.speed.x
-		if (this.speed.y > 0 && this.position.y < this.stage.height - this.radius) this.position.y += this.speed.y
-		if (this.speed.y < 0 && this.position.y > 5 + this.radius) this.position.y += this.speed.y
+		if (this.speed.x > 0 && this.position.x + this.radius < this.stage.width) this.position.x += this.speed.x;
+		if (this.speed.y > 0 && this.position.y < this.stage.height - this.radius) this.position.y += this.speed.y;
+		if (this.speed.y < 0 && this.position.y > 5 + this.radius) this.position.y += this.speed.y;
+		this.speed.x = this.speed.x/terrainSpeed
+		this.speed.y = this.speed.y/terrainSpeed
+
+		//walking through terrain causes different velocity
 
 
 		//creating the camera for the player so it follows the player
@@ -206,19 +255,19 @@ class player {
 	}
 	pickUp(){
 		if (!this.equipped){
-			var weaps = this.stage.getWeapons();
-			for (var i=0; i<weaps.length;i++){
-				var weaponPosition = weaps[i].getPosition();
-				var weaponLength = weaps[i].getLength();
-
-				if (this.position.x - this.pickup_range < weaponPosition.x &&
-				weaponPosition.x < this.position.x + this.pickup_range &&
-				this.position.y - this.pickup_range < weaponPosition.y &&
-				weaponPosition.y < this.position.y + this.pickup_range){
+			var weaps = this.stage.weapons;
+			for (var i=0; i<this.stage.weapons.length;i++){
+				if (this.pickUpHelper(weaps[i])){
 						this.equipped= weaps[i];
 						weaps[i].held(this);
 						this.stage.add_gun_GUI(weaps[i]);
-					}
+				}
+			}
+		}
+		for (var i=0; i < this.stage.teleporters.length; i++){
+			if (this.pickUpHelper(this.stage.teleporters[i])){
+				this.teleport(this.stage.teleporters[i].position.x)
+				break;
 			}
 		}
 		var ammos = this.stage.getAmmo();
@@ -226,7 +275,6 @@ class player {
 			for (var i=0;i<ammos.length;i++){
 				var aPosition = ammos[i].position;
 				var size = ammos[i].size;
-
 				if (this.position.x - this.pickup_range < aPosition.x &&
 				aPosition.x < this.position.x + this.pickup_range &&
 				this.position.y - this.pickup_range < aPosition.y &&
@@ -237,7 +285,22 @@ class player {
 					}
 				}
 			}
+	}
+	teleport(posX){
+		console.log("posX: "+ posX)
+		if (posX <400) this.position.x = this.stage.width-50;
+		else this.position.x = 50;
+	}
+	pickUpHelper(pickUp){
+		var objPos = pickUp.position;
+		console.log(this.position.x - this.pickup_range)
+		if (this.position.x - this.pickup_range < objPos.x &&
+		objPos.x < this.position.x + this.pickup_range &&
+		this.position.y - this.pickup_range < objPos.y &&
+		objPos.y < this.position.y + this.pickup_range){
+				return true;
 		}
+	}
 	dropDown(){
 		if (this.equipped){
 			this.equipped.drop();
@@ -320,13 +383,15 @@ class Pair {
 	}
 }
 class Weapon {
-	constructor(stage, position,width,height) {
+	constructor(stage, position, width, height) {
 		this.stage = stage;
 		this.position = position;
 		this.equipped = false;
 		this.length = new Pair(width,height);
 		this.rotation = 0;
-		this.ammo = 30;
+		this.ammo = 50;
+		this.myImage = new Image();
+		this.myImage.src = '/gun2.png';
 	}
 	draw(context){
 		context.save();
@@ -335,11 +400,14 @@ class Weapon {
 		context.fillStyle = "gray";
 		context.strokeStyle = "gray";
 		context.rotate(this.rotation);
-		context.rect(0,-6,25,12);
+		context.drawImage(this.myImage, 0, 0);
 		context.fill();
 		context.closePath();
 		context.stroke();
 		context.restore();
+	}
+	name(){
+		return "weapon"
 	}
 	held(player){
 		if (!this.equipped){
@@ -408,13 +476,19 @@ class Bullet {
 		this.dy = position.y-player.position.y;
 		this.radius = radius;
 		this.color ="Black";
+		this.myImage = new Image();
+		this.myImage.src = '/bullet.png';
+	}
+	name(){
+		return "bullet"
 	}
 	draw(context){
 		context.save();
 		context.fillStyle = this.color;
 		context.strokeStyle = this.color;
 		context.beginPath();
-		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
+		context.drawImage(this.myImage, this.position.x-this.radius/2, this.position.y-this.radius/2);
+		// context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
 		context.fill();
 		context.closePath();
 		context.restore();
@@ -457,8 +531,24 @@ class Ball {
 		this.velocity=velocity;
 		this.colour = colour;
 		this.radius = radius;
+		this.images = [];
+		var myImage = new Image();
+		myImage.src = '/monster.png';
+		var myImage1 = new Image();
+		myImage1.src = '/monster1.png';
+		var myImage2 = new Image();
+		myImage2.src = '/monster2.png';
+		var myImage3 = new Image();
+		myImage3.src = '/monster3.png';
+		this.images.push(myImage)
+		this.images.push(myImage1)
+		this.images.push(myImage2)
+		this.images.push(myImage3)
+		this.increment = 0;
 	}
-
+	name(){
+		return "ball"
+	}
 	headTo(position){
 		this.velocity.x=(position.x-this.position.x);
 		this.velocity.y=(position.y-this.position.y);
@@ -478,6 +568,9 @@ class Ball {
 	step(){
 		this.position.x=this.position.x+this.velocity.x;
 		this.position.y=this.position.y+this.velocity.y;
+		this.increment++;
+		if (this.increment > 79)
+			this.increment=0;
 
 		// bounce off the walls
 		if(this.position.x<0){
@@ -507,27 +600,76 @@ class Ball {
 		context.strokeStyle = this.colour;
    		// context.fillRect(this.x, this.y, this.radius,this.radius);
 		context.beginPath();
-		context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+		context.drawImage(this.images[Math.floor(this.increment/20)], this.position.x - this.radius, this.position.y - this.radius);
+		// context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
 		context.fill();
 		context.closePath();
 	}
 }
-class Ammo{
+class Ammo {
 	constructor(stage,position,size){
 		this.stage = stage;
 		this.position = position;
 		this.size = size;
+		this.myImage = new Image();
+		this.myImage.src = '/chest.png';
+	}
+	name(){
+		return "ammo"
 	}
 	draw(context){
 		context.beginPath();
 		context.strokeStyle = "Purple";
 		context.fillStyle = "Purple";
-		context.rect(this.position.x,this.position.y,this.size.x,this.size.y);
+		context.drawImage(this.myImage, this.position.x, this.position.y);
+		// context.rect(this.position.x,this.position.y,this.size.x,this.size.y);
 		context.stroke();
 		context.fill();
 		context.closePath();
 	}
 	step(){}
+}
+class Terrain {
+	constructor(region,position, size){
+		this.region = region;
+		this.position = position;
+		this.size = size;
+		if (region == "desert"){
+			this.img = new Image();
+			this.img.src = '/desert.png';
+			this.speed = 0.75;
+		} else {
+			this.img = new Image();
+			this.img.src = '/grass.png';
+			this.speed = 1;
+		}
+	}
+	draw(context){
+	context.beginPath();
+	var pattern = context.createPattern(this.img, 'repeat');
+  context.fillStyle = pattern;
+  context.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+	context.closePath();
+
+	}
+}
+class Teleporter { //these will teleport you across the map
+	constructor(stage,position){
+		this.stage =  stage;
+		this.position = position;
+		this.myImage = new Image();
+		this.myImage.src = '/rotated_door.png';
+	}
+	draw(context){
+		context.save();
+		context.beginPath();
+		// context.drawImage(this.myImage, this.position.x, this.position.y);
+		context.drawImage(this.myImage, this.position.x, this.position.y);
+		context.closePath();
+	}
+	step(){
+
+	}
 }
 /*
 class Blocks {

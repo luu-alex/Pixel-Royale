@@ -22,6 +22,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));  // to support URL-encoded bodies
 app.use(express.static('public'));
+app.use(express.static('icons'));
 //check if client has a token, if so he is logged in
 const checkToken = (req, res, next) => {
   const token = req.cookies.auth["token"]
