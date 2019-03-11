@@ -1,3 +1,4 @@
+
 class Weapon {
 	constructor(stage, position, type){
 		this.name = "weapon";
@@ -18,6 +19,7 @@ class Weapon {
 			this.bullet_speed = 0.1; //range of 0 to 1
 			this.bullet_range = 150;
 			this.bullet_color = "#fff605";
+      this.myImage.src = '/flamethrower.png';
 		}
 		else if(this.type == "sniper"){
 			this.length = new Pair(5,30);
@@ -28,6 +30,7 @@ class Weapon {
 			this.bullet_speed = 0.6;
 			this.bullet_range = 500;
 			this.bullet_color = "red";
+      this.myImage.src = '/sniper.png';
 		}
 		else if(this.type == "9 mm"){
 			this.length = new Pair(5,10);
@@ -38,20 +41,21 @@ class Weapon {
 			this.bullet_speed = 0.3;
 			this.bullet_range = 250;
 			this.bullet_color = "black";
+      this.myImage.src = '/gun2.png';
 
 		}
 		else if(this.type == "bazooka"){
 			this.length = new Pair(30,40);
 			this.ammo = 3;
 			this.gun_color = "#2b8740";
-
+  		this.myImage.src = '/bazooka.png';
 			this.bullet_size = 20;
-			this.bullet_speed = 0.05;
+			this.bullet_speed = 0.75;
 			this.bullet_range = 200;
 			this.bullet_color = "#798c6a";
 		}
 		else if(this.type == "shotgun"){
-			this.length = new Pair(10,15);
+			this.length = new Pair(40,15);
 			this.ammo = 30;
 			this.gun_color = "#c97d0c";
 
@@ -59,6 +63,7 @@ class Weapon {
 			this.bullet_speed = 0.3;
 			this.bullet_range = 200;
 			this.bullet_color = "purple";
+      this.myImage.src = '/shotgun.png';
 		}
 	}
 	draw(context){

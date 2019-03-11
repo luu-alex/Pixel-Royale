@@ -1,5 +1,5 @@
 class Bullet {
-	constructor(stage,player,position, radius, speed,range, color){
+	constructor(stage,player,position, radius, speed,range, color, bulletType){
 		this.name = "bullet";
 		this.stage = stage;
 		this.position = new Pair(player.equipped.position.x,player.equipped.position.y);
@@ -12,7 +12,8 @@ class Bullet {
 		this.speed = speed ;
 		this.color ="Black";
 		this.myImage = new Image();
-		this.myImage.src = '/bullet.png';
+    console.log('/'+bulletType+'bullet.png')
+		this.myImage.src = '/'+bulletType+'bullet.png';
 	}
 	name(){
 		return "bullet"

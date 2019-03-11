@@ -16,7 +16,7 @@ let db = new sqlite3.Database(':memory:', (err) => { //Attempt to connect to our
 });
 
 db.run('DROP TABLE IF EXISTS langs'); //Drop our current database when we run the server and create a new one
-db.run('CREATE TABLE IF NOT EXISTS langs(name text PRIMARY KEY,password text,email varchar(255))');
+db.run('CREATE TABLE langs(name text PRIMARY KEY,password text,email varchar(255))');
 
 app.use(cookieParser());
 app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -52,7 +52,6 @@ app.get('/game', function(req, res){
 
 app.post('/registration', function(req, res){
   var sql = "SELECT name FROM langs where name="+"'"+req.body.name+"'"+";";
-  console.log(req.body.name+req.body.pass+req.body.email)
   var a =0;
   db.all(sql, [], (err, rows) => {
     if (err) {
@@ -132,7 +131,6 @@ app.get('/stats', function(req, res){
 });
 
 app.get('/logout', function(req, res){
-  console.log("loggedout");
   res.cookie('auth');
   res.send({success: "success"})
 })
@@ -140,9 +138,27 @@ app.get('/logout', function(req, res){
 app.get("/checkJWT", function(req, res){
   var token = {};
   if (req.cookies.auth["token"]) {
-
+    console.log(req.cookies.auth["name"])
+    var sql = "SELECT name FROM langs where name="+"'"+req.cookies.auth["name"]+"'"+";";
+    var a = 0;
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        throw err;
+      }
+      rows.forEach((row) => {
+        if (row){
+          a = 1
+        }
+      })
+    //token is not valid
+      if (a) {
+        res.json({success: true})
+      } else {
+        res.cookie('auth');
+        res.json({success: false})
+      }
+    });
   }
-  res.json(token)
 })
 
 app.get('/edit', checkToken, function(req, res){
@@ -162,12 +178,21 @@ app.get('/edit', checkToken, function(req, res){
     });
   });
 })
-
-app.post('/edit', checkToken, function(req, res){
+app.put('/edit', checkToken, function(req, res){
   var name = req.cookies.auth["name"];
   data = [req.body.email,name];
-  console.log(data);
   var sql = "UPDATE langs set email = ? where name= ?;";
+  db.run(sql, data, function(err) {
+    if (err) {
+      res.json({success:false});
+    }
+    res.json({success:true});
+  })
+})
+app.delete('/edit', checkToken, function(req, res){
+  var name = req.cookies.auth["name"];
+  data = [name];
+  var sql = "DELETE from langs where name = ?;";
   db.run(sql, data, function(err) {
     if (err) {
       res.json({success:false});

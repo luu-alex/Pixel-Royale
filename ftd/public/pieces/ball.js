@@ -23,9 +23,6 @@ class Ball {
 		this.images.push(myImage3)
 		this.increment = 0;
 	}
-	name(){
-		return "ball"
-	}
 	headTo(position){
 		this.velocity.x=(position.x-this.position.x);
 		this.velocity.y=(position.y-this.position.y);
@@ -33,7 +30,6 @@ class Ball {
 	}
 	hit(){
 		this.hp--;
-		console.log("monster hit")
 		if (this.hp==0){
 			this.stage.removeActor(this)
 			this.stage.removeBot(this)

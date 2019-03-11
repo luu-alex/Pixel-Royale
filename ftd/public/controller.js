@@ -18,6 +18,9 @@ function pauseGame(){
 	clearInterval(interval);
 	interval=null;
 }
+function getGame(){
+	return stage;
+}
 function aim(event){
 	stage.updateCursor(event.clientY,event.clientX);
 	// stage.player.aim();
@@ -47,8 +50,10 @@ function moveByKey(event){
 		stage.player.dropDown();
 	}
 }
-
 function stopMove(event){
 	keys[event.key] = false;
 	stage.player.stopMovement(event.key);
+}
+function stopGame() {
+
 }

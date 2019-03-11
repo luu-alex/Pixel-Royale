@@ -25,23 +25,33 @@ function userRegister(){
     if (!validateEmail(email)) $('#invalidEmail').show();
 }
 function populateProfile(){
-    $.ajax({
-      url: "/edit",
-      method:"get",
-      success: function(result){
-        $("#pName").val(result.name);
-        $("#pEmail").val(result.email);
+  $.ajax({
+    url: "/edit",
+    method:"get",
+    success: function(result){
+      $("#pName").val(result.name);
+      $("#pEmail").val(result.email);
+    }
+  });
+}
+function deleteProfile(){
+  $.ajax({
+    url: "/edit",
+    method:"delete",
+    success: function(result){
+      if (result) {
+      indexShowPage("login");
       }
+    }
   });
 }
 function editProfile(){
   var name = $('#pName').val();
   var email = $('#pEmail').val();
-  console.log(email);
   if (name && (validateEmail(email))) {
     $.ajax({
       url: "/edit",
-      method:"post",
+      method:"put",
       data:{name: name,email: email},
       success: function(result){
         $('#success').show();
@@ -122,6 +132,7 @@ function loginShowPage(page){
 }
 function indexShowPage(page){
   $.getScript('./controller.js', function(){
+    console.log("clear interval");
     pauseGame();
   })
   $("#stage").hide();
@@ -149,6 +160,7 @@ function game(){
   $("#profile").hide();
   $("#stage").show();
   $.getScript('./controller.js', function(){
+    pauseGame();
     setupGame();
     startGame();
   })
@@ -213,6 +225,9 @@ $(function(){
   $("#submitEdit").on('click', function(e){
     e.preventDefault();
     editProfile();
+  })
+  $("#deleteEditBTN").on('click', function(e){
+    deleteProfile();
   })
   $("#document").ready(function(){
     checkJWT();
