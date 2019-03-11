@@ -18,6 +18,9 @@ function pauseGame(){
 	clearInterval(interval);
 	interval=null;
 }
+function getGame(){
+	return stage;
+}
 function aim(event){
 	stage.updateCursor(event.clientY,event.clientX);
 	// stage.player.aim();
@@ -52,5 +55,5 @@ function stopMove(event){
 	stage.player.stopMovement(event.key);
 }
 function stopGame() {
-	stage = null;
+
 }

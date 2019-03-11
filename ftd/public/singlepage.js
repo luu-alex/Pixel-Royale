@@ -132,7 +132,8 @@ function loginShowPage(page){
 }
 function indexShowPage(page){
   $.getScript('./controller.js', function(){
-    stopGame();
+    console.log("clear interval");
+    pauseGame();
   })
   $("#stage").hide();
   $("#stats").hide();
@@ -159,6 +160,7 @@ function game(){
   $("#profile").hide();
   $("#stage").show();
   $.getScript('./controller.js', function(){
+    pauseGame();
     setupGame();
     startGame();
   })

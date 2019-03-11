@@ -8,13 +8,11 @@ class player {
 		this.radius = 50;
 		this.pickup_range = 75;
 		this.equipped = null;
+    this.hp = 3;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
 		this.myImage = new Image();
 		this.myImage.src = '/wall.jpeg';
-	}
-	name(){
-		return "player"
 	}
 	shoot(){
 		// If the player has a gun.
@@ -27,7 +25,7 @@ class player {
 				if (this.equipped.type == "flame thrower") {
 					for (var i = 0; i < 10; i++) {
 						var position = new Pair(raw_pos_gun.x+i*3,raw_pos_gun.y+i*3);
-						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
 
 					}
 
@@ -40,13 +38,13 @@ class player {
 						if (this.equipped.rotation < (180*Math.PI/180) && this.equipped.rotation > (90*Math.PI/180) ){j = -i;}
 
 						var position = new Pair(raw_pos_gun.x+j*5,raw_pos_gun.y+k*5);
-						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
 
 					}
 
 				}
 				else {
-					this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
+					this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
 
 				}
 			}
@@ -107,7 +105,8 @@ class player {
 		if (!this.equipped){
 			var weaps = this.stage.weapons;
 			for (var i=0; i<this.stage.weapons.length;i++){
-				if (this.pickUpHelper(weaps[i])){
+        if ((!this.equipped))
+				    if (this.pickUpHelper(weaps[i])){
 						this.equipped= weaps[i];
 						weaps[i].held(this);
 						this.stage.add_gun_GUI(weaps[i]);
@@ -180,10 +179,8 @@ class player {
 			this.speed.y = 5;
 		}
 	}
-	drawMap(context){
-		context.beginPath();
-		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
-		context.fill();
-		context.closePath();
-	}
+	hit() {
+    this.hp--;
+    console.log("hit");
+  }
 }
