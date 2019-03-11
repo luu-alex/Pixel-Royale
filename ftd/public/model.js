@@ -31,20 +31,17 @@ class Stage {
 		//Add GUI to users screen
 		this.GUI = new GUI(this, this.player);
 
-		//Create terrain
-		var t = new Terrain("grassy", new Pair(0,0), new Pair(this.width,this.height));
-		for (var i = 0; i < 3; i++) {
-			var x = Math.floor((Math.random()*this.width));
-			var y = Math.floor((Math.random()*this.height));
-			new Terrain("desert", new Pair(x,y), new Pair(this.width/6,this.height/6));
-			this.terrain.push(new Terrain("desert", new Pair(x,y), new Pair(this.width/6,this.height/6)));
+		// Generate a random map
+		var num_rows = 8;
+		var num_tiles = 8;
+		var terrain_types = ["desert","grassy"];
 
-
+		for (var i = 0; i < num_rows; i++) {
+			for (var j = 0; j < num_tiles; j++) {
+				var rand_terrain_type = terrain_types[Math.floor(Math.random() * terrain_types.length)];
+				this.terrain.push(new Terrain(rand_terrain_type, new Pair(i * (this.width/num_tiles), j * (this.height/num_rows)), new Pair(this.width/num_tiles,this.height/num_rows)));
+			}
 		}
-		// var t3 = new Terrain("desert", new Pair(this.width/2,this.height/2), new Pair((this.width/2)-20,(this.height/2)-20));
-		this.terrain.push(t);
-		// this.terrain.push(t2);
-		// this.terrain.push(t3);
 
 
 		//create teleporter
@@ -235,9 +232,6 @@ class Stage {
 		}
 		return null;}
 }
-
-
-
 
 /*
 class Blocks {

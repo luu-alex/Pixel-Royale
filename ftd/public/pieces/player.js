@@ -67,34 +67,34 @@ class player extends People{
     	//walking through terrain causes different velocity
 		var terrainSpeed=1;
 
-		// for (var i = 0; i < array.length; i++) {
-		// 	array[i]
-		// }
 
-		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
-			var terrainSpeed =  this.stage.terrain[0].speed;
+
+		for (var i = 0; i < this.stage.terrain.length; i++) {
+			var current_tile = this.stage.terrain[i];
+			if (current_tile.position.x < this.position.x &&
+				current_tile.position.y < this.position.y &&
+				this.position.x < current_tile.position.x + current_tile.size.x &&
+				this.position.y < current_tile.position.y + current_tile.size.y) {
+				terrainSpeed = current_tile.speed;
+			}
+
 		}
 
-		if (this.position.x > this.stage.width/2 && this.position.y < this.stage.height/2) var terrainSpeed =  this.stage.terrain[1].speed;
 
-		if (this.position.x <= this.stage.width/2 && this.position.y >= this.stage.height/2) var terrainSpeed =  this.stage.terrain[2].speed;
+		// if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
+		// 	var terrainSpeed =  this.stage.terrain[0].speed;
+		// }
+		//
+		// if (this.position.x > this.stage.width/2 && this.position.y < this.stage.height/2) var terrainSpeed =  this.stage.terrain[1].speed;
+		//
+		// if (this.position.x <= this.stage.width/2 && this.position.y >= this.stage.height/2) var terrainSpeed =  this.stage.terrain[2].speed;
+		//
+		// if (this.position.x > this.stage.width/2 && this.position.y > this.stage.height/2) var terrainSpeed =  this.stage.terrain[3].speed;
 
-		if (this.position.x > this.stage.width/2 && this.position.y > this.stage.height/2) var terrainSpeed =  this.stage.terrain[3].speed;
-
-		this.speed.x = this.speed.x* terrainSpeed;
-		this.speed.y = this.speed.y*terrainSpeed;
+		this.speed.x = this.speed.x * terrainSpeed;
+		this.speed.y = this.speed.y * terrainSpeed;
 
 
-	//check if player is within bounds
-
-      // if (this.speed.x > 0 && this.position.x + this.radius < obj.position.x) return false;
-      // if (this.speed.y > 0 && this.position.y + this.radius < obj.position.y) return false;
-      // if (this.speed.y < 0 && this.position.y > obj.position.x + length) return false;
-      // if (!this.collision(this.stage.terrain[i],this.stage.terrain[i].size.x,this.stage.terrain[i].size.y)) {
-      //   this.speed.x = 0;
-      //   this.speed.y = 0;
-      // }
-    // }
 		if (this.speed.x < 0 && this.position.x - this.radius> 5) this.position.x += this.speed.x;
 		if (this.speed.x > 0 && this.position.x + this.radius < this.stage.width) this.position.x += this.speed.x;
 		if (this.speed.y > 0 && this.position.y < this.stage.height - this.radius) this.position.y += this.speed.y;
@@ -117,7 +117,7 @@ class player extends People{
 			this.cameraPosY = this.stage.height - this.stage.canvas.clientHeight;
 		}
 	}
-  collision(obj,length,width) {
+  	collision(obj,length,width) {
     if (this.speed.x < 0 && this.position.x - this.radius > obj.position.x + length) return false;
 		if (this.speed.x > 0 && this.position.x + this.radius < obj.position.x) return false;
 		if (this.speed.y > 0 && this.position.y + this.radius < obj.position.y) return false;
@@ -184,16 +184,7 @@ class player extends People{
 		if(keys=='w' || keys=='s') this.speed.y= 0;
 	}
 	move(player,keys){
-    // for (var i=0; i < this.stage.trees.length; i++) {
-      // console.log("player position y:" + (this.position.y - this.radius))
-
-      // var terrain = this.stage.trees[i];
-      // console.log( terrain.position.y)
-    //&& !( this.position.x - this.radius > terrain.position.x + terrain.size.x &&
-        // terrain.position.y < this.position.y && this.position.y < this.position.y + terrain.size.y)
-    //   if (this.speed.x < 0 && this.position.x - this.radius > terrain.position.x + terrain.size.x &&
-    //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
-    if (!this.die) {
+    	if (!this.die) {
     	if (keys && keys['a'] && this.position.x+ this.radius > 5 )this.speed.x = -5;
     	if (keys && keys['d'] && this.position.x<this.stage.width) {
   			this.speed.x = 5;
