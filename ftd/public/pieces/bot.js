@@ -1,12 +1,10 @@
-class Bot{
+class Bot extends People{
 	constructor(stage,position){
+    super(stage,position)
 		this.name = "bot";
-		this.stage = stage;
-		this.position = position;
 		this.speed = 3;
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
-
 		this.pickup_range = 50;
 		this.equipped = null;
     this.img = new Image()
@@ -14,19 +12,17 @@ class Bot{
 		this.closest_weapon = null;
 		this.closest_ammo = null;
 		this.target = this.stage.player;
+    this.hp=5;
 	}
 	shoot(){
 		// position of the gun on the moving paper
 		var raw_pos_gun = this.equipped.position;
-
 		if(this.equipped.shoot()){
 			if (this.equipped.type == "flame thrower") {
 				for (var i = 0; i < 10; i++) {
 					var position = new Pair(raw_pos_gun.x+i*3,raw_pos_gun.y+i*3);
 					this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
-
 				}
-
 			}
 			if (this.equipped.type == "shotgun") {
 				for (var i = 0; i < 3; i++) {
@@ -34,12 +30,9 @@ class Bot{
 					var k = i;
 					if (this.equipped.rotation < 0 && this.equipped.rotation > -(90*Math.PI/180) ){k = -i;}
 					if (this.equipped.rotation < (180*Math.PI/180) && this.equipped.rotation > (90*Math.PI/180) ){j = -i;}
-
 					var position = new Pair(raw_pos_gun.x+j*5,raw_pos_gun.y+k*5);
 					this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
-
 				}
-
 			}
 			else {
 				this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
@@ -48,8 +41,8 @@ class Bot{
 	}
 	hit(){
 		this.hp--;
-		console.log("monster hit")
 		if (this.hp==0){
+      this.equipped.drop();
 			this.stage.removeActor(this)
 			this.stage.removeBot(this)
 		}
@@ -162,12 +155,10 @@ class Bot{
 		}
 		else if (object.name == "ammo" && this.equipped!= null) {
 			var ammoPosition = object.position;
-
 			if (this.position.x - this.pickup_range < ammoPosition.x &&
 			ammoPosition.x < this.position.x + this.pickup_range &&
 			this.position.y - this.pickup_range < ammoPosition.y &&
 			ammoPosition.y < this.position.y + this.pickup_range){
-
 					this.equipped.ammo = object.grab_ammo(this.equipped.type);
 					var x=Math.floor((Math.random()*this.stage.width));
 					var y=Math.floor((Math.random()*this.stage.height));

@@ -12,8 +12,9 @@ class GUI{
 		context.beginPath();
 		context.fillStyle="black"
 		context.font = "30px Arial";
-		context.fillText("Ammo: "+this.ammo,150,context.canvas.clientHeight-30);
+		context.fillText("Ammo: "+this.ammo,170,context.canvas.clientHeight-30);
 		context.fillText("Health: "+this.hp,10,context.canvas.clientHeight-30);
+    context.fillText("Enemies left: " + this.stage.bots.length, context.canvas.clientWidth/2, context.canvas.clientHeight-30)
 		context.closePath();
 		context.restore();
 

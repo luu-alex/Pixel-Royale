@@ -26,9 +26,12 @@ class Stage {
 		this.player= new player(this, new Pair(this.width/2,this.height/2),5);
 		this.addPlayer(this.player);
 
-		var z = new Bot(this, new Pair(0,0));
-		this.addBot(z);
-		this.addActor(z);
+		// var z = new Bot(this, new Pair(0,0));
+		// var z2 = new Bot(this, new Pair(100,100));
+		// this.addBot(z);
+		// this.addActor(z);
+		// this.addBot(z2);
+		// this.addActor(z2);
 
 		//Add GUI to users screen
 		this.GUI = new GUI(this, this.player)
@@ -76,7 +79,7 @@ class Stage {
 		//where the cursor is placed
 		this.cursor = 0;
 		// Add in some Balls
-		var total=5;
+		var total=0;
 		while(total>0){
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
@@ -184,6 +187,11 @@ class Stage {
 		}
 	}
 	step(){
+		if (this.bots.length==0) {
+			$.getScript('./singepage.js', function(){
+		    submitScore(3,3)
+		  })
+		}
 		for(var i=0;i<this.actors.length;i++){
 			this.actors[i].step();
 		}
@@ -210,12 +218,11 @@ class Stage {
 		this.GUI.draw(context);
 
 	}
-	renderVicinity(actor){
-		if ( (this.player.cameraPosX == 0 && actor.position.x < this.canvas.clientWidth/2+100) ||
-				 (this.player.cameraPosX != 0 && this.player.cameraPosX - this.canvas.clientWidth/2 - 100 < actor.position.x &&
-				  actor.position.x < this.player.cameraPosX + this.canvas.clientWidth/2 + 100))
-					console.log("its around my x");
-	}
+	// renderVicinity(actor){
+	// 	if ( (this.player.cameraPosX == 0 && actor.position.x < this.canvas.clientWidth/2+100) ||
+	// 			 (this.player.cameraPosX != 0 && this.player.cameraPosX - this.canvas.clientWidth/2 - 100 < actor.position.x &&
+	// 			  actor.position.x < this.player.cameraPosX + this.canvas.clientWidth/2 + 100))
+	// }
 	getActor(x, y){
 		for(var i=0;i<this.actors.length;i++){
 			if(this.actors[i].x==x && this.actors[i].y==y){

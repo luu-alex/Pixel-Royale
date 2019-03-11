@@ -24,6 +24,19 @@ function userRegister(){
     if (!pass) $('#invalidRegPass').show();
     if (!validateEmail(email)) $('#invalidEmail').show();
 }
+function submitScore(kills,time) {
+  $.ajax({url:"/score",
+          data:{
+          kills:kills,
+          time:time},
+          method:"POST",
+          success: function(result){
+            if (result=="success"){
+              console.log("score has been submitted");
+            }
+          }
+  });
+}
 function populateProfile(){
   $.ajax({
     url: "/edit",
@@ -132,9 +145,9 @@ function loginShowPage(page){
 }
 function indexShowPage(page){
   $.getScript('./controller.js', function(){
-    console.log("clear interval");
     pauseGame();
   })
+  $("#submitBTN").hide();
   $("#stage").hide();
   $("#stats").hide();
   $("#profile").hide();
@@ -165,6 +178,10 @@ function game(){
     startGame();
   })
 }
+function submitBTN(){
+  $("#submitBTN").show();
+  // $("#stage").hide();
+}
 function home(){
   $('#home').show();
   $('#stage').hide();
@@ -174,6 +191,7 @@ function home(){
 }
 $(function(){
 	$("#registration").hide();
+  $("#submitBTN").hide();
   $('#index').hide();
   $('#stage').hide();
   $("#nav").hide();

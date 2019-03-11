@@ -16,7 +16,6 @@ function startGame(){
 }
 function pauseGame(){
 	clearInterval(interval);
-	interval=null;
 }
 function getGame(){
 	return stage;

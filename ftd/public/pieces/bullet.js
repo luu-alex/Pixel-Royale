@@ -12,8 +12,8 @@ class Bullet {
 		this.speed = speed ;
 		this.color ="Black";
 		this.myImage = new Image();
-    console.log('/'+bulletType+'bullet.png')
 		this.myImage.src = '/'+bulletType+'bullet.png';
+    this.player = player;
 	}
 	name(){
 		return "bullet"
@@ -52,19 +52,28 @@ class Bullet {
 		for (var i=0; i<enemies.length; i++) {
 			if (this.collision(enemies[i].position.x - enemies[i].radius,
 				 enemies[i].position.y - enemies[i].radius,
-				  enemies[i].radius, enemies[i].radius)) {
+				  enemies[i].radius, enemies[i].radius) && this.player != enemies[i]) {
 						enemies[i].hit();
+            stage.removeActor(this);
 					}
 		}
+    //check collision with trees
 		var trees = this.stage.trees;
 		for (var i=0; i<trees.length; i++) {
 			if (this.collision(trees[i].position.x, trees[i].position.y, trees[i].size.x, trees[i].size.y)) {
 				trees[i].hit();
+        stage.removeActor(this);
 			}
 		}
+    var p = this.stage.player;
+    //check collision with player
+    if (this.collision(p.position.x - p.radius, p.position.y - p.radius, p.radius, p.radius) && this.player != p)  {
+      p.hit();
+    }
 	}
 	collision(x, y, length, width) {
 		return ((x < this.position.x && this.position.x < x + length ) &&
 			  (y < this.position.y && this.position.y < y + width))
 	}
+
 }

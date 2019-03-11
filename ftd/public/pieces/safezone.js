@@ -24,7 +24,7 @@ class Safezone { //these will teleport you across the map
     }
 	}
   withinRadius(pPosition){
-    if (pPosition.position.x < this.position.x || pPosition.position.x > this.size.x || pPosition.position.y < this.position.y || pPosition.position.y > this.size.y)
+    if (pPosition.position.x < this.position.x || pPosition.position.x > this.size.x +this.position.x || pPosition.position.y < this.position.y || pPosition.position.y > this.size.y + this.position.y)
       pPosition.hit();
   }
 }

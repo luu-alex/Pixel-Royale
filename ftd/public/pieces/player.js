@@ -1,18 +1,18 @@
-class player {
+class player extends People{
 	constructor(stage,position,speed){
+    super(stage, position);
 		this.name = "player";
-		this.stage = stage;
-		this.position = position;
 		this.speed = new Pair(0,0);
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
 		this.pickup_range = 75;
 		this.equipped = null;
-    this.hp = 3;
+    this.hp = 100;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
 		this.myImage = new Image();
 		this.myImage.src = '/elf.png';
+    this.die = false;
 	}
 	shoot() {
 		// If the player has a gun.
@@ -46,13 +46,21 @@ class player {
 		}
 	}
 	draw(context){
-		context.save();
-		context.fillStyle = this.colour;
-		context.beginPath();
-		// context.drawImage(this.myImage, this.position.x, this.position.y);
-		context.drawImage(this.myImage, this.position.x - this.radius, this.position.y - this.radius);
-		context.fill();
-		context.closePath();
+    if (!this.die) {
+  		context.save();
+  		context.fillStyle = this.colour;
+  		context.beginPath();
+  		// context.drawImage(this.myImage, this.position.x, this.position.y);
+  		context.drawImage(this.myImage, this.position.x - this.radius, this.position.y - this.radius);
+  		context.fill();
+  		context.closePath();
+    } else {
+      context.beginPath();
+  		context.fillStyle="black"
+  		context.font = "50px Arial";
+  		context.fillText("You have Died",this.cameraPosX + this.stage.canvas.clientWidth/2-200,this.cameraPosY + this.stage.canvas.clientHeight/2 );
+  		context.closePath();
+    }
 	}
 	step(){
 		//check if player is walking on terrain which may cause player to slow
@@ -172,22 +180,28 @@ class player {
         // terrain.position.y < this.position.y && this.position.y < this.position.y + terrain.size.y)
     //   if (this.speed.x < 0 && this.position.x - this.radius > terrain.position.x + terrain.size.x &&
     //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
-  		if (keys && keys['a'] && this.position.x+ this.radius > 5 ) {
-  			this.speed.x = -5;
-  		} else this.speed.x=0;
-    // }
-  	if (keys && keys['d'] && this.position.x<this.stage.width) {
-			this.speed.x = 5;
-		}
-  	if (keys && keys['w'] && this.position.y + this.radius >5) {
-			this.speed.y = -5;
-		}
-  	if (keys && keys['s'] && this.position.y<this.stage.height) {
+    if (!this.die) {
+    	if (keys && keys['a'] && this.position.x+ this.radius > 5 )this.speed.x = -5;
+    	if (keys && keys['d'] && this.position.x<this.stage.width) {
+  			this.speed.x = 5;
+  		}
+    	if (keys && keys['w'] && this.position.y + this.radius >5) {
+  			this.speed.y = -5;
+  		}
+    	if (keys && keys['s'] && this.position.y<this.stage.height) {
 			this.speed.y = 5;
 		}
+    }
 	}
 	hit() {
-    this.hp--;
-    console.log("hit");
+    if (this.hp>0)
+      this.hp--;
+    // if (this.hp <= 0) {
+    //   this.die = true;
+    //   $.getScript('./controller.js', function(){
+    //     console.log("clear interval");
+    //     pauseGame();
+    //   })
+    // }
   }
 }
