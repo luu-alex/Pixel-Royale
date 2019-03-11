@@ -12,7 +12,7 @@ class player {
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
 		this.myImage = new Image();
-		this.myImage.src = '/wall.jpeg';
+		this.myImage.src = '/elf.png';
 	}
 	shoot() {
 		// If the player has a gun.
@@ -50,7 +50,7 @@ class player {
 		context.fillStyle = this.colour;
 		context.beginPath();
 		// context.drawImage(this.myImage, this.position.x, this.position.y);
-		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
+		context.drawImage(this.myImage, this.position.x - this.radius, this.position.y - this.radius);
 		context.fill();
 		context.closePath();
 	}
@@ -163,18 +163,19 @@ class player {
 		if(keys=='w' || keys=='s') this.speed.y= 0;
 	}
 	move(player,keys){
-    for (var i=0; i < this.stage.trees.length; i++) {
+    // for (var i=0; i < this.stage.trees.length; i++) {
       console.log("player position y:" + (this.position.y - this.radius))
 
-      var terrain = this.stage.trees[i];
-      console.log( terrain.position.y)
+      // var terrain = this.stage.trees[i];
+      // console.log( terrain.position.y)
+    //&& !( this.position.x - this.radius > terrain.position.x + terrain.size.x &&
+        // terrain.position.y < this.position.y && this.position.y < this.position.y + terrain.size.y)
     //   if (this.speed.x < 0 && this.position.x - this.radius > terrain.position.x + terrain.size.x &&
     //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
-  		if (keys && keys['a'] && this.position.x+ this.radius > 5 && !( this.position.x - this.radius > terrain.position.x + terrain.size.x &&
-          terrain.position.y < this.position.y && this.position.y < this.position.y + terrain.size.y)) {
+  		if (keys && keys['a'] && this.position.x+ this.radius > 5 ) {
   			this.speed.x = -5;
   		} else this.speed.x=0;
-    }
+    // }
   	if (keys && keys['d'] && this.position.x<this.stage.width) {
 			this.speed.x = 5;
 		}

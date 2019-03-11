@@ -9,7 +9,8 @@ class Bot{
 
 		this.pickup_range = 50;
 		this.equipped = null;
-
+    this.img = new Image()
+    this.img.src = './ogre.png'
 		this.closest_weapon = null;
 		this.closest_ammo = null;
 		this.target = this.stage.player;
@@ -58,7 +59,7 @@ class Bot{
 		context.save();
 		context.fillStyle = this.colour;
 		context.beginPath();
-		context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
+		context.drawImage(this.img,this.position.x- this.radius,this.position.y - this.radius);
 		context.fill();
 		context.closePath();
 	}
