@@ -67,9 +67,9 @@ class player extends People{
     	//walking through terrain causes different velocity
 		var terrainSpeed=1;
 
-		for (var i = 0; i < array.length; i++) {
-			array[i]
-		}
+		// for (var i = 0; i < array.length; i++) {
+		// 	array[i]
+		// }
 
 		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
 			var terrainSpeed =  this.stage.terrain[0].speed;
