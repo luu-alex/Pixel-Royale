@@ -3,19 +3,27 @@ view = null;
 interval=null;
 keys = null;
 function setupGame(){
-	stage=new Stage(document.getElementById('stage'));
+	if (!stage) {
+		stage=new Stage(document.getElementById('stage'));
 
-	// https://javascript.info/keyboard-events
-	document.addEventListener('keydown', moveByKey);
-	document.addEventListener('keyup', stopMove);
-	document.addEventListener('click', shoot);
-	document.addEventListener('mousemove', aim);
+		// https://javascript.info/keyboard-events
+		document.addEventListener('keydown', moveByKey);
+		document.addEventListener('keyup', stopMove);
+		document.addEventListener('click', shoot);
+		document.addEventListener('mousemove', aim);
+	}
 }
 function startGame(){
+	console.log("game has started!")
 	interval=setInterval(function(){ stage.step(); stage.draw(); },20);
+	console.log(interval)
 }
 function pauseGame(){
+	console.log("i have paused this game");
+	console.log(interval)
 	clearInterval(interval);
+	interval= null;
+	// document.getElementById('')
 }
 function getGame(){
 	return stage;
@@ -54,5 +62,9 @@ function stopMove(event){
 	stage.player.stopMovement(event.key);
 }
 function stopGame() {
-
+	console.log("i have paused this game");
+	console.log(interval)
+	clearInterval(interval);
+	interval= null;
+	// document.getEle
 }

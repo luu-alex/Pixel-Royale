@@ -26,12 +26,12 @@ class Stage {
 		this.player= new player(this, new Pair(this.width/2,this.height/2),5);
 		this.addPlayer(this.player);
 
-		// var z = new Bot(this, new Pair(0,0));
-		// var z2 = new Bot(this, new Pair(100,100));
-		// this.addBot(z);
-		// this.addActor(z);
-		// this.addBot(z2);
-		// this.addActor(z2);
+		var z = new Bot(this, new Pair(0,0));
+		var z2 = new Bot(this, new Pair(100,100));
+		this.addBot(z);
+		this.addActor(z);
+		this.addBot(z2);
+		this.addActor(z2);
 
 		//Add GUI to users screen
 		this.GUI = new GUI(this, this.player)
@@ -79,7 +79,7 @@ class Stage {
 		//where the cursor is placed
 		this.cursor = 0;
 		// Add in some Balls
-		var total=0;
+		var total=5;
 		while(total>0){
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
