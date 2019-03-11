@@ -14,11 +14,7 @@ class player {
 		this.myImage = new Image();
 		this.myImage.src = '/wall.jpeg';
 	}
-<<<<<<< HEAD
 	shoot() {
-=======
-	shoot(){
->>>>>>> jwt
 		// If the player has a gun.
 		if (this.equipped) {
 			// position of the gun on the moving paper
@@ -27,12 +23,8 @@ class player {
 				if (this.equipped.type == "flame thrower") {
 					for (var i = 0; i < 10; i++) {
 						var position = new Pair(raw_pos_gun.x+i*3,raw_pos_gun.y+i*3);
-<<<<<<< HEAD
-						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
-=======
 						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
 
->>>>>>> jwt
 					}
 				}
 				if (this.equipped.type == "shotgun") {
@@ -42,21 +34,13 @@ class player {
 						if (this.equipped.rotation < 0 && this.equipped.rotation > -(90*Math.PI/180) ) k = -i
 						if (this.equipped.rotation < (180*Math.PI/180) && this.equipped.rotation > (90*Math.PI/180) ) j = -i;
 						var position = new Pair(raw_pos_gun.x+j*5,raw_pos_gun.y+k*5);
-<<<<<<< HEAD
-						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
-=======
 						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
 
->>>>>>> jwt
 					}
 				}
 				else {
-<<<<<<< HEAD
-					this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color);
-=======
 					this.stage.createBullet(this,raw_pos_gun,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
 
->>>>>>> jwt
 				}
 			}
 		}
@@ -123,12 +107,8 @@ class player {
 		if (!this.equipped) {
 			var weaps = this.stage.weapons;
 			for (var i=0; i<this.stage.weapons.length;i++){
-<<<<<<< HEAD
-				if (this.pickUpHelper(weaps[i])) {
-=======
         if ((!this.equipped))
 				    if (this.pickUpHelper(weaps[i])){
->>>>>>> jwt
 						this.equipped= weaps[i];
 						weaps[i].held(this);
 						this.stage.add_gun_GUI(weaps[i]);
