@@ -7,12 +7,12 @@ class player extends People{
 		this.radius = 50;
 		this.pickup_range = 75;
 		this.equipped = null;
-    this.hp = 100;
+    	this.hp = 100;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
 		this.myImage = new Image();
 		this.myImage.src = '/elf.png';
-    this.die = false;
+    	this.die = false;
 	}
 	shoot() {
 		// If the player has a gun.
@@ -64,15 +64,28 @@ class player extends People{
 	}
 	step(){
 		//check if player is walking on terrain which may cause player to slow
-    //walking through terrain causes different velocity
+    	//walking through terrain causes different velocity
 		var terrainSpeed=1;
-		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2) var terrainSpeed =  this.stage.terrain[0].speed;
+
+		for (var i = 0; i < array.length; i++) {
+			array[i]
+		}
+
+		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
+			var terrainSpeed =  this.stage.terrain[0].speed;
+		}
+
 		if (this.position.x > this.stage.width/2 && this.position.y < this.stage.height/2) var terrainSpeed =  this.stage.terrain[1].speed;
+
 		if (this.position.x <= this.stage.width/2 && this.position.y >= this.stage.height/2) var terrainSpeed =  this.stage.terrain[2].speed;
+
 		if (this.position.x > this.stage.width/2 && this.position.y > this.stage.height/2) var terrainSpeed =  this.stage.terrain[3].speed;
+
 		this.speed.x = this.speed.x* terrainSpeed;
 		this.speed.y = this.speed.y*terrainSpeed;
-    //check if player is within bounds
+
+
+	//check if player is within bounds
 
       // if (this.speed.x > 0 && this.position.x + this.radius < obj.position.x) return false;
       // if (this.speed.y > 0 && this.position.y + this.radius < obj.position.y) return false;
@@ -151,7 +164,7 @@ class player extends People{
 	}
 	pickUpHelper(pickUp) {
 		var objPos = pickUp.position;
-		console.log(this.position.x - this.pickup_range)
+		// console.log(this.position.x - this.pickup_range)
 		if (this.position.x - this.pickup_range < objPos.x &&
 		objPos.x < this.position.x + this.pickup_range &&
 		this.position.y - this.pickup_range < objPos.y &&
@@ -172,7 +185,7 @@ class player extends People{
 	}
 	move(player,keys){
     // for (var i=0; i < this.stage.trees.length; i++) {
-      console.log("player position y:" + (this.position.y - this.radius))
+      // console.log("player position y:" + (this.position.y - this.radius))
 
       // var terrain = this.stage.trees[i];
       // console.log( terrain.position.y)

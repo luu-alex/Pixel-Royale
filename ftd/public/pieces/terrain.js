@@ -14,11 +14,10 @@ class Terrain {
 		}
 	}
 	draw(context){
-	context.beginPath();
-	var pattern = context.createPattern(this.img, 'repeat');
-  context.fillStyle = pattern;
-  context.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
-	context.closePath();
-
+		context.beginPath();
+		var pattern = context.createPattern(this.img, 'repeat');
+  		context.fillStyle = pattern;
+  		context.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
+		context.closePath();
 	}
 }

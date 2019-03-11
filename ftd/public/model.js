@@ -17,70 +17,74 @@ class Stage {
 		this.terrain = [];
 		this.teleporters = [];
 		this.trees = [];
+
 		// the logical width and height of the stage
 		this.width=2000;
 		this.height=2000;
 		this.safezone = new Safezone(this, new Pair(0,0), new Pair(this.width, this.height));
 		this.addActor(this.safezone);
+
 		// Add the player to the center of the stage
 		this.player= new player(this, new Pair(this.width/2,this.height/2),5);
 		this.addPlayer(this.player);
 
-		// var z = new Bot(this, new Pair(0,0));
-		// var z2 = new Bot(this, new Pair(100,100));
-		// this.addBot(z);
-		// this.addActor(z);
-		// this.addBot(z2);
-		// this.addActor(z2);
-
 		//Add GUI to users screen
-		this.GUI = new GUI(this, this.player)
-		//Add weapons and weapons list
-		var w = new Weapon(this,new Pair(600,700),"flame thrower");
-		this.addWeapon(w);
-		this.addActor(w);
+		this.GUI = new GUI(this, this.player);
 
-		var a = new Weapon(this,new Pair(500,700),"bazooka");
-		this.addWeapon(a);
-		this.addActor(a);
-
-		var b = new Weapon(this,new Pair(400,700),"9 mm");
-		this.addWeapon(b);
-		this.addActor(b);
-
-		var c = new Weapon(this,new Pair(300,700),"sniper");
-		this.addWeapon(c);
-		this.addActor(c);
-
-		var d = new Weapon(this,new Pair(250,700),"shotgun");
-		this.addWeapon(d);
-		this.addActor(d);
-
-
-
-		this.addWeapon(w);
-		this.addActor(w);
 		//Create terrain
-		var t = new Terrain("grassy", new Pair(0,0), new Pair(this.width/2,this.height/2))
-		var t1 = new Terrain("desert", new Pair(this.width/2,0), new Pair(this.width/2,this.height/2))
-		var t2 = new Terrain("grassy", new Pair(0,this.height/2), new Pair(this.width/2,this.height/2))
-		var t3 = new Terrain("desert", new Pair(this.width/2,this.height/2), new Pair(this.width/2,this.height/2))
-		this.terrain.push(t)
-		this.terrain.push(t1)
-		this.terrain.push(t2)
-		this.terrain.push(t3)
+		var t = new Terrain("grassy", new Pair(0,0), new Pair(this.width,this.height));
+		for (var i = 0; i < 3; i++) {
+			var x = Math.floor((Math.random()*this.width));
+			var y = Math.floor((Math.random()*this.height));
+			new Terrain("desert", new Pair(x,y), new Pair(this.width/6,this.height/6));
+			this.terrain.push(new Terrain("desert", new Pair(x,y), new Pair(this.width/6,this.height/6)));
+
+
+		}
+		// var t3 = new Terrain("desert", new Pair(this.width/2,this.height/2), new Pair((this.width/2)-20,(this.height/2)-20));
+		this.terrain.push(t);
+		// this.terrain.push(t2);
+		// this.terrain.push(t3);
+
+
 		//create teleporter
 		var teleporter = new Teleporter(this, new Pair(0, this.height/2));
-		var teleporter2 = new Teleporter(this, new Pair(this.width-100,this.height/2))
-		this.addActor(teleporter)
-		this.addActor(teleporter2)
+		var teleporter2 = new Teleporter(this, new Pair(this.width-100,this.height/2));
+		this.addActor(teleporter);
+		this.addActor(teleporter2);
 		this.teleporters.push(teleporter);
 		this.teleporters.push(teleporter2);
+
 		//where the cursor is placed
 		this.cursor = 0;
-		// Add in some Balls
-		var total=0;
-		while(total>0){
+
+		var weapon_types = ["flame thrower", "bazooka", "9 mm", "sniper", "shotgun"];
+
+		// Generate Some Weapons around the map.
+		for (var i = 0; i < 10; i++) {
+			var x=Math.floor((Math.random()*this.width));
+			var y=Math.floor((Math.random()*this.height));
+			if(this.getActor(x,y)===null){
+				var rand_gun_type = weapon_types[Math.floor(Math.random() * weapon_types.length)];
+				var weapon = new Weapon(this, new Pair(x,y),rand_gun_type);
+				this.addWeapon(weapon);
+				this.addActor(weapon);
+			}
+		}
+
+		// Generate some Smart Bots around the map.
+		for (var i = 0; i < 1; i++) {
+			var x=Math.floor((Math.random()*this.width));
+			var y=Math.floor((Math.random()*this.height));
+			if(this.getActor(x,y)===null){
+				var z = new Bot(this, new Pair(x,y));
+				this.addBot(z);
+				this.addActor(z);
+			}
+		}
+
+		//Generate some Dumb Bots around the map.
+		for (var i = 0; i < 10; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -93,32 +97,31 @@ class Stage {
 				var b = new Ball(this, position, velocity, colour, 50);
 				this.bots.push(b);
 				this.addActor(b);
-				total--;
 			}
 		}
-		// Create Ammo
-		var total=15;
-		while(total>0){
+
+		// Generate Ammo Boxes around the map.
+		for (var i = 0; i < 15; i++) {
 			var x = Math.floor((Math.random()*this.width));
 			var y = Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
 				var a = new Ammo(this,new Pair(x,y),new Pair(15,15));
 				this.ammos.push(a);
 				this.addActor(a);
-				total--;
 			}
 		}
-		var total=5;
-		while(total>0){
+
+		// Generate Trees around the map.
+		for (var i = 0; i < 5; i++) {
 			var x = Math.floor((Math.random()*this.width));
 			var y = Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
 				var a = new Tree(this,new Pair(x,y));
 				this.trees.push(a);
 				this.addActor(a);
-				total--;
 			}
 		}
+
 	}
 	removeAmmo(ammo){
 		var index=this.ammos.indexOf(ammo);
@@ -218,11 +221,12 @@ class Stage {
 		this.GUI.draw(context);
 
 	}
-	// renderVicinity(actor){
-	// 	if ( (this.player.cameraPosX == 0 && actor.position.x < this.canvas.clientWidth/2+100) ||
-	// 			 (this.player.cameraPosX != 0 && this.player.cameraPosX - this.canvas.clientWidth/2 - 100 < actor.position.x &&
-	// 			  actor.position.x < this.player.cameraPosX + this.canvas.clientWidth/2 + 100))
-	// }
+	/* renderVicinity(actor){
+		if ( (this.player.cameraPosX == 0 && actor.position.x < this.canvas.clientWidth/2+100) ||
+				 (this.player.cameraPosX != 0 && this.player.cameraPosX - this.canvas.clientWidth/2 - 100 < actor.position.x &&
+				  actor.position.x < this.player.cameraPosX + this.canvas.clientWidth/2 + 100))
+	}
+	*/
 	getActor(x, y){
 		for(var i=0;i<this.actors.length;i++){
 			if(this.actors[i].x==x && this.actors[i].y==y){
