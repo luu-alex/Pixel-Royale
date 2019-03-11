@@ -31,17 +31,6 @@ class Stage {
 		//Add GUI to users screen
 		this.GUI = new GUI(this, this.player);
 
-		// Generate a random map
-		var num_rows = 8;
-		var num_tiles = 8;
-		var terrain_types = ["desert","grassy"];
-
-		for (var i = 0; i < num_rows; i++) {
-			for (var j = 0; j < num_tiles; j++) {
-				var rand_terrain_type = terrain_types[Math.floor(Math.random() * terrain_types.length)];
-				this.terrain.push(new Terrain(rand_terrain_type, new Pair(i * (this.width/num_tiles), j * (this.height/num_rows)), new Pair(this.width/num_tiles,this.height/num_rows)));
-			}
-		}
 
 
 		//create teleporter
@@ -55,9 +44,17 @@ class Stage {
 		//where the cursor is placed
 		this.cursor = 0;
 
-		var weapon_types = ["flame thrower", "bazooka", "9 mm", "sniper", "shotgun"];
+		// Generate a random map
+		var num_rows = 8; var num_tiles = 8; var terrain_types = ["desert","grassy"];
+		for (var i = 0; i < num_rows; i++) {
+			for (var j = 0; j < num_tiles; j++) {
+				var rand_terrain_type = terrain_types[Math.floor(Math.random() * terrain_types.length)];
+				this.terrain.push(new Terrain(rand_terrain_type, new Pair(i * (this.width/num_tiles), j * (this.height/num_rows)), new Pair(this.width/num_tiles,this.height/num_rows)));
+			}
+		}
 
 		// Generate Some Weapons around the map.
+		var weapon_types = ["flame thrower", "bazooka", "9 mm", "sniper", "shotgun"];
 		for (var i = 0; i < 10; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
