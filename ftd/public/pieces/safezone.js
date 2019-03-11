@@ -15,6 +15,9 @@ class Safezone { //these will teleport you across the map
 	step(){
     this.counter++;
     this.withinRadius(this.stage.player);
+		for (var i=0; i<this.stage.bots.length; i++) {
+			this.withinRadius(this.stage.bots[i]);
+		}
     if (this.counter>10 && this.size.x - this.position.x > 100 ) {
       this.position.x++;
       this.position.y++;

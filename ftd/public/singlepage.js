@@ -145,7 +145,7 @@ function loginShowPage(page){
 }
 function indexShowPage(page){
   $.getScript('./controller.js', function(){
-    pauseGame();
+    stopGame();
   })
   $("#submitBTN").hide();
   $("#stage").hide();
@@ -172,11 +172,9 @@ function hideRegInvalid(){
 function game(){
   $("#profile").hide();
   $("#stage").show();
-  $.getScript('./controller.js', function(){
     pauseGame();
     setupGame();
     startGame();
-  })
 }
 function submitBTN(){
   $("#submitBTN").show();
@@ -188,6 +186,7 @@ function home(){
   $('#index').show();
   $('#stats').hide();
   $("#profile").hide();
+
 }
 $(function(){
 	$("#registration").hide();
@@ -196,6 +195,7 @@ $(function(){
   $('#stage').hide();
   $("#nav").hide();
   $("#profile").hide();
+  $("#stats").hide();
   hideRegInvalid();
   hideInvalid();
   hidePInvalid();
@@ -204,7 +204,7 @@ $(function(){
     home();
   })
   $("#statsBTN").on('click',function(e){
-    stats();
+    indexShowPage("stats");
   })
   $("#gameBTN").on('click',function(e){
     game();
