@@ -15,7 +15,6 @@ class Tree extends Obstacles{
 	}
 	hit(){
 		this.hp--;
-		console.log(this.hp)
 		if (this.hp==0){
 			this.stage.removeActor(this)
 			this.stage.removeTree(this)

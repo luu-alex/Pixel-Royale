@@ -22,8 +22,7 @@ class player extends People{
 		this.images.push(myImage2)
     this.die = false;
 		this.kills = 0;
-		this.increment = 0;
-	}
+		this.increme	}
 	shoot() {
 		// If the player has a gun.
 		if (this.equipped) {
@@ -56,25 +55,25 @@ class player extends People{
 		}
 	}
 	draw(context){
-    if (!this.die) {
-  		context.save();
-  		context.fillStyle = this.colour;
-  		context.beginPath();
-  		// context.drawImage(this.myImage, this.position.x, this.position.y);
-			if(!this.speed)
-  		context.drawImage(this.images[0], this.position.x - this.radius, this.position.y - this.radius);
-			else {
-				context.drawImage(this.images[Math.floor(this.increment/5)], this.position.x - this.radius, this.position.y - this.radius);
-			}
-  		context.fill();
-  		context.closePath();
-    } else {
-      context.beginPath();
-  		context.fillStyle="black"
-  		context.font = "70px pixelFont";
-  		context.fillText("You have Died",this.cameraPosX + this.stage.canvas.clientWidth/2-200,this.cameraPosY + this.stage.canvas.clientHeight/2 );
-  		context.closePath();
-    }
+	    if (!this.die) {
+	  		context.save();
+	  		context.fillStyle = this.colour;
+	  		context.beginPath();
+	  		// context.drawImage(this.myImage, this.position.x, this.position.y);
+				if(!this.speed)
+	  		context.drawImage(this.images[0], this.position.x - this.radius, this.position.y - this.radius);
+				else {
+					context.drawImage(this.images[Math.floor(this.increment/5)], this.position.x - this.radius, this.position.y - this.radius);
+				}
+	  		context.fill();
+	  		context.closePath();
+	    } else {
+	      	context.beginPath();
+	  		context.fillStyle="black"
+	  		context.font = "70px pixelFont";
+	  		context.fillText("You have Died",this.cameraPosX + this.stage.canvas.clientWidth/2-200,this.cameraPosY + this.stage.canvas.clientHeight/2 );
+	  		context.closePath();
+	    }
 	}
 	step(){
 		//check if player is walking on terrain which may cause player to slow
@@ -90,26 +89,21 @@ class player extends People{
 			var terrainSpeed =  this.stage.terrain[0].speed;
 		}
 
-		if (this.position.x > this.stage.width/2 && this.position.y < this.stage.height/2) var terrainSpeed =  this.stage.terrain[1].speed;
+		for (var i = 0; i < this.stage.terrain.length; i++) {
+			var current_tile = this.stage.terrain[i];
+			if (current_tile.position.x < this.position.x &&
+				current_tile.position.y < this.position.y &&
+				this.position.x < current_tile.position.x + current_tile.size.x &&
+				this.position.y < current_tile.position.y + current_tile.size.y) {
+				terrainSpeed = current_tile.speed;
+			}
 
-		if (this.position.x <= this.stage.width/2 && this.position.y >= this.stage.height/2) var terrainSpeed =  this.stage.terrain[2].speed;
+		}
 
-		if (this.position.x > this.stage.width/2 && this.position.y > this.stage.height/2) var terrainSpeed =  this.stage.terrain[3].speed;
-
-		this.speed.x = this.speed.x* terrainSpeed;
-		this.speed.y = this.speed.y*terrainSpeed;
+		this.speed.x = this.speed.x * terrainSpeed;
+		this.speed.y = this.speed.y * terrainSpeed;
 
 
-	//check if player is within bounds
-
-      // if (this.speed.x > 0 && this.position.x + this.radius < obj.position.x) return false;
-      // if (this.speed.y > 0 && this.position.y + this.radius < obj.position.y) return false;
-      // if (this.speed.y < 0 && this.position.y > obj.position.x + length) return false;
-      // if (!this.collision(this.stage.terrain[i],this.stage.terrain[i].size.x,this.stage.terrain[i].size.y)) {
-      //   this.speed.x = 0;
-      //   this.speed.y = 0;
-      // }
-    // }
 		if (this.speed.x < 0 && this.position.x - this.radius> 5) this.position.x += this.speed.x;
 		if (this.speed.x > 0 && this.position.x + this.radius < this.stage.width) this.position.x += this.speed.x;
 		if (this.speed.y > 0 && this.position.y < this.stage.height - this.radius) this.position.y += this.speed.y;
@@ -132,7 +126,7 @@ class player extends People{
 			this.cameraPosY = this.stage.height - this.stage.canvas.clientHeight;
 		}
 	}
-  collision(obj,length,width) {
+  	collision(obj,length,width) {
     if (this.speed.x < 0 && this.position.x - this.radius > obj.position.x + length) return false;
 		if (this.speed.x > 0 && this.position.x + this.radius < obj.position.x) return false;
 		if (this.speed.y > 0 && this.position.y + this.radius < obj.position.y) return false;
@@ -209,34 +203,43 @@ class player extends People{
         // terrain.position.y < this.position.y && this.position.y < this.position.y + terrain.size.y)
     //   if (this.speed.x < 0 && this.position.x - this.radius > terrain.position.x + terrain.size.x &&
     //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
-    if (!this.die) {
-			this.increment++;
-			console.log(this.increment);
-			if (this.increment > 14)
-				this.increment=0;
-    	if (keys && keys['a'] && this.position.x+ this.radius > 5 )this.speed.x = -5;
-    	if (keys && keys['d'] && this.position.x<this.stage.width) {
-  			this.speed.x = 5;
-  		}
-    	if (keys && keys['w'] && this.position.y + this.radius >5) {
-  			this.speed.y = -5;
-  		}
-    	if (keys && keys['s'] && this.position.y<this.stage.height) {
-			this.speed.y = 5;
-		}
-    }
+	    if (!this.die) {
+				this.increment++;
+				console.log(this.increment);
+				if (this.increment > 14)
+					this.increment=0;
+	    	if (keys && keys['a'] && this.position.x+ this.radius > 5 )this.speed.x = -5;
+	    	if (keys && keys['d'] && this.position.x<this.stage.width) {
+	  			this.speed.x = 5;
+	  		}
+	    	if (keys && keys['w'] && this.position.y + this.radius >5) {
+	  			this.speed.y = -5;
+	  		}
+	    	if (keys && keys['s'] && this.position.y<this.stage.height) {
+				this.speed.y = 5;
+			}
+	    }
 	}
 	hit() {
-    if (this.hp>0)
-      this.hp--;
-    if (this.hp <= 0) {
-      this.die = true;
-    //   $.getScript('./controller.js', function(){
-    //     console.log("clear interval");
-
+	    if (this.hp>0)
+	      this.hp--;
+		if (this.hp<=0) {
+			this.die = true;
 			endGame(this.kills);
-			// endGame();
-    //   })
-    }
-  }
+		}
+  	}
+
+	setWall(){
+		var the_wall = new Wall(this.stage);
+		if (this.stage.ghost_wall.current_formation != 0) {
+			the_wall.change_formation();
+		}
+		the_wall.place_wall(this);
+	}
+	flipWall(){
+		this.stage.ghost_wall.change_formation();
+	}
+	wallMode(){
+		this.stage.wall_mode = !(this.stage.wall_mode);
+	}
 }

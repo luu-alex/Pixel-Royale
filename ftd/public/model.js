@@ -17,6 +17,8 @@ class Stage {
 		this.terrain = [];
 		this.teleporters = [];
 		this.trees = [];
+		this.walls = [];
+		this.wall_mode = false;
 
 		// the logical width and height of the stage
 		this.width=2000;
@@ -25,7 +27,7 @@ class Stage {
 		this.addActor(this.safezone);
 
 		// Add the player to the center of the stage
-		this.player= new player(this, new Pair(this.width/2,this.height/2),5);
+		this.player = new player(this, new Pair(this.width/2,this.height/2),5);
 		this.addPlayer(this.player);
 
 		var z = new Bot(this, new Pair(0,0));
@@ -38,21 +40,8 @@ class Stage {
 		//Add GUI to users screen
 		this.GUI = new GUI(this, this.player);
 
-		//Create terrain
-		var t = new Terrain("grassy", new Pair(0,0), new Pair(this.width,this.height));
-		for (var i = 0; i < 3; i++) {
-			var x = Math.floor((Math.random()*this.width));
-			var y = Math.floor((Math.random()*this.height));
-			new Terrain("desert", new Pair(x,y), new Pair(this.width/6,this.height/6));
-			this.terrain.push(new Terrain("desert", new Pair(x,y), new Pair(this.width/6,this.height/6)));
-
-
-		}
-		// var t3 = new Terrain("desert", new Pair(this.width/2,this.height/2), new Pair((this.width/2)-20,(this.height/2)-20));
-		this.terrain.push(t);
-		// this.terrain.push(t2);
-		// this.terrain.push(t3);
-
+		this.ghost_wall = new Wall(this, this.player.position);
+		this.addActor(this.ghost_wall);
 
 		//create teleporter
 		var teleporter = new Teleporter(this, new Pair(0, this.height/2));
@@ -65,9 +54,17 @@ class Stage {
 		//where the cursor is placed
 		this.cursor = 0;
 
-		var weapon_types = ["flame thrower", "bazooka", "9 mm", "sniper", "shotgun"];
+		// Generate a random map
+		var num_rows = 8; var num_tiles = 8; var terrain_types = ["desert","grassy"];
+		for (var i = 0; i < num_rows; i++) {
+			for (var j = 0; j < num_tiles; j++) {
+				var rand_terrain_type = terrain_types[Math.floor(Math.random() * terrain_types.length)];
+				this.terrain.push(new Terrain(rand_terrain_type, new Pair(i * (this.width/num_tiles), j * (this.height/num_rows)), new Pair(this.width/num_tiles,this.height/num_rows)));
+			}
+		}
 
 		// Generate Some Weapons around the map.
+		var weapon_types = ["flame thrower", "bazooka", "9 mm", "sniper", "shotgun"];
 		for (var i = 0; i < 10; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
@@ -80,7 +77,7 @@ class Stage {
 		}
 
 		// Generate some Smart Bots around the map.
-		for (var i = 0; i < 1; i++) {
+		 for (var i = 0; i < 1; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -89,7 +86,7 @@ class Stage {
 				this.addActor(z);
 			}
 		}
-
+		
 		//Generate some Dumb Bots around the map.
 		for (var i = 0; i < 10; i++) {
 			var x=Math.floor((Math.random()*this.width));
@@ -119,7 +116,7 @@ class Stage {
 		}
 
 		// Generate Trees around the map.
-		for (var i = 0; i < 5; i++) {
+		for (var i = 0; i < 15; i++) {
 			var x = Math.floor((Math.random()*this.width));
 			var y = Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -249,16 +246,11 @@ class Stage {
 			}
 		}
 		return null;}
-}
 
-
-
-
-/*
-class Blocks {
-	constructor(){
-		this.stage = stage;
-		this.position = // when constructed, position needs to be players at first ;
+	createWall(wall){
+		this.walls.push(wall);
+	}
+	getWalls(){
+		return this.walls;
 	}
 }
-*/
