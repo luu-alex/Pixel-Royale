@@ -56,11 +56,12 @@ class Bullet {
 			}
 			else {
 				var width = walls[i].length.x;
-				var height = wall[i].length.y;
+				var height = walls[i].length.y;
 			}
 
 			if (this.collision(walls[i].position.x,walls[i].position.y,width,height)) {
 				walls[i].hit();
+				stage.removeActor(this);
 			}
 
 		}
@@ -70,6 +71,7 @@ class Bullet {
 		for (var i=0; i<trees.length; i++) {
 			if (this.collision(trees[i].position.x, trees[i].position.y, trees[i].size.x, trees[i].size.y)) {
 				trees[i].hit();
+				stage.removeActor(this);
 			}
 		}
 
@@ -80,7 +82,7 @@ class Bullet {
 				 enemies[i].position.y - enemies[i].radius,
 				  enemies[i].radius, enemies[i].radius) && this.player != enemies[i]) {
 						enemies[i].hit();
-            		stage.removeActor(this);
+            stage.removeActor(this);
 					}
 		}
 
