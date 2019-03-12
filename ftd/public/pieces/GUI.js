@@ -37,7 +37,27 @@ class GUI{
 		context.restore();
 		context.resetTransform();
 
-		/*	Inventory	*/
+		/*	Inventory */
+		context.save();
+		context.translate(this.player.cameraPosX, this.player.cameraPosY);
+
+		context.beginPath();
+		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
+		context.fillRect(0, 0, 50, 50);
+		context.closePath();
+
+		context.beginPath();
+		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
+		context.fillRect(0, -70, 50, 50);
+		context.closePath();
+
+		context.beginPath();
+		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
+		context.fillRect(0, -130, 50, 50);
+		context.closePath();
+
+		context.restore();
+		context.resetTransform();
 
 	}
 	step(){
