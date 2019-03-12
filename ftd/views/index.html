@@ -39,14 +39,17 @@
 	    </ul>
 		</div>
 		<div id="index">
-			<center class="formBox">
+			<center class="container">
+				<div class="formBox">
 				<h1>Welcome to the CSC309 A2 page! Made with Node.JS and Javascript</h1>
+			</div>
 			</center>
 		</div>
 		</div>
     <div id="login">
 			<form id="postForm" action="/login">
-				<div class="container formBox">
+				<div class="container">
+					<div class="formBox">
 					<label for="uname" class="formText">Username</label>
 					<input type="text" placeholder="Enter Username" id="uname" required>
 
@@ -54,39 +57,40 @@
 					<input type="password" placeholder="Enter Password" id="psw" required>
 
 					<button type="submit" id="loginBTN" formmethod="post" class="myButton">Login</button>
-					<label>
-						<input type="checkbox" checked="checked" name="remember"> Remember me
-					</label>
+					<button type="button" formethod="get" id="registerPage" class="myButton">Don't have an account? Register!</button>
+
 					<p id="invalidUser" class="invalid"> Username cannot be empty. </p>
 					<p id="invalidPass" class="invalid"> Password cannot be empty. </p>
 					<p class="invalid" id="incorrect"> Incorrect username or password.</p>
+					</div>
 				</div>
-				<button type="button" formethod="get" id="registerPage" class="myButton">Don't have an account? Register!</button>
-			</form>
+						</form>
 		</div>
 
 		<div id="registration">
 			<form action="/registration" method="post" id="userRegistration">
-        <div class="container formBox formText">
-          <h1>Register</h1>
-          <p>Please fill in this form to create an account.</p>
-          <hr>
+				<div class="container">
+	        <div class="formBox formText">
+	          <h1>Register</h1>
+	          <p>Please fill in this form to create an account.</p>
+	          <hr>
 
-          <label for="name"><b>Name</b></label>
-          <input type="text" placeholder="Enter username" id="regUser" class="myForm" required>
+	          <label for="name"><b>Name</b></label>
+	          <input type="text" placeholder="Enter username" id="regUser" class="myForm" required>
 
-          <label for="psw"><b>Password</b></label>
-          <input type="password" placeholder="Enter Password" id="regPsw" required>
+	          <label for="psw"><b>Password</b></label>
+	          <input type="password" placeholder="Enter Password" id="regPsw" required>
 
-          <label for="email"><b>Email</b></label>
-          <input type="email" placeholder="Email" id="regEmail" required>
-          <hr>
-					<p id="invalidRegUser" class="invalid"> Username cannot be empty. </p>
-					<p id="invalidRegPass" class="invalid"> Password cannot be empty. </p>
-					<p id="invalidEmail" class="invalid"> Email must be valid</p>
-          <button type="button" class="myButton" id="registerBTN">Register</button>
-					<p class="invalid" id="incorrectReg"> Username has already been taken</p>
-        </div>
+	          <label for="email"><b>Email</b></label>
+	          <input type="email" placeholder="Email" id="regEmail" required>
+	          <hr>
+						<p id="invalidRegUser" class="invalid"> Username cannot be empty. </p>
+						<p id="invalidRegPass" class="invalid"> Password cannot be empty. </p>
+						<p id="invalidEmail" class="invalid"> Email must be valid</p>
+	          <button type="button" class="myButton" id="registerBTN">Register</button>
+						<p class="invalid" id="incorrectReg"> Username has already been taken</p>
+	        </div>
+				</div>
 
 				<button type="button" class="myButton" id="backBTN">Head Back</button>
       </form>
@@ -94,6 +98,7 @@
 		<center>
 			<div id="stats">
 				 <button type="button" id="submitStats" class="myButton">Submit stats</button>
+				 <div id="statsProfile"> </div>
 			</div>
 		</center>
 		<center>
@@ -101,7 +106,8 @@
 		</center>
 		<div id="profile">
 			<form id="profileForm" action="/edit" method="POST">
-				<div class="container formBox formText">
+				<div class="container">
+					<div class= "formBox formText">
 					<label for="pname"><b>Username</b></label>
 					<input type="text" readonly placeholder="" id="pName" required>
 					<label for="email"><b>Email</b></label>
@@ -111,6 +117,7 @@
 					<p id="success"> Success! Your info has been changed! </p>
 					<p id="pInvalidUser" class="invalid"> Username cannot be empty. </p>
 					<p id="pInvalidEmail" class="invalid"> Email must be valid. </p>
+				</div>
 				</div>
 				<button type="button" id="deleteEditBTN" class="myButton">Delete profile</button>
 			</form>

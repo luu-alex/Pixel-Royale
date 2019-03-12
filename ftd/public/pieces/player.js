@@ -22,7 +22,8 @@ class player extends People{
 		this.images.push(myImage2)
     this.die = false;
 		this.kills = 0;
-		this.increme	}
+		this.increment =0
+	}
 	shoot() {
 		// If the player has a gun.
 		if (this.equipped) {
