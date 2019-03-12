@@ -35,7 +35,6 @@ class player extends People{
 					for (var i = 0; i < 10; i++) {
 						var position = new Pair(raw_pos_gun.x+i*3,raw_pos_gun.y+i*3);
 						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
-
 					}
 				}
 				if (this.equipped.type == "shotgun") {
@@ -77,20 +76,57 @@ class player extends People{
 	  		context.closePath();
 	    }
 	}
+	collisionLeft(pSpeed, pPosition, objPosition, objSize) {
+		return pPosition.x <
+				objPosition.x+objSize.x &&
+				pPosition.x> objPosition.x &&
+				pPosition.y> objPosition.y &&
+				pPosition.y<objPosition.y+objSize.y
+	}
+	collisionTop(pSpeed, pPosition, objPosition, objSize) {
+		return pPosition.y <
+				objPosition.y+objSize.y &&
+				pPosition.y> objPosition.y &&
+				pPosition.x> objPosition.x &&
+				pPosition.x<objPosition.x+objSize.x
+	}
+	// collisionTop(pSpeed, pPosition, objPosition, objSize) {
+	// 	return pSpeed.y > 0 && pPosition.y <
+	// 			objPosition.y+objSize.y &&
+	// 			pPosition.y> objPosition.y &&
+	// 			pPosition.x> objPosition.x &&
+	// 			pPosition.x<objPosition.x+objSize.x
+	// }
 	step(){
 		//check if player is walking on terrain which may cause player to slow
     	//walking through terrain causes different velocity
+		var trees = this.stage.trees;
+		for (var i=0; i<trees.length; i++) {
+			if (this.collisionLeft(this.speed, this.position, trees[i].position, trees[i].size) && this.speed.x < 0 )
+					this.position.x+=30;
+			if (this.collisionTop(this.speed, this.position, trees[i].position, trees[i].size) && this.speed.y > 0)
+					this.position.y-=30;
+			if (this.collisionTop(this.speed, this.position, trees[i].position, trees[i].size) && this.speed.y <0)
+					this.position.y+=30;
+			if (this.collisionLeft(this.speed, this.position, trees[i].position, trees[i].size) && this.speed.x >0)
+					this.position.x-=30;
+		}
+		var walls = this.stage.walls;
+		for (var i=0; i<walls.length; i++) {
+			if (this.collisionLeft(this.speed, this.position, walls[i].position, walls[i].length) && this.speed.x < 0 )
+					this.position.x+=30;
+			if (this.collisionTop(this.speed, this.position, walls[i].position, walls[i].length) && this.speed.y > 0)
+					this.position.y-=30;
+			if (this.collisionTop(this.speed, this.position, walls[i].position, walls[i].length) && this.speed.y <0)
+					this.position.y+=30;
+			if (this.collisionLeft(this.speed, this.position, walls[i].position, walls[i].length) && this.speed.x >0)
+					this.position.x-=30;
+		}
+
 		var terrainSpeed=1;
-
-
-		// for (var i = 0; i < array.length; i++) {
-		// 	array[i]
-		// }
-
 		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
 			var terrainSpeed =  this.stage.terrain[0].speed;
 		}
-
 		for (var i = 0; i < this.stage.terrain.length; i++) {
 			var current_tile = this.stage.terrain[i];
 			if (current_tile.position.x < this.position.x &&
@@ -99,7 +135,6 @@ class player extends People{
 				this.position.y < current_tile.position.y + current_tile.size.y) {
 				terrainSpeed = current_tile.speed;
 			}
-
 		}
 
 		this.speed.x = this.speed.x * terrainSpeed;
