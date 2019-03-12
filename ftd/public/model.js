@@ -255,7 +255,7 @@ class Wall {
 
 		// this.player_position = player_position;
 		this.health = 3;
-		this.length = new Pair(20,100);
+		this.length = new Pair(60,60);
 
 		/* CHANGE THIS TO THE ACTUAL LIST OF FORMATIONS */
 		// this.formations = [(90*Math.PI/180),0];
@@ -277,7 +277,8 @@ class Wall {
 			else if(this.health == 1){this.myImage.src = '/wall.jpeg';}
 
 			context.rotate(this.current_formation);
-			context.drawImage(this.myImage, 0, 0);
+			// context.drawImage(this.myImage, this.position.x - this.length.x/2, this.position.x - this.length.y/2);
+			context.drawImage(this.myImage, -this.length.x/2, -this.length.y/2);
 			context.fill();
 			context.closePath();
 			context.stroke();
@@ -339,7 +340,6 @@ class Wall {
 			*/
 
 			this.rotation = Math.atan2(slope.y,slope.x);
-			console.log(cursor);
 
 			// Pointing Right
 			if ((-(45*Math.PI/180) <= this.rotation && this.rotation < (45*Math.PI/180)) || cursor == 0) {
