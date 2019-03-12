@@ -9,11 +9,10 @@ class Tree extends Obstacles{
 	draw(context) {
 		context.save();
 		context.beginPath();
-		// context.drawImage(this.myImage, this.position.x, this.position.y);
 		context.drawImage(this.myImage, this.position.x, this.position.y);
 		context.closePath();
 	}
-	hit(){
+	hit(){ //When a tree is shot
 		this.hp--;
 		if (this.hp==0){
 			this.stage.removeActor(this)
@@ -21,6 +20,5 @@ class Tree extends Obstacles{
 		}
 	}
 	step(){
-
 	}
 }

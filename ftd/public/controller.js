@@ -10,15 +10,12 @@ function handleMouseDown(e) {
 	e.button describes the mouse button that was clicked
 	0 is left, 1 is middle, 2 is right
 	*/
-
 	if (e.button === 2) {
 		rightMouseClicked = true;
 		if (stage.wall_mode) {
 			changeFormation();
 		}
-	}
-
-	else if (e.button === 0) {
+	} else if (e.button === 0) {
 		if (stage.wall_mode) {
 			positionWall();
 		} else {
@@ -52,16 +49,9 @@ function pauseGame(){
 	clearInterval(interval);
 	interval= null;
 }
-function endGame(kills){
-	clearInterval(interval);
-	interval= null;
+function endGame(kills){ //When player or all monsters die
+	pauseGame();
 	statsswitch(kills);
-		// var r = confirm("Do you want to submit your score?");
-		// if(r){
-		// 	showStats(kills);
-		// 	// localStorage.setItem('confirmed', 'yes');
-		// }
-	// }
 
 }
 function getGame(){
@@ -69,14 +59,13 @@ function getGame(){
 }
 function aim(event){
 	stage.updateCursor(event.clientY,event.clientX);
-	// stage.player.aim();
 }
 function shoot(event){
 	// console.log("x: "+event.offsetX + " Y: "+event.offsetY)
 	stage.player.shoot(event.offsetX,event.offsetY);
 
 }
-function moveByKey(event){
+function moveByKey(event){ //Handles the player movements
 	var key = event.key;
 	keys = (keys || []);
 	keys[key] = true
@@ -99,18 +88,15 @@ function moveByKey(event){
 		stage.player.wallMode();
 	}
 }
-function stopMove(event){
+function stopMove(event){ //When a key stops being pressed
 	keys[event.key] = false;
 	stage.player.stopMovement(event.key);
 }
 function stopGame() {
-	console.log("i have paused this game");
-	console.log(interval)
 	clearInterval(interval);
 	interval= null;
 	// document.getEle
 }
-
 function changeFormation(){
 	stage.player.flipWall();
 }

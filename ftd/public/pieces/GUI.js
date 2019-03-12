@@ -31,7 +31,7 @@ class GUI{
 			this.stage.bots[i].draw(context);
 			// this.player.draw(context);
 		}
-    	this.stage.safezone.draw(context);
+    this.stage.safezone.draw(context);
 		this.stage.player.draw(context);
 		context.closePath();
 		context.restore();
