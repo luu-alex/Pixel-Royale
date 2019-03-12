@@ -201,7 +201,7 @@ class player extends People{
 		if (this.stage.ghost_wall.current_formation != 0) {
 			the_wall.change_formation();
 		}
-		the_wall.place_wall(this.position);
+		the_wall.place_wall(this);
 	}
 
 	flipWall(){

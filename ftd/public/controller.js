@@ -12,7 +12,6 @@ function handleMouseDown(e) {
 	*/
 
 	if (e.button === 2) {
-		console.log("right");
 		rightMouseClicked = true;
 		if (stage.wall_mode) {
 			changeFormation();
@@ -20,7 +19,6 @@ function handleMouseDown(e) {
 	}
 
 	else if (e.button === 0) {
-		console.log("left");
 		if (stage.wall_mode) {
 			positionWall();
 		} else {

@@ -149,6 +149,7 @@ class Weapon {
 			this.ammo -= 1;
 			return true;
 		}
+
 		return false;
 	}
 }
