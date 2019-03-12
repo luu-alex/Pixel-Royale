@@ -6,11 +6,17 @@
 body {
   background-repeat: no-repeat;
   background-position: center;
-  background-size:cover;
+  background-size:100% 80%;
+  background-color: black;
+  font-family: pixelFont;
+
+}
+.index {
+  height:80%;
 }
 h1 {
   color: #0E1116;
-  font-family: Times;
+  font-family: pixelFont;
   font-size:30px;
 }
 canvas {
@@ -51,6 +57,8 @@ form {
 .container{
   border-style:solid;
   padding:50px;
+  width:80%;
+  height:80%;
 }
 .invalid{
   color: red;
@@ -61,6 +69,7 @@ form {
 }
 .formBox{
   background-color: #A5668B;
+  opacity:0.95;
 }
 
 .myButton {
