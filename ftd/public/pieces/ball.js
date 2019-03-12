@@ -38,7 +38,6 @@ class Ball {
 	toString(){
 		return this.position.toString() + " " + this.velocity.toString();
 	}
-
 	step(){
 		this.position.x=this.position.x+this.velocity.x;
 		this.position.y=this.position.y+this.velocity.y;
