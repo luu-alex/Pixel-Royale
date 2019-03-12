@@ -5,10 +5,10 @@ function distance(pos1,pos2){
 	var y = Math.abs(pos1.y - pos2.y);
 	return Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
 }
-
+// Model handles events  dealt in the canvas
 class Stage {
 	constructor(canvas){
-		this.canvas = canvas;
+		this.canvas = canvas; //creating lists to store objects
 		this.actors= []; // all actors on this stage (monsters, player, boxes, ...)
 		this.weapons = [];
 		this.bullets = [];
@@ -34,10 +34,11 @@ class Stage {
 		//Add GUI to users screen
 		this.GUI = new GUI(this, this.player);
 
+		//The wall user holds but is not placed yet
 		this.ghost_wall = new Wall(this, this.player.position);
 		this.addActor(this.ghost_wall);
 
-		//create teleporter
+		//creates two teleporter to travel to eachother
 		var teleporter = new Teleporter(this, new Pair(0, this.height/2));
 		var teleporter2 = new Teleporter(this, new Pair(this.width-100,this.height/2));
 		this.addActor(teleporter);
@@ -75,11 +76,11 @@ class Stage {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
-				var z = new Bot(this, new Pair(x,y));
-				this.addBot(z);
-				this.addActor(z);
+				var bot = new Bot(this, new Pair(x,y));
+				this.addBot(bot);
+				this.addActor(bot);
 			}
-		}*/
+		}
 
 		//Generate some Dumb Bots around the map.
 		for (var i = 0; i < 10; i++) {
@@ -121,74 +122,74 @@ class Stage {
 		}
 
 	}
-	removeAmmo(ammo){
+	removeAmmo(ammo){ //Ammo being removed from the stage
 		var index=this.ammos.indexOf(ammo);
 		if(index!=-1){
 			this.ammos.splice(index,1);
 		}
 	}
-	getAmmo(){
+	getAmmo(){//Getting ammo list
 		return this.ammos;
 	}
-	add_gun_GUI(weapon){
+	add_gun_GUI(weapon){ //Player equipping weapon
 		this.GUI.addWeapon(weapon);
 	}
-	remove_gun_GUI(weapon){
+	remove_gun_GUI(weapon){//dropping weapon
 		this.GUI.removeWeapon();
 	}
-	addBot(bot){
+	addBot(bot){//Add bot to list
 		this.bots.push(bot);
 	}
-	removeBot(bot){
+	removeBot(bot){//when a bot dies
 		this.player.kills++;
 		var index=this.bots.indexOf(bot);
 		if(index!=-1){
 			this.bots.splice(index,1);
 		}
 	}
-	removeTree(tree){
+	removeTree(tree){//remove tree from the list
 		var index=this.trees.indexOf(tree);
 		if(index != -1) {
 			this.trees.splice(index,1);
 		}
 	}
-	createBullet(player,target,radius,speed,range,color,type){
+	createBullet(player,target,radius,speed,range,color,type){ //Create a bullet when shot from a weapon
 		var bullet = new Bullet(this,player,target,radius,speed,range,color,type);
 		this.bullets.push(bullet);
 		this.addActor(bullet);
 	}
-	getBots(){
+	getBots(){ //return bot list
 		return this.bots;
 	}
-	getCursor(){
+	getCursor(){//return cursor
 			return this.cursor;
 	}
-	updateCursor(positionY,positionX){ //inverted for atan2
+	updateCursor(positionY,positionX){ //update cursor position
 		this.cursor = new Pair(positionX, positionY);
 		var rect = this.canvas.getBoundingClientRect();
 
 	}
-	addWeapon(weapon){
+	addWeapon(weapon){//add weapon to list
 		this.weapons.push(weapon);
 	}
-	addPlayer(player){
+	addPlayer(player){//create a new player
 		this.addActor(player);
 		this.player=player;
 	}
-	removePlayer(){
+	removePlayer(){//when the player dies
 		this.removeActor(this.player);
 		this.player=null;
 	}
-	addActor(actor){
+	addActor(actor){//Actor is pushed into the list and wants to be drawn
 		this.actors.push(actor);
 	}
-	removeActor(actor){
+	removeActor(actor){//Actor being removed
 		var index=this.actors.indexOf(actor);
 		if(index!=-1){
 			this.actors.splice(index,1);
 		}
 	}
-	step(){
+	step(){//Next frames of the game
 		if (this.bots.length==0) {
 			$.getScript('./singepage.js', function(){
 		    submitScore(3,3)
@@ -199,13 +200,6 @@ class Stage {
 		}
 		this.GUI.step();
 	}
-	// endGame(){
-	// 	var r = confirm("Do you want to submit your score?");
-	// 	if(r){
-	// 		showStats(kills);
-	// 	}
-	// 	pauseGame();
-	// }
 	draw(){
 		//drawing the stage of the map
 		var context = this.canvas.getContext('2d');
@@ -216,24 +210,16 @@ class Stage {
 		context.rect(0, 0, this.width, this.height);
 		context.stroke();
 		context.closePath();
-		for (var i=0; i<this.terrain.length;i++){
+		for (var i=0; i<this.terrain.length;i++){ //Draw terrain
 			context.setTransform(1, 0, 0, 1, -1*(this.player.cameraPosX), -1*this.player.cameraPosY);
 			this.terrain[i].draw(context);
 		}
-		//Drawing most of the objects
-		for(var i=0;i<this.actors.length;i++){
+		for(var i=0;i<this.actors.length;i++){ //Draw actors
 			this.actors[i].draw(context);
 		}
 		this.GUI.draw(context);
-
 	}
-	/* renderVicinity(actor){
-		if ( (this.player.cameraPosX == 0 && actor.position.x < this.canvas.clientWidth/2+100) ||
-				 (this.player.cameraPosX != 0 && this.player.cameraPosX - this.canvas.clientWidth/2 - 100 < actor.position.x &&
-				  actor.position.x < this.player.cameraPosX + this.canvas.clientWidth/2 + 100))
-	}
-	*/
-	getActor(x, y){
+	getActor(x, y){ //Get the actor at X,Y
 		for(var i=0;i<this.actors.length;i++){
 			if(this.actors[i].x==x && this.actors[i].y==y){
 				return this.actors[i];
@@ -241,10 +227,10 @@ class Stage {
 		}
 		return null;}
 
-	createWall(wall){
+	createWall(wall){ //wall being created
 		this.walls.push(wall);
 	}
-	getWalls(){
+	getWalls(){//return walls
 		return this.walls;
 	}
 }

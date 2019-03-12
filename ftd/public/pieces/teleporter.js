@@ -1,4 +1,4 @@
-class Teleporter { //these will teleport you across the map
+class Teleporter { //these will teleport you across to the other teleporter
 	constructor(stage,position){
 		this.stage =  stage;
 		this.position = position;

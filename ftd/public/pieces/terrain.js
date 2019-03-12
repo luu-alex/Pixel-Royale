@@ -1,5 +1,5 @@
 class Terrain {
-	constructor(region,position, size){
+	constructor(region,position, size){ //Terrain represents a different piece of land which may affect player's speeds
 		this.region = region;
 		this.position = position;
 		this.size = size;
