@@ -255,7 +255,7 @@ class Wall {
 
 		// this.player_position = player_position;
 		this.health = 3;
-		this.length = new Pair(60,60);
+		this.length = new Pair(60,240);
 
 		/* CHANGE THIS TO THE ACTUAL LIST OF FORMATIONS */
 		// this.formations = [(90*Math.PI/180),0];
@@ -263,18 +263,18 @@ class Wall {
 		this.current_formation = 0;
 
 		this.myImage = new Image();
-		this.myImage.src = '/wall.jpeg'; /* Set this to the perfect-health wall */
+		this.myImage.src = '/wall.jpg'; /* Set this to the perfect-health wall */
 	}
 
 	draw(context){
-		if (this.stage.wall_mode == true) {
+		if (this.stage.wall_mode == true || this.placed == true) {
 			context.save();
 			context.translate(this.position.x,this.position.y);
 			context.beginPath();
 
 			/* SET THESE GUYS */
-			if(this.health == 2){this.myImage.src = '/wall.jpeg';}
-			else if(this.health == 1){this.myImage.src = '/wall.jpeg';}
+			if(this.health == 2){this.myImage.src = '/wall.jpg';}
+			else if(this.health == 1){this.myImage.src = '/wall.jpg';}
 
 			context.rotate(this.current_formation);
 			// context.drawImage(this.myImage, this.position.x - this.length.x/2, this.position.x - this.length.y/2);
@@ -284,6 +284,7 @@ class Wall {
 			context.stroke();
 			context.restore();
 		}
+
 	}
 
 	hit(){

@@ -46,24 +46,6 @@ function setupGame(){
 		document.addEventListener('mouseup', handleMouseUp);
 		document.addEventListener('contextmenu', function(e) {e.preventDefault();});
 
-		document.addEventListener('click', function(ev) {
-
-			if (stage.wall_mode) {
-				positionWall();
-			} else {
-				shoot(ev);
-			}
-			return false;
-
-		},false);
-		document.addEventListener('contextmenu', function(ev) {
-			ev.preventDefault();
-			if (stage.wall_mode) {
-				changeFormation();
-			}
-			return false;
-
-		},false);
 		document.addEventListener('mousemove', aim);
 	}
 }
