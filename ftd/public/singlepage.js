@@ -159,6 +159,7 @@ function game(){
   $("#profile").hide();
   $("#stats").hide();
   $("#submitStats").hide();
+  $("#index").hide();
   $("#stage").show();
     pauseGame();
     setupGame();
