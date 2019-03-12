@@ -70,7 +70,7 @@ class Stage {
 		}
 
 		// Generate some Smart Bots around the map.
-		/* for (var i = 0; i < 1; i++) {
+		 for (var i = 0; i < 1; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -79,7 +79,7 @@ class Stage {
 				this.addActor(z);
 			}
 		}
-		*/
+		
 		//Generate some Dumb Bots around the map.
 		for (var i = 0; i < 10; i++) {
 			var x=Math.floor((Math.random()*this.width));

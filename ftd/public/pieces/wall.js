@@ -49,6 +49,7 @@ class Wall {
 	hit(){
 		this.health--;
 		if (this.health == 0){
+			// animation should go here
 			this.stage.removeActor(this)
 			this.stage.removeTree(this)
 		}
@@ -124,20 +125,16 @@ class Wall {
 	}
 
 	place_wall(player){
+
 		var raw_pos_player = player.position;
 		var rect = this.stage.canvas.getBoundingClientRect();
 		var cursor = this.stage.getCursor();
-
-		console.log(player.cameraPosX);
-
 		var tx = raw_pos_player.x - player.cameraPosX;
 		var ty = raw_pos_player.y - player.cameraPosY;
 		var pos_player = new Pair(rect.x + tx, rect.y + ty);
-
 		var slope = new Pair(cursor.x - pos_player.x, cursor.y - pos_player.y);
 		this.rotation = Math.atan2(slope.y,slope.x);
 
-		console.log(this.rotation);
 
 		// Pointing Right
 		if ((-(45*Math.PI/180) <= this.rotation && this.rotation < (45*Math.PI/180)) || cursor == 0) {
