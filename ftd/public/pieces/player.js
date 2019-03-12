@@ -196,11 +196,16 @@ class player extends People{
 	      this.hp--;
   	}
 
-	flipWall(){
-		console.log(this.stage.wall_mode);
-		if (this.stage.wall_mode) {
-			this.stage.ghost_wall.change_formation();
+	setWall(){
+		var the_wall = new Wall(this.stage);
+		if (this.stage.ghost_wall.current_formation != 0) {
+			the_wall.change_formation();
 		}
+		the_wall.place_wall(this.position);
+	}
+
+	flipWall(){
+		this.stage.ghost_wall.change_formation();
 	}
 	wallMode(){
 		this.stage.wall_mode = !(this.stage.wall_mode);

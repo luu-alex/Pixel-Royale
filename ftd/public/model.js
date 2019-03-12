@@ -70,7 +70,7 @@ class Stage {
 		}
 
 		// Generate some Smart Bots around the map.
-		for (var i = 0; i < 1; i++) {
+		/* for (var i = 0; i < 1; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -79,7 +79,7 @@ class Stage {
 				this.addActor(z);
 			}
 		}
-
+		*/
 		//Generate some Dumb Bots around the map.
 		for (var i = 0; i < 10; i++) {
 			var x=Math.floor((Math.random()*this.width));
@@ -232,7 +232,7 @@ class Stage {
 		}
 		return null;}
 
-	createWall(player,){
+	createWall(wall){
 		this.walls.push(wall);
 	}
 	getWalls(){
@@ -251,7 +251,7 @@ class Wall {
 	constructor(stage){
 		this.stage = stage;
 		this.position = new Pair(this.stage.player.position.x + 100,this.stage.player.position.y);
-		this.placed = true;
+		this.placed = false;
 
 		// this.player_position = player_position;
 		this.health = 3;
@@ -314,7 +314,7 @@ class Wall {
 
 	step(){
 
-		if (this.stage.wall_mode) {
+		if (!this.placed) {
 			/*
 			This is done under assumption that only players can make walls
 			*/
@@ -363,8 +363,31 @@ class Wall {
 		}
 	}
 
-	place_wall(){
-		this.stage.addWall(this);
+	place_wall(position){
+
+		var cursor = this.stage.getCursor();
+
+		// Pointing Right
+		if ((-(45*Math.PI/180) <= this.rotation && this.rotation < (45*Math.PI/180)) || cursor == 0) {
+			this.position = new Pair(position.x + 100,position.y);
+		}
+		// Pointing Down
+		else if ((45*Math.PI/180) <= this.rotation && this.rotation < (135*Math.PI/180)) {
+			this.position = new Pair(position.x,position.y + 100);
+
+		}
+		// Pointing Left
+		else if ((135*Math.PI/180) <= this.rotation || this.rotation < -(135*Math.PI/180)) {
+			this.position = new Pair(position.x - 100,position.y);
+		}
+		// Pointing Up
+		else if (-(135*Math.PI/180) <= this.rotation && this.rotation < -(45*Math.PI/180)) {
+			this.position = new Pair(position.x,position.y - 100);
+
+		}
+
 		this.placed = true;
+		this.stage.createWall(this);
+		this.stage.addActor(this);
 	}
 }
