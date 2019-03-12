@@ -103,8 +103,6 @@ function stopMove(event){
 	keys[event.key] = false;
 	stage.player.stopMovement(event.key);
 }
-<<<<<<< HEAD
-=======
 function stopGame() {
 	console.log("i have paused this game");
 	console.log(interval)
@@ -119,4 +117,3 @@ function changeFormation(){
 function positionWall(){
 	stage.player.setWall();
 }
->>>>>>> Weapon
