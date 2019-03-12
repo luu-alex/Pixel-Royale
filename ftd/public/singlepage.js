@@ -135,6 +135,7 @@ function indexShowPage(page){
   $("#submitBTN").hide();
   $("#stage").hide();
   $("#stats").hide();
+  $("#statsProfile").hide();
   $("#showStats").hide();
   $("#profile").hide();
   $("#index").hide();
@@ -161,6 +162,7 @@ function game(){
   $("#submitStats").hide();
   $("#index").hide();
   $("#stage").show();
+  $("#statsProfile").hide();
     pauseGame();
     setupGame();
     startGame();
@@ -197,11 +199,12 @@ function getStats() {
     url: "/score",
     method:"get",
     success: function(result){
-      var item = "<table id='stats'> <tr> <th> Name </th> <th> Kills </th> </tr>  "
+      var item = "<div class='container'> <div class='formBox'> <table id='statsProfile' >  <tr> <th> Name </th> <th> Kills </th> </tr>  "
       for (var i=0; i<result["data"].length; i++) {
         item+= "<tr> <th>"+result["data"][i][0] + "</th> <th> " + result["data"][i][1] +"</th>  </tr>"
       }
-      $("#stats").replaceWith(item);
+      item+= "</table </div> </div>"
+      $("#statsProfile").replaceWith(item);
     }
   });
 }
@@ -213,7 +216,9 @@ $(function() {
   $("#nav").hide();
   $("#profile").hide();
   $("#stats").hide();
+  $("#statsProfile").hide();
   $("#kills").hide();
+  $("#submitStats").hide();
   hideRegInvalid();
   hideInvalid();
   hidePInvalid();
@@ -225,6 +230,7 @@ $(function() {
   $("#statsBTN").on('click',function(e){
     getStats();
     indexShowPage("stats");
+    $("#statsProfile").show();
   })
   $("#gameBTN").on('click',function(e){
     game();

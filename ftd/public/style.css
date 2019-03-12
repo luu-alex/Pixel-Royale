@@ -3,6 +3,9 @@
   src: url("pixelFont.ttf");
   font-wight: normal;
 }
+html {
+  /* background-color: black; */
+}
 body {
   background-repeat: no-repeat;
   background-position: center;
@@ -46,7 +49,6 @@ li a {
 }
 
 li a:hover {
-  background-color: #111;
   cursor: pointer;
 }
 
@@ -55,10 +57,9 @@ form {
   text-align: center;
 }
 .container{
-  border-style:solid;
   padding:50px;
   width:80%;
-  height:80%;
+  min-height:800px;
 }
 .invalid{
   color: red;
@@ -68,10 +69,14 @@ form {
   color:#0E103D;
 }
 .formBox{
+  padding-top:100px;
   background-color: #A5668B;
   opacity:0.95;
+  height: 400px;
 }
-
+table{
+  font-style:white;
+}
 .myButton {
 	background-color:#69306d;
 	-moz-border-radius:28px;
@@ -81,7 +86,6 @@ form {
 	display:inline-block;
 	cursor:pointer;
 	color:#ffffff;
-	font-family:Arial;
 	font-size:17px;
 	padding:16px 31px;
 	text-decoration:none;
