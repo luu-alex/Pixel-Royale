@@ -17,6 +17,8 @@ class Stage {
 		this.terrain = [];
 		this.teleporters = [];
 		this.trees = [];
+		this.walls = [];
+		this.wall_mode = false;
 
 		// the logical width and height of the stage
 		this.width=2000;
@@ -25,13 +27,14 @@ class Stage {
 		this.addActor(this.safezone);
 
 		// Add the player to the center of the stage
-		this.player= new player(this, new Pair(this.width/2,this.height/2),5);
+		this.player = new player(this, new Pair(this.width/2,this.height/2),5);
 		this.addPlayer(this.player);
 
 		//Add GUI to users screen
 		this.GUI = new GUI(this, this.player);
 
-
+		this.ghost_wall = new Wall(this, this.player.position);
+		this.addActor(this.ghost_wall);
 
 		//create teleporter
 		var teleporter = new Teleporter(this, new Pair(0, this.height/2));
@@ -106,7 +109,7 @@ class Stage {
 		}
 
 		// Generate Trees around the map.
-		for (var i = 0; i < 5; i++) {
+		for (var i = 0; i < 15; i++) {
 			var x = Math.floor((Math.random()*this.width));
 			var y = Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -228,13 +231,141 @@ class Stage {
 			}
 		}
 		return null;}
-}
 
-/*
-class Blocks {
-	constructor(){
-		this.stage = stage;
-		this.position = // when constructed, position needs to be players at first ;
+	createWall(player,){
+		this.walls.push(wall);
+	}
+	getWalls(){
+		return this.walls;
 	}
 }
-*/
+
+class Wall {
+	/*
+		-> Should change formation by each right click, should place down with a left click.
+	X	-> Each wall should change image of the pic after a couple of bullet hits.
+	X	-> Walls should have a health meter that should decrease with a hit.
+	X	-> Placement of the walls should change according to the position of the mouse.
+		-> When moving with the walls, bullets and other actors should be able to go through the walls, but once set, bullets ghosts should not be able to go across.
+	*/
+	constructor(stage){
+		this.stage = stage;
+		this.position = new Pair(this.stage.player.position.x + 100,this.stage.player.position.y);
+		this.placed = true;
+
+		// this.player_position = player_position;
+		this.health = 3;
+		this.length = new Pair(20,100);
+
+		/* CHANGE THIS TO THE ACTUAL LIST OF FORMATIONS */
+		// this.formations = [(90*Math.PI/180),0];
+		/* CHANGE THIS TO AN ELEMENT IN this.fornmations */
+		this.current_formation = 0;
+
+		this.myImage = new Image();
+		this.myImage.src = '/wall.jpeg'; /* Set this to the perfect-health wall */
+	}
+
+	draw(context){
+		if (this.stage.wall_mode == true) {
+			context.save();
+			context.translate(this.position.x,this.position.y);
+			context.beginPath();
+
+			/* SET THESE GUYS */
+			if(this.health == 2){this.myImage.src = '/wall.jpeg';}
+			else if(this.health == 1){this.myImage.src = '/wall.jpeg';}
+
+			context.rotate(this.current_formation);
+			context.drawImage(this.myImage, 0, 0);
+			context.fill();
+			context.closePath();
+			context.stroke();
+			context.restore();
+		}
+	}
+
+	hit(){
+		this.health--;
+		if (this.health == 0){
+			this.stage.removeActor(this)
+			this.stage.removeTree(this)
+		}
+	}
+
+	change_formation(){
+
+		if (this.current_formation == (90*Math.Pi/180)) {
+			this.current_formation = 0;
+		}else {
+			this.current_formation = (90*Math.Pi/180);
+		}
+
+		/* Obselete - Multiple Angles
+		for (var i = 0; i < this.formations.length; i++) {
+			if (this.formations[i] == this.current_formation) {
+				this.current_formation = this.formation[i+1];
+				break;
+			}
+		}
+ */
+	}
+
+	step(){
+
+		if (this.stage.wall_mode) {
+			/*
+			This is done under assumption that only players can make walls
+			*/
+			var raw_pos_player = this.stage.player.position;
+			//Where the canvas is in relation to the moving paper
+			var rect = this.stage.canvas.getBoundingClientRect();
+
+			// position of the player on the moving paper
+
+
+			var tx = raw_pos_player.x - this.stage.player.cameraPosX;
+			var ty = raw_pos_player.y - this.stage.player.cameraPosY;
+
+			// position of the player on the paper with the hole
+			var pos_player = new Pair(rect.x + tx, rect.y + ty);
+			// cursor position on the paper with the hole
+			var cursor = this.stage.getCursor();
+
+			var slope = new Pair(cursor.x - pos_player.x, cursor.y - pos_player.y);
+
+
+			/*
+			 thought: should we even allow bots to make walls? How would that work?
+			*/
+
+			this.rotation = Math.atan2(slope.y,slope.x);
+			console.log(this.rotation*180/Math.PI);
+
+			// Pointing Right
+			if (-(45*Math.PI/180) <= this.rotation && this.rotation < (45*Math.PI/180)) {
+				this.position = new Pair(raw_pos_player.x + 100,raw_pos_player.y);
+			}
+			// Pointing Down
+			else if ((45*Math.PI/180) <= this.rotation && this.rotation < (135*Math.PI/180)) {
+				this.position = new Pair(raw_pos_player.x,raw_pos_player.y + 100);
+
+			}
+			// Pointing Left
+			else if ((135*Math.PI/180) <= this.rotation || this.rotation < -(135*Math.PI/180)) {
+				this.position = new Pair(raw_pos_player.x - 100,raw_pos_player.y);
+
+			}
+			// Pointing Up
+			else if (-(135*Math.PI/180) <= this.rotation && this.rotation < -(45*Math.PI/180)) {
+				this.position = new Pair(raw_pos_player.x,raw_pos_player.y - 100);
+
+			}
+		}
+	}
+
+	place_wall(){
+		this.stage.addWall(this);
+		this.placed = true;
+	}
+}

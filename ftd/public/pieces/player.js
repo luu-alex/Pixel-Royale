@@ -46,28 +46,31 @@ class player extends People{
 		}
 	}
 	draw(context){
-    if (!this.die) {
-  		context.save();
-  		context.fillStyle = this.colour;
-  		context.beginPath();
-  		// context.drawImage(this.myImage, this.position.x, this.position.y);
-  		context.drawImage(this.myImage, this.position.x - this.radius, this.position.y - this.radius);
-  		context.fill();
-  		context.closePath();
-    } else {
-      context.beginPath();
-  		context.fillStyle="black"
-  		context.font = "50px Arial";
-  		context.fillText("You have Died",this.cameraPosX + this.stage.canvas.clientWidth/2-200,this.cameraPosY + this.stage.canvas.clientHeight/2 );
-  		context.closePath();
-    }
-	}
+	    if (!this.die) {
+	  		context.save();
+	  		context.fillStyle = this.colour;
+	  		context.beginPath();
+	  		// context.drawImage(this.myImage, this.position.x, this.position.y);
+	  		context.drawImage(this.myImage, this.position.x - this.radius, this.position.y - this.radius);
+	  		context.fill();
+	  		context.closePath();
+	    } else {
+	      context.beginPath();
+	  		context.fillStyle="black"
+	  		context.font = "50px Arial";
+	  		context.fillText("You have Died",this.cameraPosX + this.stage.canvas.clientWidth/2-200,this.cameraPosY + this.stage.canvas.clientHeight/2 );
+	  		context.closePath();
+	    }
+		}
 	step(){
 		//check if player is walking on terrain which may cause player to slow
     	//walking through terrain causes different velocity
 		var terrainSpeed=1;
 
-
+		// DEBUGGING
+		if (this.equipped!= null) {
+			// console.log(this.equipped.rotation);
+		}
 
 		for (var i = 0; i < this.stage.terrain.length; i++) {
 			var current_tile = this.stage.terrain[i];
@@ -79,17 +82,6 @@ class player extends People{
 			}
 
 		}
-
-
-		// if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
-		// 	var terrainSpeed =  this.stage.terrain[0].speed;
-		// }
-		//
-		// if (this.position.x > this.stage.width/2 && this.position.y < this.stage.height/2) var terrainSpeed =  this.stage.terrain[1].speed;
-		//
-		// if (this.position.x <= this.stage.width/2 && this.position.y >= this.stage.height/2) var terrainSpeed =  this.stage.terrain[2].speed;
-		//
-		// if (this.position.x > this.stage.width/2 && this.position.y > this.stage.height/2) var terrainSpeed =  this.stage.terrain[3].speed;
 
 		this.speed.x = this.speed.x * terrainSpeed;
 		this.speed.y = this.speed.y * terrainSpeed;
@@ -198,14 +190,11 @@ class player extends People{
     }
 	}
 	hit() {
-    if (this.hp>0)
-      this.hp--;
-    // if (this.hp <= 0) {
-    //   this.die = true;
-    //   $.getScript('./controller.js', function(){
-    //     console.log("clear interval");
-    //     pauseGame();
-    //   })
-    // }
-  }
+	    if (this.hp>0)
+	      this.hp--;
+  	}
+
+	wallMode(){
+		this.stage.wall_mode = !(this.stage.wall_mode);
+	}
 }

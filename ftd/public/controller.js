@@ -10,6 +10,7 @@ function setupGame(){
 		document.addEventListener('keydown', moveByKey);
 		document.addEventListener('keyup', stopMove);
 		document.addEventListener('click', shoot);
+		// document.addEventListener('contextmenu', changeFormation);
 		document.addEventListener('mousemove', aim);
 	}
 }
@@ -37,6 +38,9 @@ function shoot(event){
 	stage.player.shoot(event.offsetX,event.offsetY);
 
 }
+// function changeFormation(event){
+// 	stage.player.
+// }
 function moveByKey(event){
 	var key = event.key;
 	keys = (keys || []);
@@ -50,11 +54,14 @@ function moveByKey(event){
 	if(key in moveMap){
 		stage.player.move(stage.player, keys);
 	}
-	if (key=='e'){
+	if (key.toLowerCase()=='e'){
 		stage.player.pickUp();
 	}
-	if (key=='q'){
+	if (key.toLowerCase()=='q'){
 		stage.player.dropDown();
+	}
+	if (key.toLowerCase()=='r'){
+		stage.player.wallMode();
 	}
 }
 function stopMove(event){

@@ -19,7 +19,7 @@ class Weapon {
 			this.bullet_speed = 0.1; //range of 0 to 1
 			this.bullet_range = 150;
 			this.bullet_color = "#fff605";
-      this.myImage.src = '/flamethrower.png';
+      		this.myImage.src = '/flamethrower.png';
 		}
 		else if(this.type == "sniper"){
 			this.length = new Pair(5,30);
@@ -70,11 +70,8 @@ class Weapon {
 		context.save();
 		context.translate(this.position.x,this.position.y);
 		context.beginPath();
-		context.fillStyle = this.gun_color;
-		context.strokeStyle = this.gun_color;
 		context.rotate(this.rotation);
 		context.drawImage(this.myImage, 0, 0);
-		// context.rect(0,-(this.length.x/2),this.length.y,this.length.x);
 		context.fill();
 		context.closePath();
 		context.stroke();

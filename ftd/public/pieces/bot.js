@@ -7,12 +7,12 @@ class Bot extends People{
 		this.radius = 50;
 		this.pickup_range = 50;
 		this.equipped = null;
-    this.img = new Image()
-    this.img.src = './ogre.png'
+    	this.img = new Image()
+    	this.img.src = './ogre.png'
 		this.closest_weapon = null;
 		this.closest_ammo = null;
 		this.target = this.stage.player;
-    this.hp=5;
+    	this.hp=5;
 	}
 	shoot(){
 		// position of the gun on the moving paper
