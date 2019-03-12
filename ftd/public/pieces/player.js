@@ -20,9 +20,9 @@ class player extends People{
 		this.images.push(myImage)
 		this.images.push(myImage1)
 		this.images.push(myImage2)
-    this.die = false;
+    	this.die = false;
 		this.kills = 0;
-		this.increment =0
+		this.increment =0;
 	}
 	shoot() {
 		// If the player has a gun.

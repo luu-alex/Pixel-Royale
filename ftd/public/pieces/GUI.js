@@ -7,34 +7,36 @@ class GUI{
 		this.stage = stage;
 	}
 	draw(context){
+		/*	Info	*/
 		context.save();
 		context.translate(this.player.cameraPosX,this.player.cameraPosY);
 		context.beginPath();
 		context.fillStyle="black"
-		context.font = "30px pixelFont";
-		context.fillText("Ammo: "+this.ammo,200,context.canvas.clientHeight-30);
-		context.fillText("Health: "+this.hp,10,context.canvas.clientHeight-30);
-    context.fillText("Enemies left: " + this.stage.bots.length, context.canvas.clientWidth/2, context.canvas.clientHeight-30)
+		context.font = "20px pixelFont";
+		context.fillText("Health: "+this.hp,5,context.canvas.clientHeight-10);
+		context.fillText("Ammo: "+this.ammo,150,context.canvas.clientHeight-10);
+    	context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
 		context.closePath();
 		context.restore();
 
+		/*	Mini Map	*/
 		context.save();
 		context.translate(this.player.cameraPosX, this.player.cameraPosY);
-		context.transform(0.05, 0, 0, 0.05, -1, -1);
+		context.transform(0.07, 0, 0, 0.07, -1, -1);
 		context.beginPath();
-		context.fillStyle = "green";
+		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
 		context.fillRect(0, 0, this.stage.width, this.stage.height);
 		context.closePath();
 		for (var i=0; i<this.stage.bots.length; i++) {
 			this.stage.bots[i].draw(context);
 			// this.player.draw(context);
 		}
-    this.stage.safezone.draw(context);
+    	this.stage.safezone.draw(context);
 		this.stage.player.draw(context);
 		context.closePath();
 		context.restore();
 		context.resetTransform();
-		// context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
+
 	}
 	step(){
 		if(this.weapon)
