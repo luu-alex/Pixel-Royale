@@ -32,7 +32,6 @@ function submitScore(kills,time) {
           method:"POST",
           success: function(result){
             if (result=="success"){
-              console.log("score has been submitted");
             }
           }
   });
@@ -144,9 +143,7 @@ function loginShowPage(page){
   $("#"+page).show();
 }
 function indexShowPage(page){
-  $.getScript('./controller.js', function(){
-    stopGame();
-  })
+  stopGame();
   $("#submitBTN").hide();
   $("#stage").hide();
   $("#stats").hide();
@@ -180,15 +177,36 @@ function submitBTN(){
   $("#submitBTN").show();
   // $("#stage").hide();
 }
-function home(){
+function home() {
   $('#home').show();
   $('#stage').hide();
   $('#index').show();
   $('#stats').hide();
   $("#profile").hide();
-
 }
-$(function(){
+function showStats(kills) {
+  $.ajax({
+    url: "/score",
+    method:"post",
+    data:{kills},
+    success: function(result){
+    }
+  });
+}
+function getStats() {
+  $.ajax({
+    url: "/score",
+    method:"get",
+    success: function(result){
+      var item = "<table> <tr> <th> Name </th> <th> Kills </th> </tr>  "
+      for (var i=0; i<result["data"].length; i++) {
+        item+= "<tr> <th>"+result["data"][i][0] + "</th> <th> " + result["data"][i][1] +"</th>  </tr>"
+      }
+      $("#stats").replaceWith(item);
+    }
+  });
+}
+$(function() {
 	$("#registration").hide();
   $("#submitBTN").hide();
   $('#index').hide();
@@ -200,10 +218,12 @@ $(function(){
   hideInvalid();
   hidePInvalid();
 
+
   $("#homeBTN").on('click', function(e){
     home();
   })
   $("#statsBTN").on('click',function(e){
+    getStats();
     indexShowPage("stats");
   })
   $("#gameBTN").on('click',function(e){

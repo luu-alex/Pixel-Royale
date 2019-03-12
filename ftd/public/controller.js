@@ -3,7 +3,6 @@ view = null;
 interval=null;
 keys = null;
 function setupGame(){
-	if (!stage) {
 		stage=new Stage(document.getElementById('stage'));
 
 		// https://javascript.info/keyboard-events
@@ -11,19 +10,26 @@ function setupGame(){
 		document.addEventListener('keyup', stopMove);
 		document.addEventListener('click', shoot);
 		document.addEventListener('mousemove', aim);
-	}
 }
 function startGame(){
-	console.log("game has started!")
 	interval=setInterval(function(){ stage.step(); stage.draw(); },20);
-	console.log(interval)
 }
 function pauseGame(){
-	console.log("i have paused this game");
-	console.log(interval)
 	clearInterval(interval);
 	interval= null;
-	// document.getElementById('')
+}
+function endGame(){
+	clearInterval(interval);
+	interval= null;
+	var confirmed = localStorage.getItem('confirmed') || '';
+		if (confirmed != 'yes') {
+		var r = confirm("Do you want to submit your score?");
+		if(r){
+			showStats(this.kills);
+			localStorage.setItem('confirmed', 'yes');
+		}
+	}
+
 }
 function getGame(){
 	return stage;
@@ -60,11 +66,4 @@ function moveByKey(event){
 function stopMove(event){
 	keys[event.key] = false;
 	stage.player.stopMovement(event.key);
-}
-function stopGame() {
-	console.log("i have paused this game");
-	console.log(interval)
-	clearInterval(interval);
-	interval= null;
-	// document.getEle
 }

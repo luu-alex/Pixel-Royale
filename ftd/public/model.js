@@ -28,8 +28,8 @@ class Stage {
 
 		var z = new Bot(this, new Pair(0,0));
 		var z2 = new Bot(this, new Pair(100,100));
-		this.addBot(z);
-		this.addActor(z);
+		// this.addBot(z);
+		// this.addActor(z);
 		this.addBot(z2);
 		this.addActor(z2);
 
@@ -139,6 +139,7 @@ class Stage {
 		this.bots.push(bot);
 	}
 	removeBot(bot){
+		this.player.kills++;
 		var index=this.bots.indexOf(bot);
 		if(index!=-1){
 			this.bots.splice(index,1);
@@ -197,6 +198,13 @@ class Stage {
 		}
 		this.GUI.step();
 	}
+	// endGame(){
+	// 	var r = confirm("Do you want to submit your score?");
+	// 	if(r){
+	// 		showStats(kills);
+	// 	}
+	// 	pauseGame();
+	// }
 	draw(){
 		//drawing the stage of the map
 		var context = this.canvas.getContext('2d');

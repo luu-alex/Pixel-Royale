@@ -13,6 +13,7 @@ class player extends People{
 		this.myImage = new Image();
 		this.myImage.src = '/elf.png';
     this.die = false;
+		this.kills = 0;
 	}
 	shoot() {
 		// If the player has a gun.
@@ -151,7 +152,7 @@ class player extends People{
 	}
 	pickUpHelper(pickUp) {
 		var objPos = pickUp.position;
-		console.log(this.position.x - this.pickup_range)
+		// console.log(this.position.x - this.pickup_range)
 		if (this.position.x - this.pickup_range < objPos.x &&
 		objPos.x < this.position.x + this.pickup_range &&
 		this.position.y - this.pickup_range < objPos.y &&
@@ -172,7 +173,7 @@ class player extends People{
 	}
 	move(player,keys){
     // for (var i=0; i < this.stage.trees.length; i++) {
-      console.log("player position y:" + (this.position.y - this.radius))
+      // console.log("player position y:" + (this.position.y - this.radius))
 
       // var terrain = this.stage.trees[i];
       // console.log( terrain.position.y)
@@ -196,12 +197,14 @@ class player extends People{
 	hit() {
     if (this.hp>0)
       this.hp--;
-    // if (this.hp <= 0) {
-    //   this.die = true;
+    if (this.hp <= 0) {
+      this.die = true;
     //   $.getScript('./controller.js', function(){
     //     console.log("clear interval");
-    //     pauseGame();
+
+			endGame();
+			// endGame();
     //   })
-    // }
+    }
   }
 }

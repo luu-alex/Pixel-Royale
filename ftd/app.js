@@ -17,7 +17,7 @@ let db = new sqlite3.Database(':memory:', (err) => { //Attempt to connect to our
 db.run('DROP TABLE IF EXISTS scores')
 db.run('DROP TABLE IF EXISTS langs'); //Drop our current database when we run the server and create a new one
 db.run('CREATE TABLE langs(name text PRIMARY KEY,password text,email varchar(255))');
-db.run('CREATE TABLE IF NOT EXISTS scores(name text PRIMARY KEY,kills var,time varchar(255))');
+db.run('CREATE TABLE IF NOT EXISTS scores(name text,kills var,time varchar(255))');
 app.use(cookieParser());
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));  // to support URL-encoded bodies
@@ -112,20 +112,6 @@ app.get('/user/:id', checkToken, function(req, res){
   });
 });
 
-app.get('/database', function(req, res){
-  var data = [];
-  let sql = ("SELECT * FROM langs;");
-  db.all(sql, [], (err, rows) => {
-    if (err) {
-      throw err;
-    }
-    rows.forEach((row) => {
-      var obj = {"name": row.name, "email":row.email};
-      res.send(obj);
-    });
-  });
-});
-
 app.get('/stats', function(req, res){
   res.sendFile(__dirname +"/views/stats.html");
 });
@@ -134,11 +120,34 @@ app.get('/logout', function(req, res){
   res.cookie('auth');
   res.send({success: "success"})
 })
-
+app.post('/score', checkToken, function(req, res){
+  var name = req.cookies.auth["name"]
+  db.run(`INSERT INTO scores(name,kills) VALUES(?,?)`, [name, req.body.kills], function(err) {
+  if (err) {
+    return console.log(err.message);
+  }
+  // console.log("success")
+  res.json({success: "success"})
+  });
+})
+app.get('/score', function(req, res){
+  data = [];
+  db.all(`SELECT * From scores;`, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    rows.forEach((row) => {
+      if (row){
+        data.push([row.name,row.kills]);
+      }
+    })
+  res.json({success: "success", data: data});
+  });
+})
 app.get("/checkJWT", function(req, res){
   var token = {};
   if (req.cookies.auth["token"]) {
-    console.log(req.cookies.auth["name"])
+    // console.log(req.cookies.auth["name"])
     var sql = "SELECT name FROM langs where name="+"'"+req.cookies.auth["name"]+"'"+";";
     var a = 0;
     db.all(sql, [], (err, rows) => {
@@ -200,18 +209,7 @@ app.delete('/edit', checkToken, function(req, res){
     res.json({success:true});
   })
 })
-app.post('/score', checkToken, function(req, res) {
-	  var kills = req.body.kills;
-	  var time = req.body.time;
-	  var name = req.body.name;
-	  console.log(req.body.name+req.body.pass+req.body.email)
-	  db.run(`INSERT INTO scores(name,kills,time) VALUES(?,?,?)`, [name, kills, time], function(err) {
-	  if (err) {
-	    return console.log(err.message);
-	  }
-	  res.json({success: "success"});
-	  });
-	})
+
 const http = require('http');
 const hostname = '127.0.0.1';
 const port = 3000;

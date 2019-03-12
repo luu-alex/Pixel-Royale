@@ -6,6 +6,9 @@ h1 {
 canvas {
   background-color: white;
 }
+canvas:hover {
+  
+}
 ul {
   list-style-type: none;
   margin: 0;
