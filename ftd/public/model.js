@@ -323,7 +323,6 @@ class Wall {
 
 			// position of the player on the moving paper
 
-
 			var tx = raw_pos_player.x - this.stage.player.cameraPosX;
 			var ty = raw_pos_player.y - this.stage.player.cameraPosY;
 
@@ -340,10 +339,10 @@ class Wall {
 			*/
 
 			this.rotation = Math.atan2(slope.y,slope.x);
-			console.log(this.rotation*180/Math.PI);
+			console.log(cursor);
 
 			// Pointing Right
-			if (-(45*Math.PI/180) <= this.rotation && this.rotation < (45*Math.PI/180)) {
+			if ((-(45*Math.PI/180) <= this.rotation && this.rotation < (45*Math.PI/180)) || cursor == 0) {
 				this.position = new Pair(raw_pos_player.x + 100,raw_pos_player.y);
 			}
 			// Pointing Down
@@ -354,13 +353,13 @@ class Wall {
 			// Pointing Left
 			else if ((135*Math.PI/180) <= this.rotation || this.rotation < -(135*Math.PI/180)) {
 				this.position = new Pair(raw_pos_player.x - 100,raw_pos_player.y);
-
 			}
 			// Pointing Up
 			else if (-(135*Math.PI/180) <= this.rotation && this.rotation < -(45*Math.PI/180)) {
 				this.position = new Pair(raw_pos_player.x,raw_pos_player.y - 100);
 
 			}
+
 		}
 	}
 
