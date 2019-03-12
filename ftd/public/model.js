@@ -30,12 +30,6 @@ class Stage {
 		this.player = new player(this, new Pair(this.width/2,this.height/2),5);
 		this.addPlayer(this.player);
 
-		var bot1 = new Bot(this, new Pair(0,0));
-		var bot2 = new Bot(this, new Pair(100,100));
-		// this.addBot(z);
-		// this.addActor(z);
-		this.addBot(bot1);
-		this.addActor(bot2);
 
 		//Add GUI to users screen
 		this.GUI = new GUI(this, this.player);
@@ -78,13 +72,13 @@ class Stage {
 		}
 
 		// Generate some Smart Bots around the map.
-		 for (var i = 0; i < 1; i++) {
+		/*for (var i = 0; i < 1; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
-				var z = new Bot(this, new Pair(x,y));
-				this.addBot(z);
-				this.addActor(z);
+				var bot = new Bot(this, new Pair(x,y));
+				this.addBot(bot);
+				this.addActor(bot);
 			}
 		}
 

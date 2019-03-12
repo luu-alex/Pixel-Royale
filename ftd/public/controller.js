@@ -61,7 +61,7 @@ function aim(event){
 	stage.updateCursor(event.clientY,event.clientX);
 }
 function shoot(event){
-	// console.log("x: "+event.offsetX + " Y: "+event.offsetY)
+
 	stage.player.shoot(event.offsetX,event.offsetY);
 
 }
@@ -87,12 +87,29 @@ function moveByKey(event){ //Handles the player movements
 	if (key.toLowerCase()=='r'){
 		stage.player.wallMode();
 	}
+
+	if (key == 1) {
+		stage.player.switchTo(1);
+	}
+	if (key == 2) {
+		stage.player.switchTo(2);
+	}
+	if (key == 3) {
+		stage.player.switchTo(3);
+	}
+
+
 }
 function stopMove(event){ //When a key stops being pressed
 	keys[event.key] = false;
 	stage.player.stopMovement(event.key);
 }
 function stopGame() {
+<<<<<<< HEAD
+=======
+	console.log("I have paused this game");
+	console.log(interval)
+>>>>>>> 7bf12a5ea089d798f47334d63fc15a0a6225a05f
 	clearInterval(interval);
 	interval= null;
 	// document.getEle

@@ -67,15 +67,18 @@ class Weapon {
 		}
 	}
 	draw(context){
-		context.save();
-		context.translate(this.position.x,this.position.y);
-		context.beginPath();
-		context.rotate(this.rotation);
-		context.drawImage(this.myImage, 0, 0);
-		context.fill();
-		context.closePath();
-		context.stroke();
-		context.restore();
+		// Don't draw the wepons that are in the inventory.
+		if (this.stage.player.inventory.indexOf(this) == -1 || this.stage.player.equipped == this) {
+			context.save();
+			context.translate(this.position.x,this.position.y);
+			context.beginPath();
+			context.rotate(this.rotation);
+			context.drawImage(this.myImage, 0, 0);
+			context.fill();
+			context.closePath();
+			context.stroke();
+			context.restore();
+		}
 	}
 	name(){
 		return "weapon"

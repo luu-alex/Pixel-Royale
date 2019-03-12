@@ -6,6 +6,7 @@ class player extends People{
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
 		this.pickup_range = 75;
+		this.inventory = [];
 		this.equipped = null;
     this.hp = 100;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
@@ -166,6 +167,7 @@ class player extends People{
 		if (this.speed.y < 0 && this.position.y > obj.position.x + length) return false;
     return true;
   }
+<<<<<<< HEAD
 	pickUp() { //player potentially pick up items
 		if (!this.equipped) {
 			var weaps = this.stage.weapons;
@@ -179,12 +181,36 @@ class player extends People{
 			}
 		}
 		for (var i=0; i < this.stage.teleporters.length; i++){ //activate teleporter
+=======
+	pickUp() {
+
+		if (this.inventory.length < 3) {
+			var weaps = this.stage.weapons;
+			for (var i=0; i<this.stage.weapons.length;i++){
+			    if (this.inventory.indexOf(weaps[i]) == -1 && this.pickUpHelper(weaps[i])){
+					this.equipped = weaps[i];
+					this.inventory.push(weaps[i]);
+					weaps[i].held(this);
+					this.stage.add_gun_GUI(weaps[i]);
+					console.log(this.inventory.length);
+					break;
+				}
+			}
+		}
+
+		for (var i=0; i < this.stage.teleporters.length; i++){
+>>>>>>> 7bf12a5ea089d798f47334d63fc15a0a6225a05f
 			if (this.pickUpHelper(this.stage.teleporters[i])){
 				this.teleport(this.stage.teleporters[i].position.x)
 				break;
 			}
 		}
+<<<<<<< HEAD
 		var ammos = this.stage.getAmmo(); //check if ammo is within pick up radius
+=======
+
+		var ammos = this.stage.getAmmo();
+>>>>>>> 7bf12a5ea089d798f47334d63fc15a0a6225a05f
 		if (this.equipped) {
 			for (var i=0;i<ammos.length;i++) {
 				var aPosition = ammos[i].position;
@@ -216,8 +242,19 @@ class player extends People{
 	dropDown(){ //drop item
 		if (this.equipped){
 			this.equipped.drop();
-			this.equipped = null;
-			this.stage.remove_gun_GUI();
+			var index = this.inventory.indexOf(this.equipped);
+			if (index > -1) {
+			  this.inventory.splice(index, 1);
+			}
+			if (this.inventory.length > 0) {
+				this.equipped = this.inventory[-1];
+				this.stage.add_gun_GUI(this.inventory[-1]);
+
+			}else{
+				this.equipped = null;
+				this.stage.remove_gun_GUI();
+
+			}
 		}
 	}
 	stopMovement(keys) { //player stops moving
@@ -225,6 +262,7 @@ class player extends People{
 		if(keys=='w' || keys=='s') this.speed.y= 0;
 		this.increment = 0;
 	}
+<<<<<<< HEAD
 	move(player,keys) { //key is pressed down moves player
     if(!this.die) {
 			this.increment++;
@@ -234,6 +272,33 @@ class player extends People{
     	if (keys && keys['w'] && this.position.y + this.radius >5) this.speed.y = -5;
     	if (keys && keys['s'] && this.position.y<this.stage.height)this.speed.y = 5;
 	   }
+=======
+	move(player,keys){
+    // for (var i=0; i < this.stage.trees.length; i++) {
+      // console.log("player position y:" + (this.position.y - this.radius))
+
+      // var terrain = this.stage.trees[i];
+      // console.log( terrain.position.y)
+    //&& !( this.position.x - this.radius > terrain.position.x + terrain.size.x &&
+        // terrain.position.y < this.position.y && this.position.y < this.position.y + terrain.size.y)
+    //   if (this.speed.x < 0 && this.position.x - this.radius > terrain.position.x + terrain.size.x &&
+    //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
+	    if (!this.die) {
+				this.increment++;
+				if (this.increment > 14)
+					this.increment=0;
+	    	if (keys && keys['a'] && this.position.x+ this.radius > 5 )this.speed.x = -5;
+	    	if (keys && keys['d'] && this.position.x<this.stage.width) {
+	  			this.speed.x = 5;
+	  		}
+	    	if (keys && keys['w'] && this.position.y + this.radius >5) {
+	  			this.speed.y = -5;
+	  		}
+	    	if (keys && keys['s'] && this.position.y<this.stage.height) {
+				this.speed.y = 5;
+			}
+	    }
+>>>>>>> 7bf12a5ea089d798f47334d63fc15a0a6225a05f
 	}
 	hit() { //player gets shot
 	  if(this.hp>0)
@@ -255,5 +320,12 @@ class player extends People{
 	}
 	wallMode(){
 		this.stage.wall_mode = !(this.stage.wall_mode);
+	}
+
+	switchTo(gun_num){
+		this.equipped = this.inventory[gun_num-1];
+		this.stage.add_gun_GUI(this.inventory[gun_num-1]);
+
+		// console.log(a-1);
 	}
 }
