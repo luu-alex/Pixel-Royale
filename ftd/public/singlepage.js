@@ -24,18 +24,6 @@ function userRegister(){
     if (!pass) $('#invalidRegPass').show();
     if (!validateEmail(email)) $('#invalidEmail').show();
 }
-function submitScore(kills,time) {
-  $.ajax({url:"/score",
-          data:{
-          kills:kills,
-          time:time},
-          method:"POST",
-          success: function(result){
-            if (result=="success"){
-            }
-          }
-  });
-}
 function populateProfile(){
   $.ajax({
     url: "/edit",
@@ -143,10 +131,11 @@ function loginShowPage(page){
   $("#"+page).show();
 }
 function indexShowPage(page){
-  stopGame();
+  pauseGame();
   $("#submitBTN").hide();
   $("#stage").hide();
   $("#stats").hide();
+  $("#showStats").hide();
   $("#profile").hide();
   $("#index").hide();
   $("#"+page).show();
@@ -168,6 +157,8 @@ function hideRegInvalid(){
 }
 function game(){
   $("#profile").hide();
+  $("#stats").hide();
+  $("#submitStats").hide();
   $("#stage").show();
     pauseGame();
     setupGame();
@@ -177,6 +168,11 @@ function submitBTN(){
   $("#submitBTN").show();
   // $("#stage").hide();
 }
+function statsswitch(kills){
+  $("#stats").show();
+  $("#submitStats").show();
+  $("#kills").val(kills);
+}
 function home() {
   $('#home').show();
   $('#stage').hide();
@@ -184,12 +180,14 @@ function home() {
   $('#stats').hide();
   $("#profile").hide();
 }
-function showStats(kills) {
+function showStats() {
+  var kills = $('#kills').val();
   $.ajax({
     url: "/score",
     method:"post",
-    data:{kills},
+    data:{kills: kills},
     success: function(result){
+      $("#submitStats").hide();
     }
   });
 }
@@ -198,7 +196,7 @@ function getStats() {
     url: "/score",
     method:"get",
     success: function(result){
-      var item = "<table> <tr> <th> Name </th> <th> Kills </th> </tr>  "
+      var item = "<table id='stats'> <tr> <th> Name </th> <th> Kills </th> </tr>  "
       for (var i=0; i<result["data"].length; i++) {
         item+= "<tr> <th>"+result["data"][i][0] + "</th> <th> " + result["data"][i][1] +"</th>  </tr>"
       }
@@ -214,6 +212,7 @@ $(function() {
   $("#nav").hide();
   $("#profile").hide();
   $("#stats").hide();
+  $("#kills").hide();
   hideRegInvalid();
   hideInvalid();
   hidePInvalid();
@@ -232,6 +231,9 @@ $(function() {
   $("#loginBTN").on('click',function(e){
     e.preventDefault();
     signIn();
+  })
+  $("#submitStats").on('click',function(e){
+    showStats();
   })
   $("#registerBTN").on('click', function(e){
     hideInvalid();

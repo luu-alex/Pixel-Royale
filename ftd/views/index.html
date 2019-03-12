@@ -26,11 +26,11 @@
 		<script language="javascript" src="/pieces/safezone.js" > </script>
 		<script language="javascript" src="/pieces/bot.js" > </script>
 	</head>
-	<body class="myBody">
+	<body class="myBody" background="forest.jpg">
 		<div id ="nav">
 	    <ul>
 	      <li id="homeBTN"><a> Home </a></li>
-	      <li id="gameBTN"><a> FortNite Game </a></li>
+	      <li id="gameBTN"><a> Pixel Royale </a></li>
 	      <li id="statsBTN"> <a> Stats </a></li>
 				<li id="editProfileBTN"> <a> Profile </a></li>
 				<li id="logOut"> <a> Logout </a></li>
@@ -89,9 +89,11 @@
 				<button type="button" class="myButton" id="backBTN">Head Back</button>
       </form>
 		</div>
-		<div id ="submitBTN">
-			<button type="button" id="submitScore" class="myButton">Would you like to submit your score?</button>
-		</div>
+		<center>
+			<div id="stats">
+				 <button type="button" id="submitStats" class="myButton">Submit stats</button>
+			</div>
+		</center>
 		<center>
     	<canvas id="stage" width="800" height="600" style="border:1px solid brown;"> </canvas>
 		</center>
@@ -111,10 +113,6 @@
 				<button type="button" id="deleteEditBTN" class="myButton">Delete profile</button>
 			</form>
 		</div>
-		<div id="stats">
-			<div id="infoStats">
-				<p id="statslist"> </p>
-			</div>
-		</div>
+		<input type="text" placeholder="" id="kills" value="0">
 	</body>
 </html>

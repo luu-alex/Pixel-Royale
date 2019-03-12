@@ -46,20 +46,20 @@ class Ball {
 			this.increment=0;
 
 		// bounce off the walls
-		if(this.position.x<0){
-			this.position.x=0;
+		if(this.position.x<this.stage.safezone.position.x){
+			this.position.x=this.stage.safezone.position.x;
 			this.velocity.x=Math.abs(this.velocity.x);
 		}
-		if(this.position.x>this.stage.width){
-			this.position.x=this.stage.width;
+		if(this.position.x>this.stage.safezone.size.x-this.stage.safezone.position.x){
+			this.position.x=this.stage.safezone.size.x-this.stage.safezone.position.x;
 			this.velocity.x=-Math.abs(this.velocity.x);
 		}
-		if(this.position.y<0){
-			this.position.y=0;
+		if(this.position.y<this.stage.safezone.position.y){
+			this.position.y=this.stage.safezone.position.y;
 			this.velocity.y=Math.abs(this.velocity.y);
 		}
-		if(this.position.y>this.stage.height){
-			this.position.y=this.stage.height;
+		if(this.position.y>this.stage.safezone.size.y-this.stage.safezone.position.y){
+			this.position.y=this.stage.safezone.size.y-this.stage.safezone.position.y;
 			this.velocity.y=-Math.abs(this.velocity.y);
 		}
 		this.intPosition();

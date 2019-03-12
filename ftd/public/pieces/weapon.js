@@ -46,7 +46,7 @@ class Weapon {
 		}
 		else if(this.type == "bazooka"){
 			this.length = new Pair(30,40);
-			this.ammo = 3;
+			this.ammo = 10;
 			this.gun_color = "#2b8740";
   		this.myImage.src = '/bazooka.png';
 			this.bullet_size = 20;

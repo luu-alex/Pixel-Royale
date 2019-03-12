@@ -18,17 +18,16 @@ function pauseGame(){
 	clearInterval(interval);
 	interval= null;
 }
-function endGame(){
+function endGame(kills){
 	clearInterval(interval);
 	interval= null;
-	var confirmed = localStorage.getItem('confirmed') || '';
-		if (confirmed != 'yes') {
-		var r = confirm("Do you want to submit your score?");
-		if(r){
-			showStats(this.kills);
-			localStorage.setItem('confirmed', 'yes');
-		}
-	}
+	statsswitch(kills);
+		// var r = confirm("Do you want to submit your score?");
+		// if(r){
+		// 	showStats(kills);
+		// 	// localStorage.setItem('confirmed', 'yes');
+		// }
+	// }
 
 }
 function getGame(){

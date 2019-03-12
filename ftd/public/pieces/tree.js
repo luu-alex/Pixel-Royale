@@ -2,7 +2,7 @@ class Tree extends Obstacles{
 	constructor(stage, position) {
 		super(stage, position);
 		this.size = new Pair(200, 279);
-		this.hp = 5; //Takes 5 bullets to break
+		this.hp = 50; //Takes 5 bullets to break
 		this.myImage = new Image();
 		this.myImage.src = '/bigTree.png';
 	}

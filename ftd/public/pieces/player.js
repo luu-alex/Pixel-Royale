@@ -10,10 +10,19 @@ class player extends People{
     	this.hp = 100;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
-		this.myImage = new Image();
-		this.myImage.src = '/elf.png';
+		this.images = [];
+		var myImage = new Image();
+		myImage.src = '/elf.png';
+		var myImage1 = new Image();
+		myImage1.src = '/elf1.png';
+		var myImage2 = new Image();
+		myImage2.src = '/elf2.png';
+		this.images.push(myImage)
+		this.images.push(myImage1)
+		this.images.push(myImage2)
     this.die = false;
 		this.kills = 0;
+		this.increment = 0;
 	}
 	shoot() {
 		// If the player has a gun.
@@ -52,13 +61,17 @@ class player extends People{
   		context.fillStyle = this.colour;
   		context.beginPath();
   		// context.drawImage(this.myImage, this.position.x, this.position.y);
-  		context.drawImage(this.myImage, this.position.x - this.radius, this.position.y - this.radius);
+			if(!this.speed)
+  		context.drawImage(this.images[0], this.position.x - this.radius, this.position.y - this.radius);
+			else {
+				context.drawImage(this.images[Math.floor(this.increment/5)], this.position.x - this.radius, this.position.y - this.radius);
+			}
   		context.fill();
   		context.closePath();
     } else {
       context.beginPath();
   		context.fillStyle="black"
-  		context.font = "50px Arial";
+  		context.font = "70px pixelFont";
   		context.fillText("You have Died",this.cameraPosX + this.stage.canvas.clientWidth/2-200,this.cameraPosY + this.stage.canvas.clientHeight/2 );
   		context.closePath();
     }
@@ -67,6 +80,7 @@ class player extends People{
 		//check if player is walking on terrain which may cause player to slow
     	//walking through terrain causes different velocity
 		var terrainSpeed=1;
+
 
 		// for (var i = 0; i < array.length; i++) {
 		// 	array[i]
@@ -183,6 +197,7 @@ class player extends People{
 	stopMovement(keys){
 		if(keys=='a' || keys=='d') this.speed.x= 0;
 		if(keys=='w' || keys=='s') this.speed.y= 0;
+		this.increment = 0;
 	}
 	move(player,keys){
     // for (var i=0; i < this.stage.trees.length; i++) {
@@ -195,6 +210,10 @@ class player extends People{
     //   if (this.speed.x < 0 && this.position.x - this.radius > terrain.position.x + terrain.size.x &&
     //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
     if (!this.die) {
+			this.increment++;
+			console.log(this.increment);
+			if (this.increment > 14)
+				this.increment=0;
     	if (keys && keys['a'] && this.position.x+ this.radius > 5 )this.speed.x = -5;
     	if (keys && keys['d'] && this.position.x<this.stage.width) {
   			this.speed.x = 5;
@@ -215,7 +234,7 @@ class player extends People{
     //   $.getScript('./controller.js', function(){
     //     console.log("clear interval");
 
-			endGame();
+			endGame(this.kills);
 			// endGame();
     //   })
     }
