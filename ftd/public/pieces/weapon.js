@@ -9,7 +9,6 @@ class Weapon {
 		this.myImage = new Image();
 		this.myImage.src = '/gun2.png';
 		this.type = type;
-		this.being_held = false;
 
 		if(this.type == "flame thrower"){
 			this.length = new Pair(20,30);
@@ -68,7 +67,7 @@ class Weapon {
 		}
 	}
 	draw(context){
-		// Basically don't draw the wepons that are in the inventory.
+		// Don't draw the wepons that are in the inventory.
 		if (this.stage.player.inventory.indexOf(this) == -1 || this.stage.player.equipped == this) {
 			context.save();
 			context.translate(this.position.x,this.position.y);
@@ -86,13 +85,11 @@ class Weapon {
 	}
 	held(player){
 		if (!this.equipped){
-			this.being_held = true;
 			this.equipped = player;
 		}
 	}
 	drop(){
 		if (this.equipped){
-			this.being_held = false;
 			this.equipped = null;
 		}
 	}
