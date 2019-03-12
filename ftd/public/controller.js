@@ -10,7 +10,7 @@ function setupGame(){
 		document.addEventListener('keydown', moveByKey);
 		document.addEventListener('keyup', stopMove);
 		document.addEventListener('click', shoot);
-		// document.addEventListener('contextmenu', changeFormation);
+		document.addEventListener('contextmenu', function(ev) {ev.preventDefault(); changeFormation(ev);});
 		document.addEventListener('mousemove', aim);
 	}
 }
@@ -38,9 +38,9 @@ function shoot(event){
 	stage.player.shoot(event.offsetX,event.offsetY);
 
 }
-// function changeFormation(event){
-// 	stage.player.
-// }
+function changeFormation(event){
+	stage.player.flipWall();
+}
 function moveByKey(event){
 	var key = event.key;
 	keys = (keys || []);

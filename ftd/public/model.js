@@ -296,10 +296,10 @@ class Wall {
 
 	change_formation(){
 
-		if (this.current_formation == (90*Math.Pi/180)) {
-			this.current_formation = 0;
+		if (this.current_formation == 0) {
+			this.current_formation = 90*Math.PI/180;
 		}else {
-			this.current_formation = (90*Math.Pi/180);
+			this.current_formation = 0;
 		}
 
 		/* Obselete - Multiple Angles

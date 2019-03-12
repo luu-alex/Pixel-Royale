@@ -13,6 +13,8 @@ class player extends People{
 		this.myImage = new Image();
 		this.myImage.src = '/elf.png';
     	this.die = false;
+
+
 	}
 	shoot() {
 		// If the player has a gun.
@@ -194,6 +196,12 @@ class player extends People{
 	      this.hp--;
   	}
 
+	flipWall(){
+		console.log(this.stage.wall_mode);
+		if (this.stage.wall_mode) {
+			this.stage.ghost_wall.change_formation();
+		}
+	}
 	wallMode(){
 		this.stage.wall_mode = !(this.stage.wall_mode);
 	}
