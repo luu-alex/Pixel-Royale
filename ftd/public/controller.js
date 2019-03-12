@@ -72,7 +72,7 @@ function aim(event){
 	// stage.player.aim();
 }
 function shoot(event){
-	// console.log("x: "+event.offsetX + " Y: "+event.offsetY)
+
 	stage.player.shoot(event.offsetX,event.offsetY);
 
 }
@@ -98,13 +98,25 @@ function moveByKey(event){
 	if (key.toLowerCase()=='r'){
 		stage.player.wallMode();
 	}
+
+	if (key == 1) {
+		stage.player.switchTo(1);
+	}
+	if (key == 2) {
+		stage.player.switchTo(2);
+	}
+	if (key == 3) {
+		stage.player.switchTo(3);
+	}
+
+
 }
 function stopMove(event){
 	keys[event.key] = false;
 	stage.player.stopMovement(event.key);
 }
 function stopGame() {
-	console.log("i have paused this game");
+	console.log("I have paused this game");
 	console.log(interval)
 	clearInterval(interval);
 	interval= null;

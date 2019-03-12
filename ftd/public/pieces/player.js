@@ -6,6 +6,7 @@ class player extends People{
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
 		this.pickup_range = 75;
+		this.inventory = [];
 		this.equipped = null;
     	this.hp = 100;
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
@@ -135,23 +136,28 @@ class player extends People{
     return true;
   }
 	pickUp() {
-		if (!this.equipped) {
+
+		if (this.inventory.length < 3) {
 			var weaps = this.stage.weapons;
 			for (var i=0; i<this.stage.weapons.length;i++){
-        if ((!this.equipped))
-				    if (this.pickUpHelper(weaps[i])){
-						this.equipped= weaps[i];
-						weaps[i].held(this);
-						this.stage.add_gun_GUI(weaps[i]);
+			    if (this.inventory.indexOf(weaps[i]) == -1 && this.pickUpHelper(weaps[i])){
+					this.equipped = weaps[i];
+					this.inventory.push(weaps[i]);
+					weaps[i].held(this);
+					this.stage.add_gun_GUI(weaps[i]);
+					console.log(this.inventory.length);
+					break;
 				}
 			}
 		}
+
 		for (var i=0; i < this.stage.teleporters.length; i++){
 			if (this.pickUpHelper(this.stage.teleporters[i])){
 				this.teleport(this.stage.teleporters[i].position.x)
 				break;
 			}
 		}
+
 		var ammos = this.stage.getAmmo();
 		if (this.equipped) {
 			for (var i=0;i<ammos.length;i++) {
@@ -174,7 +180,6 @@ class player extends People{
 	}
 	pickUpHelper(pickUp) {
 		var objPos = pickUp.position;
-		// console.log(this.position.x - this.pickup_range)
 		if (this.position.x - this.pickup_range < objPos.x &&
 		objPos.x < this.position.x + this.pickup_range &&
 		this.position.y - this.pickup_range < objPos.y &&
@@ -185,8 +190,19 @@ class player extends People{
 	dropDown(){
 		if (this.equipped){
 			this.equipped.drop();
-			this.equipped = null;
-			this.stage.remove_gun_GUI();
+			var index = this.inventory.indexOf(this.equipped);
+			if (index > -1) {
+			  this.inventory.splice(index, 1);
+			}
+			if (this.inventory.length > 0) {
+				this.equipped = this.inventory[-1];
+				this.stage.add_gun_GUI(this.inventory[-1]);
+
+			}else{
+				this.equipped = null;
+				this.stage.remove_gun_GUI();
+
+			}
 		}
 	}
 	stopMovement(keys){
@@ -206,7 +222,6 @@ class player extends People{
     //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
 	    if (!this.die) {
 				this.increment++;
-				console.log(this.increment);
 				if (this.increment > 14)
 					this.increment=0;
 	    	if (keys && keys['a'] && this.position.x+ this.radius > 5 )this.speed.x = -5;
@@ -242,5 +257,12 @@ class player extends People{
 	}
 	wallMode(){
 		this.stage.wall_mode = !(this.stage.wall_mode);
+	}
+
+	switchTo(gun_num){
+		this.equipped = this.inventory[gun_num-1];
+		this.stage.add_gun_GUI(this.inventory[gun_num-1]);
+
+		// console.log(a-1);
 	}
 }

@@ -37,6 +37,8 @@ class GUI{
 		context.restore();
 		context.resetTransform();
 
+		/*	Inventory	*/
+
 	}
 	step(){
 		if(this.weapon)
