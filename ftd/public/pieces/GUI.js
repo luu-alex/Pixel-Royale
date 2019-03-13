@@ -19,7 +19,71 @@ class GUI{
 		context.closePath();
 		context.restore();
 
+<<<<<<< HEAD
 		
+		/*	Mini Map	*/
+=======
+
+		/*	Inventory */
+
+>>>>>>> 8700f9eb552fb1c04cf60625896a4fac1fe0395a
+		context.save();
+		context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
+
+		context.beginPath();
+		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
+		context.fillRect(-60, -60, 50, 50);
+		context.closePath();
+		if (this.stage.player.inventory[0]!=undefined) {
+			context.beginPath();
+			context.transform(0.7, 0, 0, 0.7,-15, -5);
+			var gun_look = this.stage.player.inventory[0].myImage;
+			console.log(gun_look);
+			context.drawImage(gun_look,-60,-60);
+			context.closePath();
+			context.restore()
+			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
+		}
+<<<<<<< HEAD
+    this.stage.safezone.draw(context);
+=======
+
+		context.beginPath();
+		context.fillStyle = "rgba("+0+","+255+","+0+","+0.3+")";
+		context.fillRect(-120, -60, 50, 50);
+		context.closePath();
+		if (this.stage.player.inventory[1]!=undefined) {
+			context.beginPath();
+			context.transform(0.7, 0, 0, 0.7,-33, -5);
+			var gun_look = this.stage.player.inventory[1].myImage;
+			console.log(gun_look);
+			context.drawImage(gun_look,-120,-60);
+			context.closePath();
+			context.restore()
+			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
+		}
+
+		context.beginPath();
+		context.fillStyle = "rgba("+255+","+0+","+0+","+0.3+")";
+		context.fillRect(-60, -120, 50, 50);
+		context.closePath();
+		if (this.stage.player.inventory[2]!=undefined) {
+			context.beginPath();
+			context.transform(0.7, 0, 0, 0.7,-15, -20);
+			var gun_look = this.stage.player.inventory[2].myImage;
+			console.log(gun_look);
+			context.drawImage(gun_look,-60,-120);
+			context.closePath();
+			context.restore()
+			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
+		}
+
+
+
+
+
+		context.restore();
+
 		/*	Mini Map	*/
 		context.save();
 		context.translate(this.player.cameraPosX, this.player.cameraPosY);
@@ -32,7 +96,8 @@ class GUI{
 			this.stage.bots[i].draw(context);
 			// this.player.draw(context);
 		}
-    this.stage.safezone.draw(context);
+		this.stage.safezone.draw(context);
+>>>>>>> 8700f9eb552fb1c04cf60625896a4fac1fe0395a
 		this.stage.player.draw(context);
 		context.closePath();
 		context.restore();
