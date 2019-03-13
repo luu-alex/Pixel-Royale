@@ -119,6 +119,18 @@ class player extends People{
 			if (this.collisionLeft(this.speed, this.position, walls[i].position, walls[i].length) && this.speed.x >0)
 					this.position.x-=30;
 		}
+		var enemies = this.stage.bots; //checking collision of bots with the player
+		for (var i=0; i<enemies.length; i++) {
+			var enemySize = new Pair(enemies[i].radius*2,enemies[i].radius)
+			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
+					this.hit();
+			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
+					this.hit();
+			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
+					this.hit();
+			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
+					this.hit();
+		}
 
 		var terrainSpeed=1; //terrain speed that affects the movement of player
 		if (this.position.x <= this.stage.width/2 && this.position.y <= this.stage.height/2){
