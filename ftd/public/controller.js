@@ -105,11 +105,8 @@ function stopMove(event){ //When a key stops being pressed
 	stage.player.stopMovement(event.key);
 }
 function stopGame() {
-<<<<<<< HEAD
-=======
 	console.log("I have paused this game");
 	console.log(interval)
->>>>>>> 7bf12a5ea089d798f47334d63fc15a0a6225a05f
 	clearInterval(interval);
 	interval= null;
 	// document.getEle
