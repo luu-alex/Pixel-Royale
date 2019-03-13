@@ -87,13 +87,7 @@ class player extends People{
 				pPosition.x> objPosition.x &&
 				pPosition.x<objPosition.x+objSize.x
 	}
-	// collisionTop(pSpeed, pPosition, objPosition, objSize) {
-	// 	return pSpeed.y > 0 && pPosition.y <
-	// 			objPosition.y+objSize.y &&
-	// 			pPosition.y> objPosition.y &&
-	// 			pPosition.x> objPosition.x &&
-	// 			pPosition.x<objPosition.x+objSize.x
-	// }
+
 	step(){
 		//check if player is walking on terrain which may cause player to slow
     	//walking through terrain causes different velocity
@@ -161,7 +155,7 @@ class player extends People{
 		}
 	}
   	collision(obj,length,width) {
-    if (this.speed.x < 0 && this.position.x - this.radius > obj.position.x + length) return false;
+    	if (this.speed.x < 0 && this.position.x - this.radius > obj.position.x + length) return false;
 		if (this.speed.x > 0 && this.position.x + this.radius < obj.position.x) return false;
 		if (this.speed.y > 0 && this.position.y + this.radius < obj.position.y) return false;
 		if (this.speed.y < 0 && this.position.y > obj.position.x + length) return false;

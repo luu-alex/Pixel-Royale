@@ -22,7 +22,6 @@ class Ammo {
 		context.strokeStyle = "Purple";
 		context.fillStyle = "Purple";
 		context.drawImage(this.myImage, this.position.x, this.position.y);
-		// context.rect(this.position.x,this.position.y,this.size.x,this.size.y);
 		context.stroke();
 		context.fill();
 		context.closePath();
