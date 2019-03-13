@@ -19,14 +19,11 @@ class GUI{
 		context.closePath();
 		context.restore();
 
-<<<<<<< HEAD
-		
+
 		/*	Mini Map	*/
-=======
 
 		/*	Inventory */
 
->>>>>>> 8700f9eb552fb1c04cf60625896a4fac1fe0395a
 		context.save();
 		context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 
@@ -44,9 +41,6 @@ class GUI{
 			context.restore()
 			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 		}
-<<<<<<< HEAD
-    this.stage.safezone.draw(context);
-=======
 
 		context.beginPath();
 		context.fillStyle = "rgba("+0+","+255+","+0+","+0.3+")";
@@ -97,7 +91,6 @@ class GUI{
 			// this.player.draw(context);
 		}
 		this.stage.safezone.draw(context);
->>>>>>> 8700f9eb552fb1c04cf60625896a4fac1fe0395a
 		this.stage.player.draw(context);
 		context.closePath();
 		context.restore();
