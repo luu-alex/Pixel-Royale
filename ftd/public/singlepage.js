@@ -177,6 +177,7 @@ function statsswitch(kills){
   $("#kills").val(kills);
 }
 function home() {
+  indexShowPage('index');
   $('#home').show();
   $('#stage').hide();
   $('#index').show();

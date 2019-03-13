@@ -19,16 +19,7 @@ class GUI{
 		context.closePath();
 		context.restore();
 
-		context.save();
-		context.translate(this.player.cameraPosX,this.player.cameraPosY);
-		context.beginPath();
-		context.fillStyle="black"
-		context.font = "20px pixelFont";
-		context.fillText("Health: "+this.hp,5,0);
-		context.fillText("Ammo: "+this.ammo,300,context.canvas.clientHeight-10);
-    	context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
-		context.closePath();
-		context.restore();
+		
 		/*	Mini Map	*/
 		context.save();
 		context.translate(this.player.cameraPosX, this.player.cameraPosY);
@@ -41,32 +32,13 @@ class GUI{
 			this.stage.bots[i].draw(context);
 			// this.player.draw(context);
 		}
-    	this.stage.safezone.draw(context);
+    this.stage.safezone.draw(context);
 		this.stage.player.draw(context);
 		context.closePath();
 		context.restore();
-
-		/*	Inventory */
-		context.save();
-		context.translate(this.player.cameraPosX + this.stage.canvas.width - 50, this.player.cameraPosY + this.stage.canvas.height -50);
-
-		context.beginPath();
-		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
-		context.fillRect(0, 0, 50, 50);
-		context.closePath();
-
-		context.beginPath();
-		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
-		context.fillRect(0, -70, 50, 50);
-		context.closePath();
-
-		context.beginPath();
-		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
-		context.fillRect(0, -130, 50, 50);
-		context.closePath();
-
-		context.restore();
 		context.resetTransform();
+
+		/*	Inventory	*/
 
 	}
 	step(){

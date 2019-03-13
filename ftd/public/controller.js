@@ -2,7 +2,7 @@ stage=null;
 view = null;
 interval=null;
 keys = null;
-
+music = null;
 var rightMouseClicked = false;
 
 function handleMouseDown(e) {
@@ -31,6 +31,9 @@ function handleMouseUp(e) {
 }
 function setupGame(){
 		stage=new Stage(document.getElementById('stage'));
+		music = new Audio ('/Woods.mp3');
+		music.play();
+		console.log(music)
 
 		// https://javascript.info/keyboard-events
 		document.addEventListener('keydown', moveByKey);
@@ -46,6 +49,9 @@ function startGame(){
 	interval=setInterval(function(){ stage.step(); stage.draw(); },20);
 }
 function pauseGame(){
+	console.log(music);
+	if (music)
+		music.pause();
 	clearInterval(interval);
 	interval= null;
 }
@@ -105,8 +111,6 @@ function stopMove(event){ //When a key stops being pressed
 	stage.player.stopMovement(event.key);
 }
 function stopGame() {
-	console.log("I have paused this game");
-	console.log(interval)
 	clearInterval(interval);
 	interval= null;
 	// document.getEle

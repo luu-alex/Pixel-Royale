@@ -19,7 +19,7 @@ class Stage {
 		this.trees = [];
 		this.walls = [];
 		this.wall_mode = false;
-
+		this.deaths = [];
 		// the logical width and height of the stage
 		this.width=2000;
 		this.height=2000;
@@ -144,6 +144,12 @@ class Stage {
 		var index=this.bots.indexOf(bot);
 		if(index!=-1){
 			this.bots.splice(index,1);
+		}
+	}
+	removeBot(death){//when a bot dies
+		var index=this.deaths.indexOf(death);
+		if(index!=-1){
+			this.death.splice(index,1);
 		}
 	}
 	removeTree(tree){//remove tree from the list
