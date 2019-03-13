@@ -10,6 +10,7 @@ class Weapon {
 		this.myImage.src = '/gun2.png';
 		this.type = type;
 
+		// Different types weapons
 		if(this.type == "flame thrower"){
 			this.length = new Pair(20,30);
 			this.ammo = 100;
@@ -125,7 +126,7 @@ class Weapon {
 
 			slope.normalize();	//It converts slope vector into unit vectors.
 
-			// 55 is the distance of the gun from the center of the player.
+			// 45 is the distance of the gun from the center of the player.
 			this.position.x = raw_pos_player.x + slope.x * 45;
 			this.position.y = raw_pos_player.y + slope.y * 45;
 
@@ -138,14 +139,17 @@ class Weapon {
 		return this.length;
 	}
 	shoot(){
+		// Flame thrower takes away 5 flames at a time
 		if (this.ammo >= 5 && this.type == "flame thrower"){
 			this.ammo -= 5;
 			return true;
 		}
+		// shotgun takes away 3 bullets at a time
 		if (this.ammo >= 3 && this.type == "shotgun"){
 			this.ammo -= 3;
 			return true;
 		}
+		// the rest take away 1 at a time
 		if (this.ammo > 0 && (this.type == "sniper" ||
 		 					   this.type == "9 mm" ||
 						   	   this.type == "bazooka")){
