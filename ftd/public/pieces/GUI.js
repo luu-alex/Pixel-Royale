@@ -15,10 +15,20 @@ class GUI{
 		context.font = "20px pixelFont";
 		context.fillText("Health: "+this.hp,5,context.canvas.clientHeight-10);
 		context.fillText("Ammo: "+this.ammo,150,context.canvas.clientHeight-10);
-    	context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
+    context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
 		context.closePath();
 		context.restore();
 
+		context.save();
+		context.translate(this.player.cameraPosX,this.player.cameraPosY);
+		context.beginPath();
+		context.fillStyle="black"
+		context.font = "20px pixelFont";
+		context.fillText("Health: "+this.hp,5,0);
+		context.fillText("Ammo: "+this.ammo,300,context.canvas.clientHeight-10);
+    	context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
+		context.closePath();
+		context.restore();
 		/*	Mini Map	*/
 		context.save();
 		context.translate(this.player.cameraPosX, this.player.cameraPosY);
