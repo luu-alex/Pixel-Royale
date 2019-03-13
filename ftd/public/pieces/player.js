@@ -29,6 +29,7 @@ class player extends People{
 		// If the player has a gun.
 		if (this.equipped) {
 			// position of the gun on the camera
+			new Audio ('/shoot3.wav').play();
 			var raw_pos_gun = this.equipped.position;
 			if(this.equipped.shoot()) {
 				if (this.equipped.type == "flame thrower") {
@@ -116,14 +117,22 @@ class player extends People{
 		var enemies = this.stage.bots; //checking collision of bots with the player
 		for (var i=0; i<enemies.length; i++) {
 			var enemySize = new Pair(enemies[i].radius*2,enemies[i].radius)
-			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
+			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize)) {
 					this.hit();
-			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
+					enemies[i].switchVelocity();
+			}
+			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize)) {
 					this.hit();
-			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
+					enemies[i].switchVelocity();
+			}
+			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize)) {
 					this.hit();
-			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
+					enemies[i].switchVelocity();
+			}
+			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize)) {
 					this.hit();
+					enemies[i].switchVelocity();
+			}
 		}
 
 		var terrainSpeed=1; //terrain speed that affects the movement of player

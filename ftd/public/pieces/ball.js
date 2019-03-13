@@ -64,6 +64,21 @@ class Ball {
 		}
 		this.intPosition();
 	}
+	switchVelocity(){ //monster will turn the other direction 
+		if(this.velocity.x<0){
+			this.velocity.x=Math.abs(this.velocity.x);
+		}
+		if(this.velocity.x>0){
+			this.velocity.x=-Math.abs(this.velocity.x);
+		}
+		if(this.velocity.y<0) {
+			this.velocity.y=Math.abs(this.velocity.y);
+		}
+		if(this.velocity.y>0) {
+			this.velocity.y=-Math.abs(this.velocity.y);
+		}
+		this.intPosition();
+	}
 	intPosition(){
 		this.x = Math.round(this.position.x);
 		this.y = Math.round(this.position.y);

@@ -70,16 +70,16 @@ class Stage {
 			}
 		}
 
-		// // Generate some Smart Bots around the map.
-		// for (var i = 0; i < 1; i++) {
-		// 	var x=Math.floor((Math.random()*this.width));
-		// 	var y=Math.floor((Math.random()*this.height));
-		// 	if(this.getActor(x,y)===null){
-		// 		var bot = new Bot(this, new Pair(x,y));
-		// 		this.addBot(bot);
-		// 		this.addActor(bot);
-		// 	}
-		// }
+		// Generate some Smart Bots around the map.
+		for (var i = 0; i < 3; i++) {
+			var x=Math.floor((Math.random()*this.width));
+			var y=Math.floor((Math.random()*this.height));
+			if(this.getActor(x,y)===null){
+				var bot = new Bot(this, new Pair(x,y));
+				this.addBot(bot);
+				this.addActor(bot);
+			}
+		}
 
 		//Generate some Dumb Bots around the map.
 		for (var i = 0; i < 10; i++) {
@@ -110,7 +110,7 @@ class Stage {
 		}
 
 		// Generate Trees around the map.
-		for (var i = 0; i < 15; i++) {
+		for (var i = 0; i < 10; i++) {
 			var x = Math.floor((Math.random()*this.width));
 			var y = Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -159,6 +159,7 @@ class Stage {
 		}
 	}
 	createBullet(player,target,radius,speed,range,color,type){ //Create a bullet when shot from a weapon
+		new Audio ('/shoot3.wav').play();
 		var bullet = new Bullet(this,player,target,radius,speed,range,color,type);
 		this.bullets.push(bullet);
 		this.addActor(bullet);
