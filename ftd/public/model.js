@@ -70,16 +70,16 @@ class Stage {
 			}
 		}
 
-		// // Generate some Smart Bots around the map.
-		// for (var i = 0; i < 1; i++) {
-		// 	var x=Math.floor((Math.random()*this.width));
-		// 	var y=Math.floor((Math.random()*this.height));
-		// 	if(this.getActor(x,y)===null){
-		// 		var bot = new Bot(this, new Pair(x,y));
-		// 		this.addBot(bot);
-		// 		this.addActor(bot);
-		// 	}
-		// }
+		// Generate some Smart Bots around the map.
+		for (var i = 0; i < 10; i++) {
+			var x=Math.floor((Math.random()*this.width));
+			var y=Math.floor((Math.random()*this.height));
+			if(this.getActor(x,y)===null){
+				var bot = new Bot(this, new Pair(x,y));
+				this.addBot(bot);
+				this.addActor(bot);
+			}
+		}
 
 		//Generate some Dumb Bots around the map.
 		for (var i = 0; i < 10; i++) {
@@ -133,26 +133,26 @@ class Stage {
 	add_gun_GUI(weapon){ //Player equipping weapon
 		this.GUI.addWeapon(weapon);
 	}
-	remove_gun_GUI(weapon){//dropping weapon
+	remove_gun_GUI(weapon){ //dropping weapon
 		this.GUI.removeWeapon();
 	}
-	addBot(bot){//Add bot to list
+	addBot(bot){ //Add bot to list
 		this.bots.push(bot);
 	}
-	removeBot(bot){//when a bot dies
+	removeBot(bot){ //when a bot dies
 		this.player.kills++;
 		var index=this.bots.indexOf(bot);
 		if(index!=-1){
 			this.bots.splice(index,1);
 		}
 	}
-	removeBot(death){//when a bot dies
+	removeBot(death){ //when a bot dies
 		var index=this.deaths.indexOf(death);
 		if(index!=-1){
 			this.death.splice(index,1);
 		}
 	}
-	removeTree(tree){//remove tree from the list
+	removeTree(tree){ //remove tree from the list
 		var index=this.trees.indexOf(tree);
 		if(index != -1) {
 			this.trees.splice(index,1);

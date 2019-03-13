@@ -4,24 +4,26 @@ class player extends People{
 		this.name = "player";
 		this.speed = new Pair(0,0);
 		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
+
 		this.radius = 50;
 		this.pickup_range = 75;
+		this.hp = 100;
+
 		this.inventory = [];
+		this.images = [];
 		this.equipped = null;
-    this.hp = 100;
+
 		this.cameraPosX = this.position.x - this.stage.canvas.clientWidth/2;
 		this.cameraPosY = this.position.y - this.stage.canvas.clientHeight/2;
-		this.images = [];
-		var myImage = new Image();
-		myImage.src = '/elf.png';
-		var myImage1 = new Image();
-		myImage1.src = '/elf1.png';
-		var myImage2 = new Image();
-		myImage2.src = '/elf2.png';
+
+		var myImage = new Image(); myImage.src = '/elf.png';
+		var myImage1 = new Image(); myImage1.src = '/elf1.png';
+		var myImage2 = new Image(); myImage2.src = '/elf2.png';
 		this.images.push(myImage);
 		this.images.push(myImage1);
 		this.images.push(myImage2);
-    this.die = false;
+
+    	this.die = false;
 		this.kills = 0;
 		this.increment =0;
 	}
@@ -41,7 +43,7 @@ class player extends People{
 					for (var i = 0; i < 3; i++) {
 						var j= i;
 						var k = i;
-						if (this.equipped.rotation < 0 && this.equipped.rotation > -(90*Math.PI/180) ) k = -i
+						if (this.equipped.rotation < 0 && this.equipped.rotation > -(90*Math.PI/180) ) k = -i;
 						if (this.equipped.rotation < (180*Math.PI/180) && this.equipped.rotation > (90*Math.PI/180) ) j = -i;
 						var position = new Pair(raw_pos_gun.x+j*5,raw_pos_gun.y+k*5);
 						this.stage.createBullet(this,position,this.equipped.bullet_size,this.equipped.bullet_speed,this.equipped.bullet_range, this.equipped.bullet_color, this.equipped.type);
@@ -87,7 +89,6 @@ class player extends People{
 				pPosition.x> objPosition.x &&
 				pPosition.x<objPosition.x+objSize.x
 	}
-
 	step(){
 		//check if player is walking on terrain which may cause player to slow
     	//walking through terrain causes different velocity
@@ -116,14 +117,10 @@ class player extends People{
 		var enemies = this.stage.bots; //checking collision of bots with the player
 		for (var i=0; i<enemies.length; i++) {
 			var enemySize = new Pair(enemies[i].radius*2,enemies[i].radius)
-			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
-					this.hit();
-			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
-					this.hit();
-			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
-					this.hit();
-			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize))
-					this.hit();
+			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize)) this.hit();
+			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize)) this.hit();
+			if (this.collisionTop(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize)) this.hit();
+			if (this.collisionLeft(this.speed, this.position, new Pair(enemies[i].position.x-enemies[i].radius, enemies[i].position.y-enemies[i].radius), enemySize)) this.hit();
 		}
 
 		var terrainSpeed=1; //terrain speed that affects the movement of player
@@ -142,7 +139,6 @@ class player extends People{
 
 		this.speed.x = this.speed.x * terrainSpeed;
 		this.speed.y = this.speed.y * terrainSpeed;
-
 
 		if (this.speed.x < 0 && this.position.x - this.radius> 5) this.position.x += this.speed.x; //player movement
 		if (this.speed.x > 0 && this.position.x + this.radius < this.stage.width) this.position.x += this.speed.x;
@@ -173,7 +169,6 @@ class player extends People{
 		if (this.speed.y < 0 && this.position.y > obj.position.x + length) return false;
     return true;
   }
-
 	pickUp() {
 
 		if (this.inventory.length < 3) {

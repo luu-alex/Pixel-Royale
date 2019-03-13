@@ -5,6 +5,8 @@ class Bullet {
 		this.position = new Pair(player.equipped.position.x,player.equipped.position.y);
 		this.range = range;
 		this.initial = new Pair(this.position.x,this.position.y);
+
+		// movement vectors of the bullet
 		this.dx = position.x-player.position.x;
 		this.dy = position.y-player.position.y;
 		this.radius = radius;
@@ -13,10 +15,7 @@ class Bullet {
 		this.color ="Black";
 		this.myImage = new Image();
 		this.myImage.src = '/'+bulletType+'bullet.png';
-    this.player = player;
-	}
-	name(){
-		return "bullet"
+    	this.player = player;
 	}
 	draw(context){
 		context.save();
@@ -24,7 +23,6 @@ class Bullet {
 		context.strokeStyle = this.color;
 		context.beginPath();
 		context.drawImage(this.myImage, this.position.x-this.radius/2, this.position.y-this.radius/2);
-		// context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
 		context.fill();
 		context.closePath();
 		context.restore();
@@ -93,9 +91,10 @@ class Bullet {
       		p.hit();
     	}
 	}
+
+	// returns true if collision has occured
 	collision(x, y, width, height) {
 		return ((x < this.position.x && this.position.x < x + width ) &&
 			  (y < this.position.y && this.position.y < y + height))
 	}
-
 }
