@@ -15,18 +15,11 @@ class GUI{
 		context.font = "20px pixelFont";
 		context.fillText("Health: "+this.hp,5,context.canvas.clientHeight-10);
 		context.fillText("Ammo: "+this.ammo,150,context.canvas.clientHeight-10);
-    context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
+    	context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
 		context.closePath();
 		context.restore();
 
-<<<<<<< HEAD
-		
-		/*	Mini Map	*/
-=======
-
 		/*	Inventory */
-
->>>>>>> 8700f9eb552fb1c04cf60625896a4fac1fe0395a
 		context.save();
 		context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 
@@ -44,9 +37,7 @@ class GUI{
 			context.restore()
 			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 		}
-<<<<<<< HEAD
-    this.stage.safezone.draw(context);
-=======
+
 
 		context.beginPath();
 		context.fillStyle = "rgba("+0+","+255+","+0+","+0.3+")";
@@ -78,10 +69,6 @@ class GUI{
 			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 		}
 
-
-
-
-
 		context.restore();
 
 		/*	Mini Map	*/
@@ -97,7 +84,6 @@ class GUI{
 			// this.player.draw(context);
 		}
 		this.stage.safezone.draw(context);
->>>>>>> 8700f9eb552fb1c04cf60625896a4fac1fe0395a
 		this.stage.player.draw(context);
 		context.closePath();
 		context.restore();
