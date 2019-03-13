@@ -86,10 +86,8 @@ class Ball {
 	draw(context){
 		context.fillStyle = this.colour;
 		context.strokeStyle = this.colour;
-   		// context.fillRect(this.x, this.y, this.radius,this.radius);
 		context.beginPath();
 		context.drawImage(this.images[Math.floor(this.increment/20)], this.position.x - this.radius, this.position.y - this.radius);
-		// context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
 		context.fill();
 		context.closePath();
 	}

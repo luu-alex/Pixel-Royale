@@ -20,13 +20,14 @@ class GUI{
 		context.restore();
 
 		/*	Inventory */
+		// Gun 1 - Red
 		context.save();
 		context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
-
 		context.beginPath();
 		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
 		context.fillRect(-60, -60, 50, 50);
 		context.closePath();
+		context.restore()
 		if (this.stage.player.inventory[0]!=undefined) {
 			context.beginPath();
 			context.transform(0.7, 0, 0, 0.7,-15, -5);
@@ -38,10 +39,12 @@ class GUI{
 			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 		}
 
+		// Gun 2 - Red
 		context.beginPath();
 		context.fillStyle = "rgba("+0+","+255+","+0+","+0.3+")";
 		context.fillRect(-120, -60, 50, 50);
 		context.closePath();
+		context.restore()
 		if (this.stage.player.inventory[1]!=undefined) {
 			context.beginPath();
 			context.transform(0.7, 0, 0, 0.7,-33, -5);
@@ -53,10 +56,12 @@ class GUI{
 			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 		}
 
+		// Gun 3 - Red
 		context.beginPath();
 		context.fillStyle = "rgba("+255+","+0+","+0+","+0.3+")";
 		context.fillRect(-60, -120, 50, 50);
 		context.closePath();
+		context.restore()
 		if (this.stage.player.inventory[2]!=undefined) {
 			context.beginPath();
 			context.transform(0.7, 0, 0, 0.7,-15, -20);
@@ -67,8 +72,6 @@ class GUI{
 			context.restore()
 			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 		}
-
-		context.restore();
 
 		/*	Mini Map	*/
 		context.save();
@@ -88,13 +91,12 @@ class GUI{
 		context.restore();
 		context.resetTransform();
 
-		/*	Inventory	*/
-
 	}
 	step(){
-		if(this.weapon)
+		if(this.weapon){
 			this.ammo = this.weapon.ammo;
-    this.hp = this.player.hp;
+		}
+    	this.hp = this.player.hp;
 	}
 	addWeapon(weapon){
 		this.weapon = weapon;

@@ -3,16 +3,15 @@ class Bot extends People{
     super(stage,position)
 		this.name = "bot";
 		this.speed = 3;
-		this.colour = 'rgba('+255+','+205+','+148+','+1+')';
 		this.radius = 50;
 		this.pickup_range = 50;
-		this.equipped = null;
+		this.equipped = null;	//holding no gun to begin with
     	this.img = new Image()
     	this.img.src = './ogre.png'
 		this.closest_weapon = null;
 		this.closest_ammo = null;
 		this.target = this.stage.player;
-    	this.hp=5;
+    	this.hp=5; 	//hp is monsters health
 	}
 	shoot(){
 		// position of the gun on the moving paper
@@ -40,9 +39,12 @@ class Bot extends People{
 		}
 	}
 	hit(){
+		//hp is monsters' health
 		this.hp--;
 		if (this.hp==0){
-      this.equipped.drop();
+			//Makings sure the gun object name tagged by the user anymore
+      		this.equipped.drop();
+			// exiting the actor off canvas
 			this.stage.removeActor(this)
 			this.stage.removeBot(this)
 		}
@@ -50,7 +52,6 @@ class Bot extends People{
 	draw(context){
 		context.setTransform(1, 0, 0, 1, -1*(this.cameraPosX), -1*this.cameraPosY);
 		context.save();
-		context.fillStyle = this.colour;
 		context.beginPath();
 		context.drawImage(this.img,this.position.x- this.radius,this.position.y - this.radius);
 		context.fill();
@@ -136,11 +137,15 @@ class Bot extends People{
 		if (object.name == "weapon") {
 			var weaponPosition = object.position;
 
+			// If the weapon is in reach
 			if (this.position.x - this.pickup_range < weaponPosition.x &&
 			weaponPosition.x < this.position.x + this.pickup_range &&
 			this.position.y - this.pickup_range < weaponPosition.y &&
 			weaponPosition.y < this.position.y + this.pickup_range){
+
+				// If the bot is originally holding a gun...
 				if (this.equipped){
+					/* Drops the gun but also makes sure the gun is reloaded and randommly placed at a different place on the map, causing a better gaming experience.*/
 					this.closest_weapon = null;
 					var x=Math.floor((Math.random()*this.stage.width));
 					var y=Math.floor((Math.random()*this.stage.height));
@@ -149,24 +154,27 @@ class Bot extends People{
 					this.equipped.position = new Pair(x,y);
 					this.equipped = null;
 				}
+				// Grab the new object
 				this.equipped = object;
 				object.held(this);
 			}
 		}
 		else if (object.name == "ammo" && this.equipped!= null) {
 			var ammoPosition = object.position;
+
+			// if in vacinity
 			if (this.position.x - this.pickup_range < ammoPosition.x &&
 			ammoPosition.x < this.position.x + this.pickup_range &&
 			this.position.y - this.pickup_range < ammoPosition.y &&
 			ammoPosition.y < this.position.y + this.pickup_range){
-					this.equipped.ammo = object.grab_ammo(this.equipped.type);
-					var x=Math.floor((Math.random()*this.stage.width));
-					var y=Math.floor((Math.random()*this.stage.height));
-					object.position = new Pair(x,y);
-					this.closest_ammo = null;
-					// this.stage.removeAmmo(object);
-					// this.stage.removeActor(object);
-				}
+				/* To make game experience great, instead of removing ammo object from canvas, after usage, it repositions it to a random location on canvas.*/
+				this.equipped.ammo = object.grab_ammo(this.equipped.type);
+				var x=Math.floor((Math.random()*this.stage.width));
+				var y=Math.floor((Math.random()*this.stage.height));
+				object.position = new Pair(x,y);
+				this.closest_ammo = null;
+
 			}
+		}
 	}
 }
