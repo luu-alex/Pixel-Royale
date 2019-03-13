@@ -4,39 +4,39 @@ class Ball {
 		this.stage = stage;
 		this.position=position;
 		this.intPosition(); // this.x, this.y are int version of this.position
-		this.hp=30; //hit 3 times the ball dies
+		this.hp = 3; //hit 3 times the ball dies
 		this.velocity=velocity;
 		this.colour = colour;
 		this.radius = radius;
 		this.images = [];
-		var myImage = new Image();
-		myImage.src = '/monster.png';
-		var myImage1 = new Image();
-		myImage1.src = '/monster1.png';
-		var myImage2 = new Image();
-		myImage2.src = '/monster2.png';
-		var myImage3 = new Image();
-		myImage3.src = '/monster3.png';
-		this.images.push(myImage)
-		this.images.push(myImage1)
-		this.images.push(myImage2)
-		this.images.push(myImage3)
+
+		// 4 images of the monster, representing different positions of the mouth.
+		var myImage = new Image(); 	myImage.src = '/monster.png';
+		var myImage1 = new Image();	myImage1.src = '/monster1.png';
+		var myImage2 = new Image();	myImage2.src = '/monster2.png';
+		var myImage3 = new Image();	myImage3.src = '/monster3.png';
+
+		this.images.push(myImage);
+		this.images.push(myImage1);
+		this.images.push(myImage2);
+		this.images.push(myImage3);
+
+		// for animation, frames
 		this.increment = 0;
 	}
+	// Determines the unit velocity vector of the monster
 	headTo(position){
 		this.velocity.x=(position.x-this.position.x);
 		this.velocity.y=(position.y-this.position.y);
 		this.velocity.normalize();
 	}
 	hit(){
+		// hp is the health level of the monster
 		this.hp--;
 		if (this.hp==0){
-			this.stage.removeActor(this)
-			this.stage.removeBot(this)
+			this.stage.removeActor(this);
+			this.stage.removeBot(this);
 		}
-	}
-	toString(){
-		return this.position.toString() + " " + this.velocity.toString();
 	}
 	step(){
 		this.position.x=this.position.x+this.velocity.x;

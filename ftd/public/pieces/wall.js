@@ -62,15 +62,6 @@ class Wall {
 		}else {
 			this.current_formation = 0;
 		}
-
-		/* Obselete - Multiple Angles
-		for (var i = 0; i < this.formations.length; i++) {
-			if (this.formations[i] == this.current_formation) {
-				this.current_formation = this.formation[i+1];
-				break;
-			}
-		}
- */
 	}
 
 	step(){

@@ -126,8 +126,8 @@ class Weapon {
 			slope.normalize();	//It converts slope vector into unit vectors.
 
 			// 55 is the distance of the gun from the center of the player.
-			this.position.x = raw_pos_player.x + slope.x * 55;
-			this.position.y = raw_pos_player.y + slope.y * 55;
+			this.position.x = raw_pos_player.x + slope.x * 45;
+			this.position.y = raw_pos_player.y + slope.y * 45;
 
 		}
 	}

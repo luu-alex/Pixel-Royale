@@ -15,15 +15,11 @@ class GUI{
 		context.font = "20px pixelFont";
 		context.fillText("Health: "+this.hp,5,context.canvas.clientHeight-10);
 		context.fillText("Ammo: "+this.ammo,150,context.canvas.clientHeight-10);
-    context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
+    	context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
 		context.closePath();
 		context.restore();
 
-
-		/*	Mini Map	*/
-
 		/*	Inventory */
-
 		context.save();
 		context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 
@@ -71,10 +67,6 @@ class GUI{
 			context.restore()
 			context.translate(this.player.cameraPosX + this.stage.canvas.width, this.player.cameraPosY + this.stage.canvas.height);
 		}
-
-
-
-
 
 		context.restore();
 
