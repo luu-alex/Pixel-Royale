@@ -167,21 +167,7 @@ class player extends People{
 		if (this.speed.y < 0 && this.position.y > obj.position.x + length) return false;
     return true;
   }
-<<<<<<< HEAD
-	pickUp() { //player potentially pick up items
-		if (!this.equipped) {
-			var weaps = this.stage.weapons;
-			for (var i=0; i<this.stage.weapons.length;i++){
-        if ((!this.equipped))
-			    if (this.pickUpHelper(weaps[i])){
-					this.equipped= weaps[i];
-					weaps[i].held(this);
-					this.stage.add_gun_GUI(weaps[i]);
-				}
-			}
-		}
-		for (var i=0; i < this.stage.teleporters.length; i++){ //activate teleporter
-=======
+
 	pickUp() {
 
 		if (this.inventory.length < 3) {
@@ -199,18 +185,13 @@ class player extends People{
 		}
 
 		for (var i=0; i < this.stage.teleporters.length; i++){
->>>>>>> 7bf12a5ea089d798f47334d63fc15a0a6225a05f
 			if (this.pickUpHelper(this.stage.teleporters[i])){
 				this.teleport(this.stage.teleporters[i].position.x)
 				break;
 			}
 		}
-<<<<<<< HEAD
 		var ammos = this.stage.getAmmo(); //check if ammo is within pick up radius
-=======
 
-		var ammos = this.stage.getAmmo();
->>>>>>> 7bf12a5ea089d798f47334d63fc15a0a6225a05f
 		if (this.equipped) {
 			for (var i=0;i<ammos.length;i++) {
 				var aPosition = ammos[i].position;
@@ -262,7 +243,6 @@ class player extends People{
 		if(keys=='w' || keys=='s') this.speed.y= 0;
 		this.increment = 0;
 	}
-<<<<<<< HEAD
 	move(player,keys) { //key is pressed down moves player
     if(!this.die) {
 			this.increment++;
@@ -272,33 +252,7 @@ class player extends People{
     	if (keys && keys['w'] && this.position.y + this.radius >5) this.speed.y = -5;
     	if (keys && keys['s'] && this.position.y<this.stage.height)this.speed.y = 5;
 	   }
-=======
-	move(player,keys){
-    // for (var i=0; i < this.stage.trees.length; i++) {
-      // console.log("player position y:" + (this.position.y - this.radius))
 
-      // var terrain = this.stage.trees[i];
-      // console.log( terrain.position.y)
-    //&& !( this.position.x - this.radius > terrain.position.x + terrain.size.x &&
-        // terrain.position.y < this.position.y && this.position.y < this.position.y + terrain.size.y)
-    //   if (this.speed.x < 0 && this.position.x - this.radius > terrain.position.x + terrain.size.x &&
-    //       this.position.y - this.radius < terrain.position.y && terrain.position.y < this.position.y + this.radius) this.speed.x = 0;
-	    if (!this.die) {
-				this.increment++;
-				if (this.increment > 14)
-					this.increment=0;
-	    	if (keys && keys['a'] && this.position.x+ this.radius > 5 )this.speed.x = -5;
-	    	if (keys && keys['d'] && this.position.x<this.stage.width) {
-	  			this.speed.x = 5;
-	  		}
-	    	if (keys && keys['w'] && this.position.y + this.radius >5) {
-	  			this.speed.y = -5;
-	  		}
-	    	if (keys && keys['s'] && this.position.y<this.stage.height) {
-				this.speed.y = 5;
-			}
-	    }
->>>>>>> 7bf12a5ea089d798f47334d63fc15a0a6225a05f
 	}
 	hit() { //player gets shot
 	  if(this.hp>0)

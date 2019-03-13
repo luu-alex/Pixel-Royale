@@ -31,15 +31,14 @@ class GUI{
 			this.stage.bots[i].draw(context);
 			// this.player.draw(context);
 		}
-    this.stage.safezone.draw(context);
+    	this.stage.safezone.draw(context);
 		this.stage.player.draw(context);
 		context.closePath();
 		context.restore();
-		context.resetTransform();
 
 		/*	Inventory */
 		context.save();
-		context.translate(this.player.cameraPosX, this.player.cameraPosY);
+		context.translate(this.player.cameraPosX + this.stage.canvas.width - 50, this.player.cameraPosY + this.stage.canvas.height -50);
 
 		context.beginPath();
 		context.fillStyle = "rgba("+255+","+255+","+0+","+0.3+")";
