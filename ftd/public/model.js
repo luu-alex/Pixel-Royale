@@ -72,7 +72,11 @@ class Stage {
 		}
 
 		// Generate some Smart Bots around the map.
+<<<<<<< HEAD
 		for (var i = 0; i < 1; i++) {
+=======
+		for (var i = 0; i < 3; i++) {
+>>>>>>> ccf99f77ff9b15b369699e6b0209d6296abc095c
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){

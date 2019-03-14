@@ -5,7 +5,8 @@ class Wall {
 	X	-> Each wall should change image of the pic after a couple of bullet hits.
 	X	-> Walls should have a health meter that should decrease with a hit.
 	X	-> Placement of the walls should change according to the position of the mouse.
-		-> When moving with the walls, bullets and other actors should be able to go through the walls, but once set, bullets ghosts should not be able to go across.
+	X	-> When moving with the walls, bullets and other actors should be able to go through
+		the walls, but once set, bullets ghosts should not be able to go across.
 	*/
 	constructor(stage){
 		this.stage = stage;
@@ -31,12 +32,10 @@ class Wall {
 			context.translate(this.position.x,this.position.y);
 			context.beginPath();
 
-			/* SET THESE GUYS */
 			if(this.health == 2){this.myImage.src = '/wall.jpg';}
 			else if(this.health == 1){this.myImage.src = '/wall.jpg';}
 
 			context.rotate(this.current_formation);
-			// context.drawImage(this.myImage, this.position.x - this.length.x/2, this.position.x - this.length.y/2);
 			context.drawImage(this.myImage, -this.length.x/2, -this.length.y/2);
 			context.fill();
 			context.closePath();
@@ -49,7 +48,6 @@ class Wall {
 	hit(){
 		this.health--;
 		if (this.health == 0){
-			// animation should go here
 			this.stage.removeActor(this)
 			this.stage.removeTree(this)
 		}
@@ -67,9 +65,7 @@ class Wall {
 	step(){
 
 		if (!this.placed) {
-			/*
-			This is done under assumption that only players can make walls
-			*/
+
 			var raw_pos_player = this.stage.player.position;
 			//Where the canvas is in relation to the moving paper
 			var rect = this.stage.canvas.getBoundingClientRect();
@@ -86,10 +82,6 @@ class Wall {
 
 			var slope = new Pair(cursor.x - pos_player.x, cursor.y - pos_player.y);
 
-
-			/*
-			 thought: should we even allow bots to make walls? How would that work?
-			*/
 
 			this.rotation = Math.atan2(slope.y,slope.x);
 
