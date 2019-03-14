@@ -80,7 +80,7 @@ class Bullet {
 				 enemies[i].position.y - enemies[i].radius,
 				  enemies[i].radius, enemies[i].radius) && this.player != enemies[i]) {
 						enemies[i].hit();
-            stage.removeActor(this);
+						
 					}
 		}
 

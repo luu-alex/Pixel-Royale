@@ -33,9 +33,9 @@ class Ball {
 	hit(){
 		// hp is the health level of the monster
 		this.hp--;
-		if (this.hp==0){
-			this.stage.removeActor(this);
+		if (this.hp<0){
 			this.stage.removeBot(this);
+			this.stage.removeActor(this);
 		}
 	}
 	step(){
@@ -64,7 +64,7 @@ class Ball {
 		}
 		this.intPosition();
 	}
-	switchVelocity(){ //monster will turn the other direction 
+	switchVelocity(){ //monster will turn the other direction
 		if(this.velocity.x<0){
 			this.velocity.x=Math.abs(this.velocity.x);
 		}

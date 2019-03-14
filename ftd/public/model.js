@@ -20,6 +20,7 @@ class Stage {
 		this.walls = [];
 		this.wall_mode = false;
 		this.deaths = [];
+		this.win = false;
 		// the logical width and height of the stage
 		this.width=2000;
 		this.height=2000;
@@ -71,11 +72,7 @@ class Stage {
 		}
 
 		// Generate some Smart Bots around the map.
-<<<<<<< HEAD
-		for (var i = 0; i < 3; i++) {
-=======
-		for (var i = 0; i < 10; i++) {
->>>>>>> 9e94f95b55a825d8b216831310c16da1861bf296
+		for (var i = 0; i < 1; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -86,7 +83,7 @@ class Stage {
 		}
 
 		//Generate some Dumb Bots around the map.
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < 1; i++) {
 			var x=Math.floor((Math.random()*this.width));
 			var y=Math.floor((Math.random()*this.height));
 			if(this.getActor(x,y)===null){
@@ -150,12 +147,6 @@ class Stage {
 			this.bots.splice(index,1);
 		}
 	}
-	removeBot(death){ //when a bot dies
-		var index=this.deaths.indexOf(death);
-		if(index!=-1){
-			this.death.splice(index,1);
-		}
-	}
 	removeTree(tree){ //remove tree from the list
 		var index=this.trees.indexOf(tree);
 		if(index != -1) {
@@ -201,9 +192,8 @@ class Stage {
 	}
 	step(){//Next frames of the game
 		if (this.bots.length==0) {
-			$.getScript('./singepage.js', function(){
-		    submitScore(3,3)
-		  })
+			this.win = true;
+
 		}
 		for(var i=0;i<this.actors.length;i++){
 			this.actors[i].step();

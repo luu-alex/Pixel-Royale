@@ -16,6 +16,12 @@ class GUI{
 		context.fillText("Health: "+this.hp,5,context.canvas.clientHeight-10);
 		context.fillText("Ammo: "+this.ammo,150,context.canvas.clientHeight-10);
     context.fillText("Enemies left: " + this.stage.bots.length, 290, context.canvas.clientHeight-10)
+		if (this.stage.win) {
+			context.fillStyle="black"
+			context.font = "70px pixelFont";
+			context.fillText("You have won! ",context.canvas.clientWidth/4,context.canvas.clientHeight/2);
+			endGame(this.player.kills);
+		}
 		context.closePath();
 		context.restore();
 

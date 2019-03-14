@@ -131,7 +131,6 @@ class Bot extends People{
 		else if (in_vacinity) {
 			this.shoot();
 		}
-
 	}
 	pickUp(object){
 		if (object.name == "weapon") {
@@ -176,5 +175,8 @@ class Bot extends People{
 
 			}
 		}
+	}
+	switchVelocity(){
+		return
 	}
 }
