@@ -2,7 +2,6 @@ stage=null;
 view = null;
 interval=null;
 keys = null;
-
 var rightMouseClicked = false;
 
 function handleMouseDown(e) {
@@ -23,7 +22,6 @@ function handleMouseDown(e) {
 		}
 	}
 }
-
 function handleMouseUp(e) {
 	if (e.button === 2) {
 		rightMouseClicked = false;
@@ -52,7 +50,6 @@ function pauseGame(){
 function endGame(kills){ //When player or all monsters die
 	pauseGame();
 	statsswitch(kills);
-
 }
 function getGame(){
 	return stage;
@@ -61,9 +58,7 @@ function aim(event){
 	stage.updateCursor(event.clientY,event.clientX);
 }
 function shoot(event){
-
 	stage.player.shoot(event.offsetX,event.offsetY);
-
 }
 function moveByKey(event){ //Handles the player movements
 	var key = event.key;
@@ -109,7 +104,6 @@ function stopGame() {
 	console.log(interval)
 	clearInterval(interval);
 	interval= null;
-	// document.getEle
 }
 function changeFormation(){
 	stage.player.flipWall();

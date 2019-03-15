@@ -209,7 +209,7 @@ function getStats() {
   });
 }
 $(function() {
-	$("#registration").hide();
+  $("#registration").hide();
   $("#submitBTN").hide();
   $('#index').hide();
   $('#stage').hide();
